@@ -5,7 +5,7 @@
     {
       "role": "corpus",
       "path": "tests/fixtures/cti/public_fixture.json",
-      "sha256": "2624d733aa15ac32296c940b8e850bf47d35382e23b12fc8c48aabad76db7c68",
+      "sha256": "385f0a5163fa7ecaa6f7b373f5c5392ab5d81fc9ac2620617eaf13a3d8bcc3a6",
       "schema_version": "cti-fixture-v1",
       "lineage": {
         "source_name": "repository synthetic CTI public fixture",

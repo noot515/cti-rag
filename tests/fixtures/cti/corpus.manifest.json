@@ -1,0 +1,20 @@
+{
+  "schema_version": "cti-corpus-manifest-v1",
+  "synthetic": true,
+  "unmarked_data_public": true,
+  "source_instance": "fixture-public",
+  "scope_id": "public-fixture",
+  "source_snapshot_id": "fixture-cti-snapshot-v2",
+  "upstream_origin": "synthetic-fixture",
+  "source_uri": "fixture://cti/corpus/objects.jsonl",
+  "objects_file": "corpus/objects.jsonl",
+  "objects_sha256": "4ba84dab2b6f8ff429e8ff03db30983215e413dc1a35d1154759c9454042a63c",
+  "marking_definitions": [
+    {"marking_ref":"marking--amber","definition_type":"tlp","definition":"AMBER"}
+  ],
+  "relations": [
+    {"source_record_id":"fixture-map-cve-cwe","source_object_id":"fixture-cve-2026-999999","target_object_id":"fixture-cwe-79","original_relation":"synthetic-mapping","normalized_relation":"maps_to","assertion_kind":"catalog_mapping","source_field_path":"x_fixture.cwe_refs[0]"},
+    {"source_record_id":"fixture-map-cwe-capec","source_object_id":"fixture-cwe-79","target_object_id":"fixture-capec-66","original_relation":"synthetic-mapping","normalized_relation":"maps_to","assertion_kind":"catalog_mapping","source_field_path":"x_fixture.capec_refs[0]"},
+    {"source_record_id":"fixture-map-capec-attack","source_object_id":"fixture-capec-66","target_object_id":"fixture-t1059-001","original_relation":"synthetic-mapping","normalized_relation":"maps_to","assertion_kind":"catalog_mapping","source_field_path":"x_fixture.attack_refs[0]"}
+  ]
+}

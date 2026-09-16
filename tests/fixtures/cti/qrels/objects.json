@@ -1,0 +1,25 @@
+{
+  "schema_version": "cti-qrels-v1",
+  "qrels": {
+    "q-en-chain": [
+      "e4ae498315fc280b7ec9d8483293eb528a8a70c7c104f39906c864f558fced25",
+      "b65b7ba5d58f4268cae77b49ee74a1090c07d7ee9027ec8567bcc462951ae2be",
+      "fcbc807a2fb839bc66c13b5b34d3a0d9270982b201d8a88b1f69ab98ae225acd",
+      "df5913851aa995e01a14ae5d7f9ea45ef86b73941d202f847e321a99a947a45c"
+    ],
+    "q-zh-chain": [
+      "e4ae498315fc280b7ec9d8483293eb528a8a70c7c104f39906c864f558fced25",
+      "b65b7ba5d58f4268cae77b49ee74a1090c07d7ee9027ec8567bcc462951ae2be",
+      "fcbc807a2fb839bc66c13b5b34d3a0d9270982b201d8a88b1f69ab98ae225acd",
+      "df5913851aa995e01a14ae5d7f9ea45ef86b73941d202f847e321a99a947a45c"
+    ],
+    "q-mixed": [
+      "e4ae498315fc280b7ec9d8483293eb528a8a70c7c104f39906c864f558fced25",
+      "fcbc807a2fb839bc66c13b5b34d3a0d9270982b201d8a88b1f69ab98ae225acd",
+      "df5913851aa995e01a14ae5d7f9ea45ef86b73941d202f847e321a99a947a45c"
+    ],
+    "q-restricted": [
+      "d318b53ea3c804e0af93467404791bb1b370bfb1e14e5bf14fe64ad5967b67db"
+    ]
+  }
+}

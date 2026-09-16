@@ -17,8 +17,8 @@ def test_bundled_fixture_requires_explicit_synthetic_marker():
         CtiDomainAdapter().normalize(manifest)
 
 
-def test_unreviewed_relation_is_rejected():
+def test_unreviewed_relation_is_quarantined():
     manifest = json.loads(FIXTURE.read_text(encoding="utf-8"))
     manifest["relations"][0]["normalized_relation"] = "causes_everything"
-    with pytest.raises(ValueError, match="unreviewed CTI relation"):
-        CtiDomainAdapter().normalize(manifest)
+    batch = CtiDomainAdapter().normalize(manifest)
+    assert batch.quarantine_counts["malformed-relation"] == 1

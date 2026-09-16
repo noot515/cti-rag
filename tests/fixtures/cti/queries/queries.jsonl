@@ -1,0 +1,4 @@
+{"schema_version":"query-record-v1","query_id":"q-en-chain","query":"Map synthetic CVE-2026-999999 through CWE-79 and CAPEC-66 to the ATT&CK-shaped technique.","options":{"task_hint":"mapping"}}
+{"schema_version":"query-record-v1","query_id":"q-zh-chain","query":"请查找合成的 CVE-2026-999999 到 CWE-79、CAPEC-66 和 T1059.001 的映射路径。","options":{"task_hint":"mapping"}}
+{"schema_version":"query-record-v1","query_id":"q-mixed","query":"从 CVE-2026-999999 map 到 CAPEC-66，再到 T1059.001。","options":{"task_hint":"mapping"}}
+{"schema_version":"query-record-v1","query_id":"q-restricted","query":"Show the synthetic restricted indicator if I am authorized.","options":{"task_hint":"exact"}}

@@ -2,7 +2,7 @@
 from __future__ import annotations
 from typing import Any, Protocol
 from pydantic import Field
-from .schema import EvidenceModel, EvidenceObject, EvidenceRelation, ExternalIdentifier
+from .schema import EvidenceChunk, EvidenceModel, EvidenceObject, EvidenceRelation, ExternalIdentifier
 
 
 class GraphPattern(EvidenceModel):
@@ -19,6 +19,7 @@ class NormalizedEvidenceBatch(EvidenceModel):
     source_snapshot_id: str = Field(min_length=1)
     objects: tuple[EvidenceObject, ...] = ()
     relations: tuple[EvidenceRelation, ...] = ()
+    chunks: tuple[EvidenceChunk, ...] = ()
 
 
 class DomainAdapter(Protocol):

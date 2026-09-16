@@ -5,7 +5,7 @@ from __future__ import annotations
 from enum import Enum
 from typing import Iterable
 
-from pydantic import Field
+from pydantic import Field, JsonValue
 
 from packages.evidence.schema import EvidenceModel, EvidencePolicyMetadata
 
@@ -26,12 +26,17 @@ class GranularMarking(EvidenceModel):
 class CtiMarking(EvidenceModel):
     marking_ref: str = Field(min_length=1)
     definition_type: str = Field(min_length=1)
-    definition: str = Field(min_length=1)
+    definition: JsonValue
 
     def tlp_label(self) -> TlpLabel | None:
         if self.definition_type.lower() != "tlp":
             return None
-        normalized = self.definition.strip().lower().replace(" ", "")
+        raw = self.definition
+        if isinstance(raw, dict):
+            raw = raw.get("tlp") or raw.get("value")
+        if not isinstance(raw, str):
+            return None
+        normalized = raw.strip().lower().replace(" ", "")
         aliases = {
             "clear": TlpLabel.CLEAR,
             "white": TlpLabel.CLEAR,
@@ -42,6 +47,19 @@ class CtiMarking(EvidenceModel):
             "red": TlpLabel.RED,
         }
         return aliases.get(normalized)
+
+
+_SUPPORTED_SELECTOR_ROOTS = frozenset({"name", "description", "aliases", "external_ids", "family_data"})
+
+
+def unsupported_granular_selectors(markings: Iterable[GranularMarking]) -> tuple[str, ...]:
+    unsupported: list[str] = []
+    for granular in markings:
+        for selector in granular.selectors:
+            root = selector.split(".", 1)[0].split("[", 1)[0]
+            if root not in _SUPPORTED_SELECTOR_ROOTS:
+                unsupported.append(selector)
+    return tuple(dict.fromkeys(unsupported))
 
 
 def to_policy_metadata(
@@ -67,8 +85,6 @@ def to_policy_metadata(
         source_instances=tuple(dict.fromkeys(source_instances)),
         marking_refs=tuple(dict.fromkeys((*declared_refs, *(marking.marking_ref for marking in markings_tuple)))),
         dissemination=tuple(dict.fromkeys(dissemination)),
-        granular_selectors=tuple(
-            selector for granular in granular_tuple for selector in granular.selectors
-        ),
+        granular_selectors=tuple(selector for granular in granular_tuple for selector in granular.selectors),
         unresolved_markings=unresolved,
     )

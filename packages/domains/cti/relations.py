@@ -1,4 +1,4 @@
-"""Reviewed CTI relation patterns. No generated Cypher or open relation traversal."""
+"""Reviewed CTI relation/assertion patterns; never user-generated traversal."""
 
 from __future__ import annotations
 
@@ -11,7 +11,6 @@ _GENERAL_PATTERNS = (
         max_hops=2,
     ),
 )
-
 _MAPPING_PATTERNS = (
     GraphPattern(
         pattern_id="cti-catalog-mapping-3hop-v1",
@@ -21,22 +20,30 @@ _MAPPING_PATTERNS = (
         target_types=("weakness", "attack-pattern", "technique"),
     ),
 )
-
 _ALLOWED_RELATIONS = frozenset({"maps_to", "references", "affects", "uses"})
+_ALLOWED_ASSERTION_KINDS = frozenset(
+    {"explicit", "extracted", "inferred", "catalog_mapping", "embedded_reference", "cross_source_equivalence"}
+)
 
 
 def normalize_relation(value: str) -> str:
     normalized = value.strip().lower().replace("-", "_").replace(" ", "_")
-    aliases = {
+    normalized = {
         "mapped_to": "maps_to",
         "mapping": "maps_to",
         "reference": "references",
         "object_ref": "references",
         "object_refs": "references",
-    }
-    normalized = aliases.get(normalized, normalized)
+    }.get(normalized, normalized)
     if normalized not in _ALLOWED_RELATIONS:
         raise ValueError(f"unreviewed CTI relation: {value}")
+    return normalized
+
+
+def normalize_assertion_kind(value: str) -> str:
+    normalized = value.strip().lower().replace("-", "_").replace(" ", "_")
+    if normalized not in _ALLOWED_ASSERTION_KINDS:
+        raise ValueError(f"unsupported CTI assertion kind: {value}")
     return normalized
 
 

@@ -1,8 +1,8 @@
-"""Concrete CTI domain adapter for P01 contracts and synthetic fixtures."""
+"""Concrete CTI domain adapter: pure normalization and reviewed retrieval hints."""
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Iterable
 
 from packages.domains.base import GraphPattern, NormalizedEvidenceBatch
 from packages.evidence.schema import EvidenceObject, ExternalIdentifier
@@ -31,5 +31,24 @@ class CtiDomainAdapter:
             keys.append(f"stix:{stix_id}")
         return list(dict.fromkeys(keys))
 
+    def alias_candidates(self, alias: str, objects: Iterable[EvidenceObject]) -> list[EvidenceObject]:
+        needle = alias.strip().casefold()
+        if not needle:
+            return []
+        return [obj for obj in objects if any(candidate.casefold() == needle for candidate in obj.aliases)]
+
+    def field_serialization_hints(self) -> dict[str, str]:
+        return {
+            "name": "title",
+            "description": "body",
+            "external_ids": "exact-identifiers",
+            "aliases": "ambiguous-aliases",
+            "family_data": "domain-structured",
+            "markings": "policy-metadata",
+        }
+
     def allowed_graph_patterns(self, task_hint: str | None) -> list[GraphPattern]:
+        return allowed_graph_patterns(task_hint)
+
+    def relation_templates(self, task_hint: str | None) -> list[GraphPattern]:
         return allowed_graph_patterns(task_hint)

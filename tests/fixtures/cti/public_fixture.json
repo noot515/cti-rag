@@ -1,91 +1,23 @@
 {
   "schema_version": "cti-fixture-v1",
   "synthetic": true,
+  "unmarked_data_public": true,
   "source_instance": "fixture-public",
   "scope_id": "public-fixture",
   "source_snapshot_id": "fixture-cti-snapshot-v1",
   "upstream_origin": "synthetic-fixture",
   "source_uri": "fixture://cti/public_fixture.json",
   "objects": [
-    {
-      "source_object_id": "fixture-cve-2026-999999",
-      "object_type": "vulnerability",
-      "name": "Synthetic CVE-2026-999999",
-      "description": "Synthetic vulnerability used only to test CTI retrieval mechanics.",
-      "external_ids": [{"namespace": "cve", "value": "CVE-2026-999999"}],
-      "aliases": ["Synthetic Example Vulnerability"],
-      "family_data": {"cve_id": "CVE-2026-999999", "affected_products": ["example-product 1.0"]}
-    },
-    {
-      "source_object_id": "fixture-cwe-79",
-      "object_type": "weakness",
-      "name": "Synthetic CWE-79 mapping target",
-      "description": "Synthetic weakness node for mechanics testing.",
-      "external_ids": [{"namespace": "cwe", "value": "CWE-79"}],
-      "family_data": {"cwe_id": "CWE-79"}
-    },
-    {
-      "source_object_id": "fixture-capec-66",
-      "object_type": "attack-pattern",
-      "name": "Synthetic CAPEC-66 mapping target",
-      "description": "Synthetic attack-pattern node for mechanics testing.",
-      "external_ids": [{"namespace": "capec", "value": "CAPEC-66"}],
-      "family_data": {"capec_id": "CAPEC-66"}
-    },
-    {
-      "source_object_id": "fixture-t1059-001",
-      "object_type": "technique",
-      "name": "Synthetic T1059.001 mapping target",
-      "description": "Synthetic ATT&CK technique node for mechanics testing.",
-      "external_ids": [{"namespace": "attack", "value": "T1059.001"}],
-      "family_data": {"attack_technique_id": "T1059.001"}
-    },
-    {
-      "source_object_id": "fixture-t9999",
-      "object_type": "technique",
-      "name": "Synthetic T9999 distractor",
-      "description": "Synthetic distractor that is not asserted to be a real ATT&CK technique.",
-      "external_ids": [{"namespace": "attack", "value": "T9999"}],
-      "family_data": {"attack_technique_id": "T9999"}
-    }
+    {"source_object_id":"fixture-cve-2026-999999","object_type":"vulnerability","name":"Synthetic CVE-2026-999999","description":"Synthetic vulnerability used only to test CTI retrieval mechanics.","external_ids":[{"namespace":"cve","value":"CVE-2026-999999"}],"aliases":["Synthetic Example Vulnerability"],"family_data":{"cve_id":"CVE-2026-999999","affected_products":["example-product 1.0"]}},
+    {"source_object_id":"fixture-cwe-79","object_type":"weakness","name":"Synthetic CWE-79 mapping target","description":"Synthetic weakness node for mechanics testing.","external_ids":[{"namespace":"cwe","value":"CWE-79"}],"family_data":{"cwe_id":"CWE-79"}},
+    {"source_object_id":"fixture-capec-66","object_type":"attack-pattern","name":"Synthetic CAPEC-66 mapping target","description":"Synthetic attack-pattern node for mechanics testing.","external_ids":[{"namespace":"capec","value":"CAPEC-66"}],"family_data":{"capec_id":"CAPEC-66"}},
+    {"source_object_id":"fixture-t1059-001","object_type":"technique","name":"Synthetic T1059.001 mapping target","description":"Synthetic ATT&CK technique node for mechanics testing.","external_ids":[{"namespace":"attack","value":"T1059.001"}],"family_data":{"attack_technique_id":"T1059.001"}},
+    {"source_object_id":"fixture-t9999","object_type":"technique","name":"Synthetic T9999 distractor","description":"Synthetic distractor that is not asserted to be a real ATT&CK technique.","external_ids":[{"namespace":"attack","value":"T9999"}],"family_data":{"attack_technique_id":"T9999"}}
   ],
   "relations": [
-    {
-      "source_record_id": "fixture-map-cve-cwe",
-      "source_object_id": "fixture-cve-2026-999999",
-      "target_object_id": "fixture-cwe-79",
-      "original_relation": "fixture-cwe-reference",
-      "normalized_relation": "maps_to",
-      "assertion_kind": "catalog_mapping",
-      "source_field_path": "x_fixture.cwe_refs[0]"
-    },
-    {
-      "source_record_id": "fixture-map-cwe-capec-a",
-      "source_object_id": "fixture-cwe-79",
-      "target_object_id": "fixture-capec-66",
-      "original_relation": "fixture-capec-reference",
-      "normalized_relation": "maps_to",
-      "assertion_kind": "catalog_mapping",
-      "source_field_path": "x_fixture.capec_refs[0]"
-    },
-    {
-      "source_record_id": "fixture-map-cwe-capec-b",
-      "source_object_id": "fixture-cwe-79",
-      "target_object_id": "fixture-capec-66",
-      "original_relation": "fixture-capec-reference",
-      "normalized_relation": "maps_to",
-      "assertion_kind": "catalog_mapping",
-      "source_field_path": "x_fixture.secondary_capec_refs[0]",
-      "qualifiers": [{"name": "mapping_category", "value": "secondary"}]
-    },
-    {
-      "source_record_id": "fixture-map-capec-attack",
-      "source_object_id": "fixture-capec-66",
-      "target_object_id": "fixture-t1059-001",
-      "original_relation": "fixture-technique-reference",
-      "normalized_relation": "maps_to",
-      "assertion_kind": "catalog_mapping",
-      "source_field_path": "x_fixture.attack_refs[0]"
-    }
+    {"source_record_id":"fixture-map-cve-cwe","source_object_id":"fixture-cve-2026-999999","target_object_id":"fixture-cwe-79","original_relation":"fixture-cwe-reference","normalized_relation":"maps_to","assertion_kind":"catalog_mapping","source_field_path":"x_fixture.cwe_refs[0]"},
+    {"source_record_id":"fixture-map-cwe-capec-a","source_object_id":"fixture-cwe-79","target_object_id":"fixture-capec-66","original_relation":"fixture-capec-reference","normalized_relation":"maps_to","assertion_kind":"catalog_mapping","source_field_path":"x_fixture.capec_refs[0]"},
+    {"source_record_id":"fixture-map-cwe-capec-b","source_object_id":"fixture-cwe-79","target_object_id":"fixture-capec-66","original_relation":"fixture-capec-reference","normalized_relation":"maps_to","assertion_kind":"catalog_mapping","source_field_path":"x_fixture.secondary_capec_refs[0]","qualifiers":[{"name":"mapping_category","value":"secondary"}]},
+    {"source_record_id":"fixture-map-capec-attack","source_object_id":"fixture-capec-66","target_object_id":"fixture-t1059-001","original_relation":"fixture-technique-reference","normalized_relation":"maps_to","assertion_kind":"catalog_mapping","source_field_path":"x_fixture.attack_refs[0]"}
   ]
 }

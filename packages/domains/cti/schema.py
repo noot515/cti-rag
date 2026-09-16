@@ -1,4 +1,4 @@
-"""Typed CTI extensions over the generic evidence contracts."""
+"""Typed CTI extensions over generic evidence contracts."""
 
 from __future__ import annotations
 
@@ -7,7 +7,8 @@ from typing import Annotated, Literal
 from pydantic import Field, field_validator
 
 from packages.domains.base import NormalizedEvidenceBatch
-from packages.evidence.schema import EvidenceChunk, EvidenceObject, EvidenceRelation, EvidenceModel
+from packages.evidence.schema import EvidenceChunk, EvidenceModel, EvidenceObject, EvidenceRelation
+
 from .markings import CtiMarking, GranularMarking
 from .validation import validate_stix_id
 
@@ -34,17 +35,19 @@ class CtiReportData(EvidenceModel):
     object_refs: tuple[str, ...] = ()
 
 
+class CtiIndicatorData(EvidenceModel):
+    family: Literal["indicator"] = "indicator"
+    pattern: str | None = None
+    pattern_type: str | None = None
+
+
 class CtiOtherData(EvidenceModel):
     family: Literal["other"] = "other"
     source_type: str = Field(min_length=1)
 
 
 CtiFamilyData = Annotated[
-    CtiVulnerabilityData
-    | CtiWeaknessData
-    | CtiAttackPatternData
-    | CtiReportData
-    | CtiOtherData,
+    CtiVulnerabilityData | CtiWeaknessData | CtiAttackPatternData | CtiReportData | CtiIndicatorData | CtiOtherData,
     Field(discriminator="family"),
 ]
 
@@ -52,6 +55,7 @@ CtiFamilyData = Annotated[
 class CtiObject(EvidenceObject):
     domain: Literal["cti"] = "cti"
     extension_type: Literal["cti"] = "cti"
+    stix_family: Literal["sdo", "sco", "sro", "meta", "internal"] | None = None
     stix_type: str | None = None
     stix_id: str | None = None
     revoked: bool = False
@@ -65,7 +69,7 @@ class CtiObject(EvidenceObject):
 
     @field_validator("stix_id")
     @classmethod
-    def stix_id_is_preserved_and_valid(cls, value: str | None) -> str | None:
+    def validate_stix_identifier(cls, value: str | None) -> str | None:
         if value is not None:
             validate_stix_id(value)
         return value
@@ -90,7 +94,28 @@ class CtiChunk(EvidenceChunk):
     citation_locator: str | None = None
 
 
+class CtiQuarantinedRecord(EvidenceModel):
+    record_kind: Literal["object", "relation", "reference"]
+    source_record_id: str | None = None
+    reason_code: str = Field(min_length=1)
+    reason: str = Field(min_length=1)
+    raw_payload_sha256: str | None = None
+
+
 class CtiNormalizedEvidenceBatch(NormalizedEvidenceBatch):
     domain: Literal["cti"] = "cti"
     objects: tuple[CtiObject, ...] = ()
     relations: tuple[CtiRelationship, ...] = ()
+    chunks: tuple[CtiChunk, ...] = ()
+    quarantined: tuple[CtiQuarantinedRecord, ...] = ()
+
+    @property
+    def assertions(self) -> tuple[CtiRelationship, ...]:
+        return self.relations
+
+    @property
+    def quarantine_counts(self) -> dict[str, int]:
+        counts: dict[str, int] = {}
+        for record in self.quarantined:
+            counts[record.reason_code] = counts.get(record.reason_code, 0) + 1
+        return counts
