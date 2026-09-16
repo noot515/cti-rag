@@ -148,6 +148,7 @@ celerybeat.pid
 # Environments
 .env
 .venv
+.venv-advanced/
 env/
 venv/
 ENV/
@@ -222,4 +223,6 @@ neo4j_data_bak
 blog.md
 chapter1-cti-kg-intro.md
 #
-docs/
+docs/*
+!docs/advanced-rag-status.md
+!docs/advanced-rag-test-inventory.md

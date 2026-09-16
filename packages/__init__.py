@@ -1,71 +1,117 @@
+"""Top-level compatibility facade for ThreatRAG packages.
+
+Importing this module is deliberately side-effect free. Legacy runtime objects are
+constructed only when a caller explicitly asks for them.
+"""
+
+from __future__ import annotations
+
 from concurrent.futures import ThreadPoolExecutor
-executor = ThreadPoolExecutor()
+from threading import RLock
+from typing import Any
 
-# 加载环境变量
-import os
-from dotenv import load_dotenv
-from pathlib import Path
+_runtime_lock = RLock()
+_executor: ThreadPoolExecutor | None = None
+_knowledge_base: Any = None
+_graph_base: Any = None
+_retriever: Any = None
 
-# 获取项目根目录并加载.env文件
-def get_project_root():
-    current_path = Path(__file__).resolve()
-    root_indicators = ['.git', 'requirements.txt', 'pyproject.toml', 'setup.py', 'README.md']
 
-    for parent in current_path.parents:
-        if any((parent / indicator).exists() for indicator in root_indicators):
-            return str(parent)
+def get_runtime_config():
+    """Return the single legacy Config instance, creating it on first access."""
+    from .config import get_runtime_config as _get_runtime_config
 
-    return str(current_path.parent.parent)
+    return _get_runtime_config()
 
-project_root = get_project_root()
-env_path = os.path.join(project_root, '.env')
-if os.path.exists(env_path):
-    load_dotenv(env_path)
-    print(f"✓ 已加载环境变量文件: {env_path}")
-else:
-    print(f"⚠️ 环境变量文件不存在: {env_path}")
 
-from packages.config import Config
-config = Config()
+class _LegacyConfigProxy:
+    """Lazy attribute proxy preserving ``from packages import config`` callers."""
 
-# 延迟导入其他模块，避免在导入时就初始化所有依赖
-class LazyLoader:
-    def __init__(self):
-        self._knowledge_base = None
-        self._graph_base = None
-        self._retriever = None
+    def __getattr__(self, name: str) -> Any:
+        return getattr(get_runtime_config(), name)
 
-    @property
-    def knowledge_base(self):
-        if self._knowledge_base is None:
-            from packages.core import KnowledgeBase
-            self._knowledge_base = KnowledgeBase()
-        return self._knowledge_base
+    def __getitem__(self, key: str) -> Any:
+        return get_runtime_config()[key]
 
-    @property
-    def graph_base(self):
-        if self._graph_base is None:
-            from packages.core import GraphDatabase
-            self._graph_base = GraphDatabase()
-        return self._graph_base
+    def __setitem__(self, key: str, value: Any) -> None:
+        get_runtime_config()[key] = value
 
-    @property
-    def retriever(self):
-        if self._retriever is None:
-            from packages.core.retriever import Retriever
-            self._retriever = Retriever()
-        return self._retriever
+    def get(self, key: str, default: Any = None) -> Any:
+        return get_runtime_config().get(key, default)
 
-# 创建延迟加载器实例
-_lazy = LazyLoader()
+    def __repr__(self) -> str:
+        return "<lazy legacy Config proxy>"
 
-# 为了向后兼容，提供模块级别的访问
-def __getattr__(name):
-    if name == 'knowledge_base':
-        return _lazy.knowledge_base
-    elif name == 'graph_base':
-        return _lazy.graph_base
-    elif name == 'retriever':
-        return _lazy.retriever
-    else:
-        raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
+
+# Python replaces this package attribute with the packages.config submodule if that
+# submodule is imported explicitly. packages.config implements its own module-level
+# __getattr__ proxy, so both import orders keep attribute-style compatibility.
+config = _LegacyConfigProxy()
+
+
+def get_executor() -> ThreadPoolExecutor:
+    global _executor
+    if _executor is None:
+        with _runtime_lock:
+            if _executor is None:
+                _executor = ThreadPoolExecutor()
+    return _executor
+
+
+def get_knowledge_base():
+    global _knowledge_base
+    if _knowledge_base is None:
+        with _runtime_lock:
+            if _knowledge_base is None:
+                from packages.core import KnowledgeBase
+
+                _knowledge_base = KnowledgeBase()
+    return _knowledge_base
+
+
+def get_graph_base():
+    global _graph_base
+    if _graph_base is None:
+        with _runtime_lock:
+            if _graph_base is None:
+                from packages.core import GraphDatabase
+
+                _graph_base = GraphDatabase()
+    return _graph_base
+
+
+def get_retriever():
+    global _retriever
+    if _retriever is None:
+        with _runtime_lock:
+            if _retriever is None:
+                from packages.core.retriever import Retriever
+
+                _retriever = Retriever()
+    return _retriever
+
+
+def __getattr__(name: str) -> Any:
+    if name == "executor":
+        return get_executor()
+    if name == "knowledge_base":
+        return get_knowledge_base()
+    if name == "graph_base":
+        return get_graph_base()
+    if name == "retriever":
+        return get_retriever()
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+
+
+__all__ = [
+    "config",
+    "executor",
+    "knowledge_base",
+    "graph_base",
+    "retriever",
+    "get_runtime_config",
+    "get_executor",
+    "get_knowledge_base",
+    "get_graph_base",
+    "get_retriever",
+]

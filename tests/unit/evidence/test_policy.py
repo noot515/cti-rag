@@ -1,0 +1,71 @@
+from __future__ import annotations
+
+import pytest
+
+from packages.evidence.policy import (
+    DenyByDefaultPolicy,
+    PolicyDenied,
+    PublicFixturePolicy,
+    TrustedPrincipal,
+)
+from packages.evidence.schema import AuthorizedEvidenceView, EvidencePolicyMetadata
+
+
+def _principal() -> TrustedPrincipal:
+    return TrustedPrincipal(principal_id="test-principal", source="trusted_local_cli")
+
+
+def _view(**policy_overrides) -> AuthorizedEvidenceView:
+    policy = EvidencePolicyMetadata(
+        source_instances=("fixture-public",),
+        **policy_overrides,
+    )
+    return AuthorizedEvidenceView(
+        evidence_uid="a" * 64,
+        domain="cti",
+        scope_id="public-fixture",
+        source_instances=("fixture-public",),
+        policy=policy,
+    )
+
+
+def test_deny_by_default_has_no_implicit_scope():
+    with pytest.raises(PolicyDenied, match="no corpus grant"):
+        DenyByDefaultPolicy().resolve_scope(_principal(), "fixture-cti")
+
+
+def test_public_fixture_policy_requires_explicit_corpus_source_scope_and_destination():
+    policy = PublicFixturePolicy()
+    scope = policy.resolve_scope(_principal(), "fixture-cti")
+    assert policy.authorize_evidence(_view(), scope, "caller").allowed is True
+
+    wrong_source = _view().model_copy(update={"source_instances": ("private-upstream",)})
+    assert policy.authorize_evidence(wrong_source, scope, "caller").allowed is False
+
+    wrong_scope = _view().model_copy(update={"scope_id": "other"})
+    assert policy.authorize_evidence(wrong_scope, scope, "caller").allowed is False
+
+    assert policy.authorize_evidence(_view(), scope, "embedding_provider").allowed is False
+
+
+def test_fixture_policy_fails_closed_on_unsupported_or_restricted_markings():
+    policy = PublicFixturePolicy()
+    scope = policy.resolve_scope(_principal(), "fixture-cti")
+
+    assert not policy.authorize_evidence(
+        _view(unresolved_markings=True), scope, "caller"
+    ).allowed
+    assert not policy.authorize_evidence(
+        _view(granular_selectors=("description",)), scope, "caller"
+    ).allowed
+    assert not policy.authorize_evidence(
+        _view(dissemination=("tlp:amber",)), scope, "caller"
+    ).allowed
+    assert policy.authorize_evidence(
+        _view(dissemination=("tlp:clear",)), scope, "caller"
+    ).allowed
+
+
+def test_public_fixture_policy_does_not_accept_request_selected_corpus():
+    with pytest.raises(PolicyDenied, match="not the configured"):
+        PublicFixturePolicy().resolve_scope(_principal(), "caller-selected-private")

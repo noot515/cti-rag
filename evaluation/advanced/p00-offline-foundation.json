@@ -1,0 +1,44 @@
+{
+  "schema_version": "advanced-rag-validation-v1",
+  "phase": "P00",
+  "name": "offline-import-config-test-foundation",
+  "baseline_sha": "15f4050a387bf41b8d77daf05e271ccfe9e522da",
+  "plan_sha256": "e8613dd7aba7452d52dab51fcdf044e00b2ae6b8decdb8eb8f1c854141466e87",
+  "environment": {
+    "executed_python": "3.13.5",
+    "required_python": "3.11",
+    "python_3_11_available": false,
+    "dependencies": {
+      "pydantic": "2.13.4",
+      "PyYAML": "6.0.3",
+      "pytest": "9.0.2",
+      "pytest-asyncio": "1.3.0"
+    }
+  },
+  "checks": [
+    {
+      "name": "p00_focused_tests",
+      "command": "python -m pytest tests/unit/evidence/test_imports.py tests/unit/evidence/test_config.py -q",
+      "status": "passed",
+      "passed": 16,
+      "failed": 0
+    },
+    {
+      "name": "legacy_config_lazy_compatibility",
+      "status": "passed",
+      "detail": "explicit Config construction with a sentinel DeepSeek key preserved the cached singleton and packages.config attribute compatibility"
+    },
+    {
+      "name": "python_3_11_virtualenv",
+      "status": "not_run",
+      "reason": "python3.11 is not installed in the execution sandbox"
+    },
+    {
+      "name": "full_repository_collection",
+      "command": "python -m pytest --collect-only -q",
+      "status": "not_run",
+      "reason": "the execution sandbox cannot clone GitHub; only the changed subset was reconstructed locally"
+    }
+  ],
+  "promotion_authorized": false
+}
