@@ -1,0 +1,39 @@
+{
+  "schema_version": "advanced-rag-validation-v1",
+  "phase": "P01",
+  "name": "generic-evidence-and-cti-contracts",
+  "baseline_sha": "15f4050a387bf41b8d77daf05e271ccfe9e522da",
+  "checks": [
+    {
+      "name": "p00_p01_unit_suite",
+      "command": "python -m pytest tests/unit/evidence tests/unit/cti -q",
+      "status": "passed",
+      "passed": 41,
+      "failed": 0
+    },
+    {
+      "name": "p01_contract_tests",
+      "status": "passed",
+      "passed": 25,
+      "failed": 0,
+      "covers": [
+        "generic and CTI JSON round-trip serialization",
+        "domain-separated object and revision identity",
+        "independent relation identity for same-endpoint assertions",
+        "no name/source-id based cross-domain merge",
+        "fail-closed default and fixture policies",
+        "unsupported and unresolved marking denial metadata",
+        "whole CTI identifier parsing",
+        "bounded reviewed graph patterns",
+        "report object_refs normalized as noncausal references assertions",
+        "synthetic fixture enforcement"
+      ]
+    },
+    {
+      "name": "live_backend_or_quality_validation",
+      "status": "not_run",
+      "reason": "P01 defines pure contracts and fixtures only; durable catalog, projections, retrieval, models, OpenCTI, and quality evaluation are later phases"
+    }
+  ],
+  "promotion_authorized": false
+}
