@@ -1,0 +1,10 @@
+{
+  "schema_version": "advanced-validation-v1",
+  "phase": "prompt-02",
+  "predecessor_sha": "312e11837bde5b525d277bf7387c57ce30487bb3",
+  "correctness": {"status": "passed", "tests_passed": 9, "tests_failed": 0},
+  "preflight": {"status": "passed", "network_used": false, "report": "saves/eval/l0-preflight/report.json"},
+  "python_3_11": {"status": "not_run", "reason": "sandbox provides Python 3.13.5 only"},
+  "full_repository_collection": {"status": "not_run", "reason": "sandbox cannot resolve github.com for a full clone"},
+  "quality": {"status": "not_run", "reason": "Prompt 02 does not implement or claim new quality metrics"}
+}

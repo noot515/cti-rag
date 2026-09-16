@@ -1,0 +1,11 @@
+{
+  "schema_version": "advanced-validation-v1",
+  "phase": "prompt-03",
+  "predecessor_sha": "312e11837bde5b525d277bf7387c57ce30487bb3",
+  "correctness": {"status": "passed", "focused_suite_passed": 24, "focused_suite_failed": 0},
+  "combined_prompt_02_03_suite": {"status": "passed", "tests_passed": 33, "tests_failed": 0},
+  "compileall": {"status": "passed"},
+  "python_3_11": {"status": "not_run", "reason": "sandbox provides Python 3.13.5 only"},
+  "service_compatibility": {"status": "not_run", "reason": "no service clients are part of Prompt 03"},
+  "quality": {"status": "not_run", "reason": "synthetic fixtures establish mechanics only"}
+}

@@ -1,5 +1,4 @@
-"""Domain-neutral evidence contracts for advanced retrieval."""
-
+"""Domain-neutral evidence and retrieval contracts."""
 from __future__ import annotations
 
 from datetime import datetime
@@ -12,12 +11,7 @@ from .validation import normalize_utc_datetime, require_sha256
 
 
 class EvidenceModel(BaseModel):
-    model_config = ConfigDict(
-        extra="forbid",
-        frozen=True,
-        allow_inf_nan=False,
-        str_strip_whitespace=True,
-    )
+    model_config = ConfigDict(extra="forbid", frozen=True, allow_inf_nan=False, str_strip_whitespace=True)
 
 
 class LifecycleState(str, Enum):
@@ -25,6 +19,13 @@ class LifecycleState(str, Enum):
     DEPRECATED = "deprecated"
     REVOKED = "revoked"
     DELETED = "deleted"
+
+
+class EvidenceExtension(EvidenceModel):
+    kind: Literal["domain_specific"] = "domain_specific"
+    type_name: str = Field(min_length=1)
+    schema_version: str = Field(min_length=1)
+    data: dict[str, JsonValue] = Field(default_factory=dict)
 
 
 class SourceRef(EvidenceModel):
@@ -41,6 +42,36 @@ class SourceRef(EvidenceModel):
     @classmethod
     def validate_hash(cls, value: str) -> str:
         return require_sha256(value, field_name="raw_payload_sha256")
+
+
+class RawCaptureRef(EvidenceModel):
+    source_instance: str = Field(min_length=1)
+    source_object_id: str = Field(min_length=1)
+    source_snapshot_id: str = Field(min_length=1)
+    raw_payload_sha256: str
+    captured_at: datetime
+
+    @field_validator("raw_payload_sha256")
+    @classmethod
+    def validate_hash(cls, value: str) -> str:
+        return require_sha256(value, field_name="raw_payload_sha256")
+
+    @field_validator("captured_at", mode="before")
+    @classmethod
+    def normalize_timestamp(cls, value):
+        return normalize_utc_datetime(value)
+
+
+class SnapshotRef(EvidenceModel):
+    domain: str = Field(min_length=1)
+    scope_id: str = Field(min_length=1)
+    snapshot_id: str = Field(min_length=1)
+    manifest_sha256: str
+
+    @field_validator("manifest_sha256")
+    @classmethod
+    def validate_manifest_hash(cls, value: str) -> str:
+        return require_sha256(value, field_name="manifest_sha256")
 
 
 class ExternalIdentifier(EvidenceModel):
@@ -81,6 +112,7 @@ class EvidenceObject(EvidenceModel):
     lifecycle_state: LifecycleState = LifecycleState.ACTIVE
     raw_payload_ref: str | None = None
     extension_type: str | None = None
+    extension: EvidenceExtension | None = None
     policy: EvidencePolicyMetadata = Field(default_factory=EvidencePolicyMetadata)
 
     @field_validator("uid", "revision_uid")
@@ -119,6 +151,7 @@ class EvidenceRelation(EvidenceModel):
     applicability: tuple[Qualifier, ...] = ()
     lifecycle_state: LifecycleState = LifecycleState.ACTIVE
     extension_type: str | None = None
+    extension: EvidenceExtension | None = None
     policy: EvidencePolicyMetadata = Field(default_factory=EvidencePolicyMetadata)
 
     @field_validator("uid", "revision_uid", "source_object_uid", "target_object_uid")
@@ -132,7 +165,7 @@ class EvidenceRelation(EvidenceModel):
         return normalize_utc_datetime(value)
 
     @model_validator(mode="after")
-    def validate_temporal_range(self) -> "EvidenceRelation":
+    def validate_relation(self) -> "EvidenceRelation":
         if self.valid_from and self.valid_until and self.valid_until < self.valid_from:
             raise ValueError("valid_until must not precede valid_from")
         if any(ref.domain != self.domain for ref in self.evidence_refs):
@@ -156,6 +189,7 @@ class EvidenceChunk(EvidenceModel):
     source_refs: tuple[SourceRef, ...] = ()
     policy: EvidencePolicyMetadata = Field(default_factory=EvidencePolicyMetadata)
     extension_type: str | None = None
+    extension: EvidenceExtension | None = None
 
     @field_validator("uid", "object_uid", "object_revision_uid", "content_hash")
     @classmethod
@@ -165,9 +199,14 @@ class EvidenceChunk(EvidenceModel):
 
 class EvidencePath(EvidenceModel):
     path_id: str
+    domain: str = Field(min_length=1)
+    scope_id: str = Field(min_length=1)
+    snapshot: SnapshotRef
     ordered_node_uids: tuple[str, ...]
+    ordered_node_revision_uids: tuple[str, ...]
     ordered_relation_revision_uids: tuple[str, ...]
     traversal_directions: tuple[Literal["forward", "reverse"], ...]
+    support_evidence_uids: tuple[str, ...] = ()
     source_refs: tuple[SourceRef, ...] = ()
     domains_traversed: tuple[str, ...]
 
@@ -176,7 +215,7 @@ class EvidencePath(EvidenceModel):
     def validate_path_id(cls, value: str) -> str:
         return require_sha256(value, field_name="path_id")
 
-    @field_validator("ordered_node_uids", "ordered_relation_revision_uids")
+    @field_validator("ordered_node_uids", "ordered_node_revision_uids", "ordered_relation_revision_uids", "support_evidence_uids")
     @classmethod
     def validate_uid_sequence(cls, values: tuple[str, ...], info) -> tuple[str, ...]:
         for value in values:
@@ -188,12 +227,17 @@ class EvidencePath(EvidenceModel):
         edge_count = len(self.ordered_relation_revision_uids)
         if len(self.ordered_node_uids) != edge_count + 1:
             raise ValueError("a path must contain exactly one more node than relations")
+        if len(self.ordered_node_revision_uids) != len(self.ordered_node_uids):
+            raise ValueError("each path node must record its pinned revision")
         if len(self.traversal_directions) != edge_count:
             raise ValueError("each relation revision needs one traversal direction")
+        if self.snapshot.domain != self.domain or self.snapshot.scope_id != self.scope_id:
+            raise ValueError("path snapshot must match path domain and scope")
         return self
 
 
 class ChannelScore(EvidenceModel):
+    channel: str = Field(min_length=1)
     rank: int = Field(ge=1)
     raw_score: float | None = None
     score_kind: str = Field(min_length=1)
@@ -212,31 +256,70 @@ class AuthorizedEvidenceView(EvidenceModel):
         return require_sha256(value, field_name="evidence_uid")
 
 
-class RetrievalCandidate(EvidenceModel):
+class CandidateBase(EvidenceModel):
     candidate_id: str
-    kind: Literal["chunk", "object", "path"]
     domain: str = Field(min_length=1)
-    object_uid: str | None = None
-    chunk_uid: str | None = None
-    path_id: str | None = None
+    scope_id: str = Field(min_length=1)
+    snapshot: SnapshotRef
+    target_object_uid: str | None = None
     authorized_view: AuthorizedEvidenceView
     provenance: tuple[SourceRef, ...] = ()
-    channel_scores: dict[str, ChannelScore] = Field(default_factory=dict)
+    channel_scores: tuple[ChannelScore, ...] = ()
     fused_score: float | None = None
     rerank_score: float | None = None
-    snapshot_id: str = Field(min_length=1)
-    scope_id: str = Field(min_length=1)
+
+    @field_validator("candidate_id", "target_object_uid")
+    @classmethod
+    def validate_candidate_hashes(cls, value: str | None, info):
+        if value is None:
+            return None
+        return require_sha256(value, field_name=info.field_name)
 
     @model_validator(mode="after")
-    def reference_matches_kind(self) -> "RetrievalCandidate":
-        refs = {
-            "object": self.object_uid,
-            "chunk": self.chunk_uid,
-            "path": self.path_id,
-        }
-        if refs[self.kind] is None:
-            raise ValueError(f"{self.kind} candidate requires its matching reference")
+    def validate_candidate_scope_and_channels(self):
+        if self.authorized_view.domain != self.domain or self.authorized_view.scope_id != self.scope_id:
+            raise ValueError("authorized_view must match candidate domain and scope")
+        if self.snapshot.domain != self.domain or self.snapshot.scope_id != self.scope_id:
+            raise ValueError("snapshot must match candidate domain and scope")
+        names = [score.channel for score in self.channel_scores]
+        if len(names) != len(set(names)):
+            raise ValueError("duplicate channel contributions are not allowed")
         return self
+
+
+class ObjectCandidate(CandidateBase):
+    kind: Literal["object"] = "object"
+    object_uid: str
+
+    @field_validator("object_uid")
+    @classmethod
+    def validate_object_uid(cls, value: str) -> str:
+        return require_sha256(value, field_name="object_uid")
+
+
+class ChunkCandidate(CandidateBase):
+    kind: Literal["chunk"] = "chunk"
+    chunk_uid: str
+    object_uid: str
+
+    @field_validator("chunk_uid", "object_uid")
+    @classmethod
+    def validate_chunk_ids(cls, value: str, info) -> str:
+        return require_sha256(value, field_name=info.field_name)
+
+
+class PathCandidate(CandidateBase):
+    kind: Literal["path"] = "path"
+    path_id: str
+
+    @field_validator("path_id")
+    @classmethod
+    def validate_path_ref(cls, value: str) -> str:
+        return require_sha256(value, field_name="path_id")
+
+
+Candidate = Annotated[ObjectCandidate | ChunkCandidate | PathCandidate, Field(discriminator="kind")]
+RetrievalCandidate = Candidate
 
 
 class RetrievalRequest(EvidenceModel):
@@ -257,6 +340,13 @@ class CitationRecord(EvidenceModel):
     object_revision_uid: str | None = None
     relation_revision_uid: str | None = None
 
+    @field_validator("evidence_uid", "object_revision_uid", "relation_revision_uid")
+    @classmethod
+    def validate_citation_hashes(cls, value: str | None, info):
+        if value is None:
+            return None
+        return require_sha256(value, field_name=info.field_name)
+
     @model_validator(mode="after")
     def valid_offsets(self) -> "CitationRecord":
         if self.emitted_end < self.emitted_start:
@@ -267,9 +357,9 @@ class CitationRecord(EvidenceModel):
 class RetrievalResult(EvidenceModel):
     retrieval_run_id: str = Field(min_length=1)
     domain: str = Field(min_length=1)
-    snapshot_id: str = Field(min_length=1)
+    snapshot: SnapshotRef
     status: Literal["ok", "no_evidence", "partial"]
-    candidates: tuple[RetrievalCandidate, ...] = ()
+    candidates: tuple[Candidate, ...] = ()
     answer_context: str = ""
     citations: tuple[CitationRecord, ...] = ()
     authorized_trace: tuple[str, ...] = ()
@@ -279,20 +369,9 @@ class RetrievalResult(EvidenceModel):
 
 
 __all__ = [
-    "AuthorizedEvidenceView",
-    "ChannelScore",
-    "CitationRecord",
-    "EvidenceChunk",
-    "EvidenceModel",
-    "EvidenceObject",
-    "EvidencePath",
-    "EvidencePolicyMetadata",
-    "EvidenceRelation",
-    "ExternalIdentifier",
-    "LifecycleState",
-    "Qualifier",
-    "RetrievalCandidate",
-    "RetrievalRequest",
-    "RetrievalResult",
-    "SourceRef",
+    "AuthorizedEvidenceView", "Candidate", "CandidateBase", "ChannelScore", "ChunkCandidate",
+    "CitationRecord", "EvidenceChunk", "EvidenceExtension", "EvidenceModel", "EvidenceObject",
+    "EvidencePath", "EvidencePolicyMetadata", "EvidenceRelation", "ExternalIdentifier", "LifecycleState",
+    "ObjectCandidate", "PathCandidate", "Qualifier", "RawCaptureRef", "RetrievalCandidate",
+    "RetrievalRequest", "RetrievalResult", "SnapshotRef", "SourceRef",
 ]

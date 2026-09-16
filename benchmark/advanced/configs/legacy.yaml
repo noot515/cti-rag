@@ -1,0 +1,17 @@
+schema_version: l0-run-config-v1
+transport: http
+server_url: http://localhost:8000
+test_user_id: 1
+db_id: fixture-cti
+corpus_manifest: benchmark/advanced/manifests/legacy-corpus.json
+query_manifest: benchmark/advanced/manifests/legacy-queries.jsonl
+canonical_object_mapping: null
+request_timeout_seconds: 45.0
+top_k: 10
+threshold: 0.7
+use_graph: false
+use_web: false
+rewrite_mode: legacy-configured
+legacy_reranking: legacy-pipeline-may-rerank-before-or-after-retrieval
+requested_model_provider: null
+requested_model_name: null

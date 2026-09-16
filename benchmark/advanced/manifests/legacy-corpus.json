@@ -1,0 +1,18 @@
+{
+  "schema_version": "corpus-manifest-v1",
+  "corpus_id": "fixture-cti",
+  "files": [
+    {
+      "role": "corpus",
+      "path": "tests/fixtures/cti/public_fixture.json",
+      "sha256": "2624d733aa15ac32296c940b8e850bf47d35382e23b12fc8c48aabad76db7c68",
+      "schema_version": "cti-fixture-v1",
+      "lineage": {
+        "source_name": "repository synthetic CTI public fixture",
+        "source_revision": "fixture-cti-snapshot-v1",
+        "license_or_terms": "synthetic test fixture; repository test use only",
+        "public_or_sanitized": true
+      }
+    }
+  ]
+}

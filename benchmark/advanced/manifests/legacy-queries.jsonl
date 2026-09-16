@@ -1,0 +1,1 @@
+{"schema_version":"query-record-v1","query_id":"fixture-cve-mapping","query":"What weakness is mapped from CVE-2026-999999?","options":{"purpose":"mechanics-only","expected_domain":"cti"}}
