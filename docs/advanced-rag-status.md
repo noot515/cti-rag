@@ -1,73 +1,60 @@
 # Advanced RAG V3 implementation status
 
-Updated: 2026-09-17. Prompt 08 documented head / Prompt 09 predecessor: `397f3ba49b94bc93a462b7e09c2f7d51f76bd4c5` on `feat/advanced-08-embedding-provider-contract`. Current stacked branch: `feat/advanced-09-milvus-projection`. Legacy embedding/retrieval/Milvus code, collections, volumes, API/session behavior and the default legacy compose stack remain untouched.
+Updated: 2026-09-17. Prompt 09 documented head / Prompt 10 predecessor: `b76830493d41bb0b6931187ffbd8a406299aedb3`. Current stacked branch: `feat/advanced-10-neo4j-evidence-projection`. Legacy graph/retrieval/Milvus/API/session behavior remains available and unchanged.
 
-## Prompt 08 - fingerprint-bound embedding provider contract
+## Prompt 10 - revision-preserving graph projection and bounded traversal
 
-Prompt 08 added import-inert provider contracts, complete fingerprint identity, strict ID/vector validation, deterministic fixture embeddings, a generation-scoped local dense fixture projection/channel, and trusted destination checks before embedding work. The existing advanced provider configuration was extended rather than replaced, and the predecessor fixture revision label `v1` was preserved. The fixture publication path now publishes exact, lexical and deterministic dense projections together without network access or model downloads.
+Implemented beside the legacy graph stack:
 
-Focused Prompt 08 sandbox validation:
+- immutable object-revision and assertion-revision graph identities; physical keys hash domain + scope + immutable revision/generation identity, while logical object/relation UIDs remain explicit properties;
+- source -> assertion -> target representation, preserving original/normalized relation, assertion kind, direction, qualifiers, source field and supporting evidence references;
+- `reconstruct_catalog_graph()` verifies every projected object/relation revision against one pinned Prompt 06 generation and rejects mixed-generation/dangling endpoints;
+- `CatalogGraphProjectionWriter` provides the offline fixture/correctness graph projection and emits Prompt 06 receipts without a Neo4j connection;
+- injected `Neo4jGraphProjectionWriter` uses fixed labels and fixed parameterized Cypher templates only, performs non-destructive MERGE/upsert, exposes no delete/recreate path, and verifies generation visibility before producing a usable receipt;
+- one shared `GraphSearchEngine` serves catalog-backed and Neo4j-backed neighbor readers. It enforces maximum 8 seeds, 30 logical neighbors per expansion, 40 paths, 1000 visited nodes and at most 3 hops; traversal ordering is deterministic before caps;
+- reverse traversal, node revisions, assertion revisions and support evidence survive in `EvidencePath`; a stored assertion remains one logical hop although Neo4j represents it with two fixed edges;
+- every target node, assertion and raw supporting evidence view is authorized before path extension; any denial removes the whole extension;
+- missing authorized seeds are legitimate no-results, unknown pattern IDs are rejected, timeout/cancellation are explicit, and Neo4j read failures become backend-unavailable errors rather than empty results;
+- fixture ingestion now publishes exact + lexical + deterministic dense + catalog graph projections in one Prompt 06 publication flow. Restart validation reloads the generation/receipt from the catalog and reconstructs graph adjacency from pinned membership;
+- isolated `advanced-neo4j` service uses Neo4j 5.15 Community, dedicated loopback ports, network, volumes and mandatory advanced credentials. Labels/multi-database support are not considered a security boundary;
+- `tests/integration/test_advanced_neo4j.py` separately checks server version, advanced connectivity, optional rejection of legacy credentials on the advanced endpoint, and optional legacy-endpoint invisibility of an advanced probe.
 
-```text
-PYTHONPATH=. python -m pytest tests/unit/retrieval/test_embedding_provider.py tests/unit/retrieval/test_fixture_dense.py -q
-12 passed
-```
+### Prompt 10 focused validation
 
-## Prompt 09 - non-destructive isolated Milvus projection
-
-Implemented beside the legacy Milvus path:
-
-- injected `MilvusClient` protocol and validated trusted `MilvusEndpointConfig`; importing advanced Milvus modules does not import `pymilvus` or connect to a service;
-- generation-specific advanced collection names derived from an explicit `adv_`-style prefix, scope identity and generation identity; legacy namespaces are rejected and no legacy host/port is inferred as a fallback;
-- schema uses manual `chunk_uid VARCHAR(64)` primary key plus domain, scope, object UID, object revision UID, generation ID, manifest hash, embedding fingerprint and finite embedding vector; full evidence remains authoritative in the SQLite evidence catalog;
-- UTF-8 byte-length validation occurs before collection creation or write side effects;
-- provider fingerprint/dimension/metric are bound to the Prompt 08 embedding provider and Prompt 06 generation receipt; same-dimension wrong providers require reindexing;
-- collection creation is non-destructive. Repeated generation ingestion upserts into the same matching generation collection. An existing incompatible collection fails closed; the advanced adapter exposes no drop/recreate method;
-- build performs evidence authorization before provider encoding, validates exact embedding output mapping, upserts the generation, flushes and loads, then performs a filtered visibility sentinel read before a projection receipt can verify;
-- retrieval prefilters domain, scope, generation and embedding fingerprint, records candidate over-fetch/truncation, and then rechecks every backend hit against authoritative catalog membership plus object revision before returning an untrusted `BackendHit`;
-- candidate construction rechecks pinned snapshot identity and caller policy; backend outage becomes an explicit unavailable channel result rather than a fallback to another Milvus host;
-- no BM25 or reranking is implemented inside the Milvus adapter;
-- optional `Pymilvus23Adapter` imports/connects only when explicitly requested, checks the pinned client version, takes only the trusted advanced endpoint/token environment, uses strong-consistency reads, and intentionally exposes no destructive collection API;
-- `benchmark/advanced/configs/services.yaml` is a synthetic/public compatibility profile using `127.0.0.1:19531`, distinct from the legacy default port;
-- `deploy/advanced-services.compose.yml` declares a separate `cti-rag-advanced` project with Milvus 2.3.4, etcd 3.5.5 and MinIO, unique internal network/volumes, no host ports for dependencies, and loopback-only Milvus ports. MinIO credentials are mandatory environment placeholders and have no committed defaults;
-- `requirements-advanced-services.txt` pins `pymilvus==2.3.7` for the Milvus 2.3.x compatibility family;
-- real restricted-evidence ingestion is deliberately blocked from promotion because the default compatibility Compose profile does not yet establish authenticated Milvus users/credentials. The current service profile is for synthetic/public compatibility validation only.
-
-## Prompt 08/09 validation state
-
-Available implementation sandbox: Python 3.13.5. Repository target: Python 3.11.
-
-Focused provider + local dense + fake-Milvus correctness chain:
+Available implementation sandbox: Python 3.13.5 and a partial compatibility workspace. Repository target remains Python 3.11.
 
 ```text
 PYTHONPATH=. python -m pytest \
-  tests/unit/retrieval/test_embedding_provider.py \
-  tests/unit/retrieval/test_fixture_dense.py \
-  tests/unit/indexing/test_milvus_adapter.py -q
-24 passed
+  tests/unit/indexing/test_graph_projection.py \
+  tests/unit/retrieval/test_graph_paths.py -q
+15 passed
 ```
 
-Prompt 09 fake-client unit portion: `12 passed`. The tests cover schema/manual PK behavior, upsert/replay, two scopes, scope/generation filters, stale-revision rejection, over-fetch, UTF-8 overflow, wrong fingerprint, visibility lag, schema collision, query outage, fresh-process import safety, endpoint isolation and server-version mismatch.
+The broader Prompt 10 + Prompt 11 local mechanics run later in the same implementation session passed `33` tests. This is not a substitute for the exact Python 3.11 full-checkout exit chain.
 
-Real integration command in the implementation sandbox:
+Real Neo4j commands remain `not_run` in the implementation sandbox because Docker/service credentials are unavailable:
 
 ```text
-PYTHONPATH=. python -m pytest tests/integration/test_advanced_milvus.py -q -m integration
-2 skipped
+docker compose -f deploy/advanced-services.compose.yml up -d advanced-neo4j
+python -m pytest tests/integration/test_advanced_neo4j.py -m integration -q
 ```
 
-The skips are expected because `ADVANCED_MILVUS_INTEGRATION_URI` and `LEGACY_MILVUS_INTEGRATION_URI` are not configured. Docker is also unavailable in the implementation sandbox, so these commands remain `not_run` here:
+The pre-existing Prompt 06/07 fixture E2E assertion was stale after later phases added required dense publication. Prompt 10 reconciles that predecessor validation surface to the current exact/lexical/dense/graph fixture generation instead of falsely inheriting its old expectation.
 
-```text
-docker compose -f deploy/advanced-services.compose.yml config --quiet
-docker compose -f deploy/advanced-services.compose.yml up -d advanced-milvus
-python -m pytest tests/integration/test_advanced_milvus.py -m integration -q
-```
+## Earlier unresolved correctness/service gates
 
-`python -m compileall -q packages benchmark tests scripts` passed locally, and the new YAML files parse successfully. The exact Prompt 08/09 branch has not been rerun under Python 3.11 or through full-repository collection in this partial sandbox. Those gates remain `not_run`; the earlier Prompt 06/07 Python 3.11 gate also remains independently unresolved.
+The following remain to be executed from a complete Python 3.11 checkout and are intentionally not inferred from sandbox results:
 
-`scripts/validate_advanced_08_09.py` is the fail-fast chained entry point for a clean full Python 3.11 checkout. It verifies the Prompt 08 predecessor, runs the 24 focused unit tests, compile validation and `git diff --check`, then runs Compose validation when Docker exists. Real service startup/integration occurs only when explicitly enabled and configured.
+- exact Prompt 04/05 Python 3.11 focused gates;
+- `scripts/validate_advanced_06_07.py` on the current stack;
+- `scripts/validate_advanced_08_09.py` on the current stack;
+- full repository pytest collection on the current stack;
+- real Milvus compatibility/legacy isolation;
+- real Neo4j compatibility/legacy isolation;
+- any retrieval-quality promotion gate.
 
-## Release blockers / next-phase readiness
+Prompt 11 adds a single fail-fast chained validator that includes these previously unresolved correctness gates where the prerequisites are locally available.
 
-Prompt 09 fake-client mechanics are implemented, but service promotion is blocked until all of the following are observed on the exact stack: Python 3.11 repository validation, `docker compose ... config --quiet`, successful isolated Milvus 2.3.4 startup with PyMilvus 2.3.7, real advanced roundtrip integration, proof that the configured legacy endpoint cannot see the advanced collection, and an authenticated advanced-service configuration before any restricted evidence is allowed. No retrieval-quality claim is made from deterministic fixture embeddings or fake-client tests.
+## Next-phase readiness
+
+Prompt 10 offline correctness mechanics are implemented. Prompt 11 may proceed from the documented Prompt 10 handoff because its deterministic planner depends on the reviewed graph patterns and bounded graph interface, not on a live Neo4j service. Real service deployment/promotion remains independently blocked until its integration gates pass.
