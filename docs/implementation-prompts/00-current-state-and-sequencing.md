@@ -1,21 +1,23 @@
 # Current state and sequencing handoff
 
-Prompt 16 begins from Prompt 15 documented head `66075304be97c6234d7863cf186d97f51ce16776` on `feat/advanced-15-trusted-principal-and-corpus-access` and is stacked on `feat/advanced-16-authenticated-advanced-api`.
+Prompt 17 begins from Prompt 16 documented head `1b0e03fc3a54367cb0930318db6477a2667b8e02` on `feat/advanced-16-authenticated-advanced-api` and is stacked on `feat/advanced-17-native-evaluation-and-ablations`.
 
 Reconciliation notes:
 
-1. Prompt 15 remains the identity/grant authority. Prompt 16 does not accept body principals, legacy `User.user_id`, or legacy knowledge-database ownership.
-2. The direct FastAPI application route is `/chat/advanced-retrieval`; any external `/api` prefix is owned by a reverse proxy/gateway and is not silently assumed by application routing.
-3. `rag.api.routers.__init__` no longer imports chat/data/graph/token routers at package-import time. Legacy callers retain `from rag.api.routers import router` through lazy `__getattr__` assembly.
-4. The module-level legacy `fastapi_server` still mounts only legacy routes. `create_fastapi_server(advanced_router=...)` is the narrow opt-in extension point; `config.yaml` records advanced disabled by default.
-5. `create_advanced_router()` returns an empty router when the validated advanced config is disabled. Enabled construction may use the existing JWT-backed authenticated-user dependency, but fixture applications inject identity and therefore avoid importing the legacy MySQL-backed auth stack.
-6. Request shape is strict/extra-forbid: query, db_id, top_k, max_graph_hops, response_mode and omitted/false web_search only. UTF-8 query bytes, top_k and hop count are bounded.
-7. Authentication and `CorpusAccessStore.resolve_scope()` occur before `runtime_provider()` is called. A denied tenant/corpus therefore makes zero advanced backend/provider calls.
-8. `response_mode=full` is not itself authority. The server-owned `evidence:debug` capability is independently required, and debug candidates pass a final candidate-authorizer callback.
-9. The runtime finalizer is called immediately before API serialization. This is in addition to Prompt 14's post-pack evidence re-resolution and closes the route-level withdrawal/grant-change boundary.
-10. Successful empty evidence maps to HTTP 200 `no_evidence`; all-channel unavailability maps to 503; malformed input remains 422; unknown/unauthorized corpus stays indistinguishable 403; no failure delegates to legacy retrieval.
-11. Responses expose context/citations/status/telemetry/model fingerprints, not a generated answer. Scores/paths remain retrieval evidence rather than truth probabilities.
-12. `create_fixture_app()` is service-inert on import and accepts injected local exact/lexical/dense/catalog-graph runtime pieces. Fixture configuration forbids outbound networking/downloads/web search/service Milvus.
-13. Fresh-process tests assert importing `rag.api.advanced_app` does not import legacy chat/data/graph/token routers or the legacy DB manager.
-14. Exact Prompt 16 ASGI/import-safety execution is still a Python 3.11 target-environment gate because this sandbox lacks the pinned advanced API environment. No unrun gate is marked passed.
-15. Prompt 17 may evaluate native retrieval/API outputs from this boundary. It must not ablate authorization, tune held-out labels, or convert fixture-only mechanics into a quality-promotion claim.
+1. Prompt 16 remains the authenticated native HTTP boundary. Prompt 17 evaluates native advanced retrieval mechanics beside the legacy benchmark and does not change route defaults or legacy algorithms.
+2. Retrieval execution is label-blind: fixture query records are checked for answer/qrel fields; exact/lexical/dense/graph predictions are frozen before object qrels or path annotations are opened.
+3. Exact/lexical/dense/graph fixture results still pass the public-fixture authorization policy. There is no authorization ablation in the evaluation matrix.
+4. Target-object ranking is deduplicated before Hit/Recall/MRR/nDCG. Complete-path scoring requires an entire acceptable ordered-object alternative; a prefix/broken path is not partial credit.
+5. Evidence-document metrics require their own labels. Existing fixture object qrels are not silently reused as document labels.
+6. Citation validity and independently judged claim support are different metrics. Citation validity never creates a support score when a judge annotation is missing.
+7. Unanswerable false-evidence and abstention rates are separate contracts. The current offline answer runner reports them `not_run` because no answer generator is configured.
+8. The grouped split uses both object/report cluster and near-duplicate query family, including transitive unions, before producing deterministic seed/grouping/split hashes. No held-out labels are used to form groups.
+9. R1-R6 and C1 are preregistered with fixed top-k, pre-rerank and context budgets. R1=dense, R2=lexical, R3=dense+lexical, R4=+exact, R5=+graph, R6=+single final reranker; C1 compares basic/structured formatting under equal budgets.
+10. The fixture config has deterministic local embedding but no final reranker/generator/judge. R6, C1 answer/context quality and answer/judge metrics therefore remain null `not_run`; no fallback ranking is mislabeled as reranker quality.
+11. L0 object retrieval remains `not_comparable` without a canonical legacy object mapping. The legacy comparator itself is not modified to improve scores.
+12. The one-command retrieval report writes config/environment/corpus/split snapshots, per-query records, retrieval/answer/latency metrics, ablation CSV and Markdown. Failed queries/timeouts remain in per-query output; latency states sample count/concurrency/cache state and no throughput claim.
+13. Paired cluster bootstrap is fixed at 2,000 resamples by default. A lower 95% bound >= -0.01 is the noninferiority criterion; graph mapping gain requires lower bound > 0. Missing/small independent clusters are `inconclusive`.
+14. Catalog mapping on the synthetic fixture is not a held-out-edge generalization experiment. Held-out-edge and real-quality promotion gates remain separately `not_run` until adequate grouped held-out data exists.
+15. Optional future generator/judge egress requires explicit permission plus exact model identifiers. This phase ships no default model/judge adapter, so the required offline answer command remains network-free and reports unavailable metrics honestly.
+16. `scripts/validate_advanced_04_17.py` is the strict target handoff: predecessor P04-15 chain -> P16 API/import safety -> P17 metrics/report tests -> both fixture report commands -> compile/diff/full collection/status/HEAD.
+17. The implementation sandbox still has Python 3.13.5, no Python 3.11, no Docker and no direct GitHub/package DNS. Exact target tests/report commands remain `not_run` here rather than inferred from implementation.
