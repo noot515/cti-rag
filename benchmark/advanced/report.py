@@ -1,4 +1,4 @@
-"""Structured, honest reporting contracts for L0 baseline runs."""
+"""Structured, honest reporting contracts for advanced evaluation runs."""
 from __future__ import annotations
 
 from datetime import datetime, timezone
@@ -24,6 +24,7 @@ class MetricResult(ReportModel):
     status: MetricStatus
     reason: str | None = None
     support_count: int = Field(ge=0)
+    annotation_coverage: float | None = Field(default=None, ge=0.0, le=1.0)
     value: float | None = None
 
     @model_validator(mode="after")
