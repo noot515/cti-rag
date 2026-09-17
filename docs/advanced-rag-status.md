@@ -1,65 +1,49 @@
 # Advanced RAG V3 implementation status
 
-Updated: 2026-09-17. Prompt 10 documented head / Prompt 11 predecessor: `1667ddb1d155412a46fa86c3c17acef30d76da54`. Current stacked branch: `feat/advanced-11-deterministic-query-planner`. Legacy retriever/entity extraction/RL candidate cache/API behavior remains unchanged.
+Updated: 2026-09-17. Prompt 11 documented head / Prompt 12 predecessor: `86593709fff8bab1b7b0153b1bad32f86ed3b651`. Current stacked branch: `feat/advanced-12-fusion-and-orchestration`. The legacy `packages/core/retriever.py`, legacy model router, legacy reranker, API/session/MQ behavior and legacy collections remain unchanged.
 
-## Prompt 10 - revision-preserving graph projection
+## Prompt 12 - independent channels, deterministic fusion and bounded degradation
 
-Prompt 10 adds immutable catalog/Neo4j graph projection, fixed source -> assertion -> target representation, bounded backend-independent traversal, full path revision/support provenance, fail-closed component authorization, offline catalog graph publication, and an isolated Neo4j 5.15 Community service/test profile. The focused local mechanics gate passed `15` tests. Live Neo4j compatibility/isolation remains separately `not_run` in the implementation sandbox.
+Prompt 12 adds the advanced request-level orchestration boundary beside the legacy retriever:
 
-## Prompt 11 - deterministic query planner and explicit target semantics
+- `packages/retrieval/fusion.py` implements equal-weight reciprocal-rank fusion with rank starting at 1 and `k=60`;
+- candidate fusion identity is evidence kind plus immutable revision/reference identity, so object/chunk/path evidence is never coerced into one identity;
+- a candidate contributes at most once per channel. Duplicate candidates/ranks and invalid/non-finite score state fail before ranking;
+- absent channels contribute zero; stable ties use fused `candidate_id`;
+- pure identifier lookup keeps candidates carrying an exact contribution in a reserved priority tier. Mapping queries do not receive that answer-priority tier merely because the source seed came from exact lookup;
+- target-object ordering remains the Prompt 11 first-occurrence projection and is not synthesized by summing multiple chunks or paths;
+- `AdvancedRetrievalOrchestrator` resolves trusted scope once and pins one active snapshot for the complete request;
+- exact, lexical and dense channels are submitted concurrently under one hard-bounded executor; graph is submitted only after authorized deterministic exact seeds are available;
+- each backend receives the smaller of the remaining request deadline and the nominal per-channel deadline. Default total/channel budgets are 10s/3s;
+- bounded running+queued work prevents timed-out requests from accumulating an unbounded executor queue. Queue saturation is an explicit channel error;
+- expected backend outage/timeout can degrade to a partial result while unexpected catalog/policy exceptions remain fatal and never fall back to the legacy retriever;
+- successful empty channels are distinct from failed/unavailable channels. All-successful-empty produces `no_evidence`; no usable configured channel raises `RetrievalUnavailable`;
+- request trace records only channel/status/count/truncation and deliberately omits denied IDs, evidence text and raw backend/provider errors;
+- `retrieve_candidates()` retains up to 60 fused candidates as the pre-rerank boundary. Public `retrieve()` applies request `top_k`, leaving Prompt 13 a single well-defined final rerank insertion point.
 
-Implemented without model inference, RL state, qrels, provider discovery, or query-derived authorization:
+No LLM, web search, hidden reranker, provider discovery or legacy fallback is introduced by Prompt 12.
 
-- `QueryPlan` records original/normalized query, deterministic language, task, exact keys, trusted authorized seed IDs, bounded alias candidates, requested target object types, reviewed graph pattern IDs, independent channel switches and validated request bounds;
-- CTI identifiers are parsed before task planning. A pure identifier lookup reserves exact-hit priority by disabling lexical/dense/graph channels; a mapping request keeps the source identifier as evidence/seed rather than answer identity;
-- missing graph seeds disable only graph traversal; lexical and dense channels remain independently enabled;
-- ambiguous aliases remain bounded candidate IDs and never become exact identifiers;
-- CTI task/target hints live in `CtiDomainAdapter`; report/synthesis/mapping conflicts resolve deterministically and query text cannot set principal, corpus, scope, raw filters, tool authority or Cypher;
-- normal mapping selects `cti-catalog-mapping-2hop-v1`; only explicit `3-hop`/`three-hop`/`三跳` requests can select `cti-catalog-mapping-3hop-v1`, and the effective limit still respects the caller's lower hop cap;
-- generic `TargetObjectRef` / `TargetProjection` keep evidence identity distinct from answer-object identity: object evidence targets the object, chunks target their parent object, and mapping paths require an explicit terminal object;
-- mapping source seeds can remain cited evidence while being excluded from requested target ranking; requested target-type filtering is explicit;
-- final target deduplication preserves first object occurrence and never invents object equivalence.
+### Prompt 12 focused validation
 
-### Prompt 11 focused validation
-
-Available sandbox: Python 3.13.5 compatibility workspace; repository target: Python 3.11.
-
-```text
-PYTHONPATH=. python -m pytest \
-  tests/unit/retrieval/test_planner.py \
-  tests/unit/retrieval/test_target_projection.py -q
-18 passed
-```
-
-Combined Prompt 10/11 mechanics:
+Available implementation sandbox: Python 3.13.5 compatibility workspace; repository target: Python 3.11.
 
 ```text
 PYTHONPATH=. python -m pytest \
-  tests/unit/indexing/test_graph_projection.py \
-  tests/unit/retrieval/test_graph_paths.py \
-  tests/unit/retrieval/test_planner.py \
-  tests/unit/retrieval/test_target_projection.py -q
-33 passed
+  tests/unit/retrieval/test_fusion.py \
+  tests/unit/retrieval/test_orchestrator.py \
+  tests/e2e/test_advanced_retrieval.py -q
+12 passed
 ```
 
-The modified P10/P11 modules also passed local `py_compile` in the compatibility workspace.
+The new Prompt 12 modules also passed local `py_compile`.
+
+The focused tests cover hand-computed RRF, per-channel duplicate rejection, absent-channel zero contribution, stable ties, exact lookup priority versus mapping semantics, deterministic repeat queries, timeout with a successful sibling, successful-empty versus unavailable, exact-seeded graph scheduling, bounded queue saturation, fatal unexpected policy/catalog exceptions, and five mechanics-only channel configurations without model or web access.
 
 ## Chained unresolved validation
 
-`scripts/validate_advanced_04_11.py` is the new fail-fast Python 3.11 entry point. It deliberately chains the earlier correctness gates that had not yet been run on the exact later stack:
+`scripts/validate_advanced_04_11.py` remains the latest strict Python 3.11 predecessor chain. Prompt 13 will extend that chain through Prompts 12/13 so the earlier unresolved Python 3.11 gates are run before the new stages.
 
-1. Prompt 04/05 CTI + durable-store tests;
-2. existing Prompt 06/07 chained validator, including the reconciled current fixture ingestion E2E;
-3. existing Prompt 08/09 chained validator;
-4. Prompt 10/11 graph/planner tests;
-5. `compileall` and `git diff --check`;
-6. full repository pytest collection;
-7. Compose parse when Docker exists;
-8. optional real Neo4j integration when explicitly enabled and credentials are supplied.
-
-The P08/09 validator was reconciled to provide validation-only Neo4j placeholder credentials during Compose parsing, because Prompt 10 correctly made those service variables mandatory.
-
-The exact chain remains `not_run` in the implementation sandbox for a concrete prerequisite reason:
+The exact predecessor chain remains `not_run` in this implementation sandbox for concrete prerequisites:
 
 ```text
 Python 3.13.5
@@ -67,16 +51,17 @@ python3.11 unavailable
 docker unavailable
 ```
 
-The container also cannot clone the GitHub repository over the network, so a complete alternate Python 3.11 checkout could not be created here. No earlier partial-workspace result is relabeled as that exit gate.
+The container also cannot resolve GitHub for a direct clone, so a separate complete Python 3.11 checkout cannot be constructed here. Local compatibility results are not relabeled as the required Python 3.11 exit gate.
 
 ## Still-unresolved operational/quality gates
 
-- exact `python scripts/validate_advanced_04_11.py` on a complete Python 3.11 checkout;
+- exact chained Prompt 04+ validation on a complete Python 3.11 checkout;
+- full repository collection on the exact later stack;
 - real Milvus 2.3.4 / PyMilvus 2.3.7 roundtrip and legacy endpoint isolation;
-- real Neo4j 5.15 / neo4j-driver 5.15 roundtrip, advanced credential check and legacy endpoint isolation;
-- authenticated restricted-evidence Milvus configuration;
+- real Neo4j 5.15 / neo4j-driver 5.15 roundtrip, credential checks and legacy endpoint isolation;
+- authenticated restricted-evidence service configuration;
 - retrieval-quality/promotion thresholds.
 
 ## Handoff
 
-Prompt 11 offline mechanics are implemented and stacked on the documented Prompt 10 handoff. A later correctness-dependent phase should first run `python scripts/validate_advanced_04_11.py` in the intended Python 3.11 environment. Live-service/deployment promotion remains separately blocked by the service gates above.
+Prompt 12 offline correctness mechanics are implemented on top of Prompt 11. Prompt 13 may use `retrieve_candidates()` as the only pre-rerank boundary and must preserve the exact-lookup priority tier, Prompt 11 target semantics, policy authorization and pinned snapshot contract.
