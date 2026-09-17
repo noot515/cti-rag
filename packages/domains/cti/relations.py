@@ -1,8 +1,7 @@
 """Reviewed CTI relation/assertion patterns; never user-generated traversal."""
-
 from __future__ import annotations
 
-from packages.domains.base import GraphPattern
+from packages.evidence.domain import GraphPattern
 
 _GENERAL_PATTERNS = (
     GraphPattern(
@@ -12,6 +11,15 @@ _GENERAL_PATTERNS = (
     ),
 )
 _MAPPING_PATTERNS = (
+    GraphPattern(
+        pattern_id="cti-catalog-mapping-2hop-v1",
+        relation_sequence=("maps_to",),
+        max_hops=2,
+        source_types=("vulnerability", "weakness", "attack-pattern"),
+        target_types=("weakness", "attack-pattern", "technique"),
+    ),
+)
+_THREE_HOP_MAPPING_PATTERNS = (
     GraphPattern(
         pattern_id="cti-catalog-mapping-3hop-v1",
         relation_sequence=("maps_to",),
@@ -48,6 +56,9 @@ def normalize_assertion_kind(value: str) -> str:
 
 
 def allowed_graph_patterns(task_hint: str | None) -> list[GraphPattern]:
-    if task_hint and task_hint.strip().lower() in {"mapping", "catalog_mapping", "three_hop_mapping"}:
+    hint = task_hint.strip().lower() if task_hint else "general"
+    if hint in {"three_hop_mapping", "mapping_3hop"}:
+        return list(_THREE_HOP_MAPPING_PATTERNS)
+    if hint in {"mapping", "catalog_mapping"}:
         return list(_MAPPING_PATTERNS)
     return list(_GENERAL_PATTERNS)
