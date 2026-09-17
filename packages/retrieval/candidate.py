@@ -1,4 +1,4 @@
-"""Generic retrieval candidate and channel contracts."""
+"""Generic retrieval candidate, target-projection and channel contracts."""
 from __future__ import annotations
 
 from typing import Any, Literal, Protocol
@@ -60,6 +60,33 @@ class Channel(Protocol):
     ) -> ChannelResult: ...
 
 
+class TargetObjectRef(EvidenceModel):
+    """Explicit answer-object identity derived from evidence, never an evidence alias."""
+    object_uid: str
+    object_revision_uid: str | None = None
+    object_type: str | None = None
+
+    @field_validator("object_uid", "object_revision_uid")
+    @classmethod
+    def validate_target_ids(cls, value: str | None, info):
+        if value is None:
+            return None
+        return require_sha256(value, field_name=info.field_name)
+
+
+class TargetProjection(EvidenceModel):
+    """Associates one evidence candidate with zero or more explicit answer objects."""
+    candidate_id: str
+    evidence_kind: Literal["object", "chunk", "path"]
+    targets: tuple[TargetObjectRef, ...]
+    projection_kind: Literal["direct_object", "chunk_parent", "path_terminal"]
+
+    @field_validator("candidate_id")
+    @classmethod
+    def validate_candidate_id(cls, value: str) -> str:
+        return require_sha256(value, field_name="candidate_id")
+
+
 __all__ = [
     "BackendHit",
     "Candidate",
@@ -68,4 +95,6 @@ __all__ = [
     "ChunkCandidate",
     "ObjectCandidate",
     "PathCandidate",
+    "TargetObjectRef",
+    "TargetProjection",
 ]
