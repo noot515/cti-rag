@@ -3,15 +3,13 @@
 This directory tracks implementation-state handoffs, not the full external prompt pack.
 
 - Prompt 01: predecessor accepted on stacked branch `feat/advanced-01-offline-foundation` at `312e11837bde5b525d277bf7387c57ce30487bb3`.
-- Prompt 02: implemented on `feat/advanced-03-generic-evidence-contracts`; baseline/evaluation-boundary correctness gate passed and was later validated on Windows/Python 3.11.
-- Prompt 03: implemented on the same stacked branch; generic identity/provenance/policy/channel correctness gate passed and was later validated on Windows/Python 3.11.
-- Prompt 04: implemented/documented on `feat/advanced-04-cti-domain-adapter`; focused sandbox gate passed (`28 passed`). Exact later Python 3.11 chain remains tracked separately.
-- Prompt 05: implemented on `feat/advanced-05-durable-evidence-catalog`; focused sandbox gate passed (`12 passed`) and combined Prompt 04/05 sandbox gate passed (`40 passed`). Exact later Python 3.11 chain remains tracked separately.
-- Prompt 06: implemented on `feat/advanced-06-snapshot-publication` at `fb9a816ac083741fcce245c4e0b02fbd001e7c6e`; focused publication/recovery sandbox gate passed (`14 passed`).
-- Prompt 07: implemented/documented on `feat/advanced-07-chunk-exact-lexical` at `ecc28482f57e93fa6d90cbf99f90146c762cd9fb`; exact full-checkout Python 3.11 chain remains separately unresolved.
-- Prompt 08: implemented/documented on `feat/advanced-08-embedding-provider-contract` at `397f3ba49b94bc93a462b7e09c2f7d51f76bd4c5`; focused sandbox gate passed (`12 passed`).
-- Prompt 09: implemented/documented on `feat/advanced-09-milvus-projection` at `b76830493d41bb0b6931187ffbd8a406299aedb3`; combined Prompt 08/09 fake/offline gate passed (`24 passed`); real Milvus service/isolation and exact Python 3.11 chain remain separate.
-- Prompt 10: implemented on `feat/advanced-10-neo4j-evidence-projection` from Prompt 09 head `b76830493d41bb0b6931187ffbd8a406299aedb3`; revision-preserving catalog/Neo4j graph projection, bounded shared traversal, fixture graph publication, isolated Neo4j service profile and real-service integration tests are present. Focused local mechanics gate passed (`15 passed`); real Neo4j service/isolation and exact Python 3.11 chain remain `not_run` in the implementation sandbox.
-- Prompt 11+: not implemented on this branch.
+- Prompt 02/03: implemented and later validated on Windows/Python 3.11, including full repository collection at that stack.
+- Prompt 04/05: implemented; focused sandbox gates passed, but their exact later Python 3.11 chain remains tracked separately.
+- Prompt 06: implemented on `feat/advanced-06-snapshot-publication`; focused publication/recovery sandbox gate passed (`14 passed`).
+- Prompt 07: implemented/documented on `feat/advanced-07-chunk-exact-lexical`; exact full-checkout Python 3.11 chain remains separately unresolved.
+- Prompt 08: implemented/documented on `feat/advanced-08-embedding-provider-contract`; focused sandbox gate passed (`12 passed`).
+- Prompt 09: implemented/documented on `feat/advanced-09-milvus-projection` at `b76830493d41bb0b6931187ffbd8a406299aedb3`; combined Prompt 08/09 offline gate passed (`24 passed`), while real Milvus service/isolation remained separate.
+- Prompt 10: implemented/documented on `feat/advanced-10-neo4j-evidence-projection` at `1667ddb1d155412a46fa86c3c17acef30d76da54`; revision-preserving graph projection, bounded shared traversal, fixture graph publication and isolated Neo4j service tests are present. Focused local mechanics gate passed (`15 passed`); real Neo4j service/isolation remains separate.
+- Prompt 11: implemented on `feat/advanced-11-deterministic-query-planner` from Prompt 10 head `1667ddb1d155412a46fa86c3c17acef30d76da54`; deterministic CTI planning, explicit target-object projection, reviewed 2-hop vs explicit 3-hop mapping semantics and a chained Prompt 04-11 validator are present. Focused local planner/target gate passed (`18 passed`), combined Prompt 10/11 mechanics passed (`33 passed`). Exact Python 3.11 chained validation remains `not_run` in the implementation sandbox because Python 3.11 and Docker are unavailable.
 
-Skipped prerequisites and release blockers are recorded in `docs/advanced-rag-status.md` and `docs/advanced-service-matrix.md`. A fake/in-memory gate must not be reported as real-service compatibility.
+`scripts/validate_advanced_04_11.py` is the current correctness handoff. It chains the prior unresolved Prompt 04/05, 06/07 and 08/09 Python 3.11 gates before Prompt 10/11, then compile/whitespace/full-collection checks and available service configuration gates. Skipped prerequisites must remain explicitly reported.
