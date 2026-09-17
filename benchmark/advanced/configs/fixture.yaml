@@ -1,0 +1,22 @@
+schema_version: advanced-rag-config-v1
+enabled: true
+profile: fixture
+state_dir: saves/advanced-fixture
+source:
+  corpus_id: fixture-cti
+  scope_id: public-fixture
+  source_allowlist:
+    - fixture-public
+channels:
+  exact_enabled: true
+  lexical_enabled: true
+  dense_enabled: false
+  graph_enabled: false
+  exact_top_k: 10
+  lexical_top_k: 40
+  dense_top_k: 40
+  graph_top_k: 40
+network:
+  allow_outbound: false
+  allow_downloads: false
+  web_search: false
