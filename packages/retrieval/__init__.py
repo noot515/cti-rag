@@ -23,12 +23,16 @@ __all__ = [
     "ExactIndex",
     "FusionOutcome",
     "GraphSearchEngine",
+    "IndexedRerankScore",
     "LexicalIndex",
     "Neo4jNeighborReader",
     "ObjectCandidate",
     "PathCandidate",
     "QueryPlan",
+    "RerankResult",
     "RetrievalUnavailable",
+    "SingleFinalReranker",
+    "StrictRerankEgressGuard",
     "TargetObjectRef",
     "TargetProjection",
     "fuse_channel_results",
@@ -66,5 +70,23 @@ def __getattr__(name: str):
         return {
             "AdvancedRetrievalOrchestrator": AdvancedRetrievalOrchestrator,
             "RetrievalUnavailable": RetrievalUnavailable,
+        }[name]
+    if name in {
+        "IndexedRerankScore",
+        "RerankResult",
+        "SingleFinalReranker",
+        "StrictRerankEgressGuard",
+    }:
+        from .rerank import (
+            IndexedRerankScore,
+            RerankResult,
+            SingleFinalReranker,
+            StrictRerankEgressGuard,
+        )
+        return {
+            "IndexedRerankScore": IndexedRerankScore,
+            "RerankResult": RerankResult,
+            "SingleFinalReranker": SingleFinalReranker,
+            "StrictRerankEgressGuard": StrictRerankEgressGuard,
         }[name]
     raise AttributeError(name)
