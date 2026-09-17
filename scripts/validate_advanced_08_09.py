@@ -26,18 +26,11 @@ def main() -> int:
             f"Prompt 08/09 validation requires Python 3.11; observed {sys.version.split()[0]}"
         )
     run(["git", "merge-base", "--is-ancestor", P08_PREDECESSOR, "HEAD"])
-    env = {
-        key: value
-        for key, value in os.environ.items()
-        if not key.startswith("ADVANCED_RAG_")
-    }
+    env = {key: value for key, value in os.environ.items() if not key.startswith("ADVANCED_RAG_")}
     env["PYTHONPATH"] = str(ROOT)
 
     run([sys.executable, "-m", "pytest", *UNIT_TESTS, "-q"], env=env)
-    run(
-        [sys.executable, "-m", "compileall", "-q", "packages", "benchmark", "tests"],
-        env=env,
-    )
+    run([sys.executable, "-m", "compileall", "-q", "packages", "benchmark", "tests"], env=env)
     run(["git", "diff", "--check"])
 
     docker = shutil.which("docker")
@@ -47,40 +40,19 @@ def main() -> int:
         compose_env = dict(env)
         compose_env.setdefault("ADVANCED_MINIO_ACCESS_KEY", "validation-only-access-key")
         compose_env.setdefault("ADVANCED_MINIO_SECRET_KEY", "validation-only-secret-key")
-        run(
-            [docker, "compose", "-f", "deploy/advanced-services.compose.yml", "config", "--quiet"],
-            env=compose_env,
-        )
+        # Prompt 10 added a second service with mandatory credentials. These values
+        # are validation-only placeholders so the historical P08/P09 Compose parse
+        # remains runnable without weakening the service's required-secret contract.
+        compose_env.setdefault("ADVANCED_NEO4J_USERNAME", "validation-only-neo4j")
+        compose_env.setdefault("ADVANCED_NEO4J_PASSWORD", "validation-only-password")
+        run([docker, "compose", "-f", "deploy/advanced-services.compose.yml", "config", "--quiet"], env=compose_env)
         if os.getenv("RUN_ADVANCED_MILVUS_INTEGRATION") == "1":
-            run(
-                [
-                    docker,
-                    "compose",
-                    "-f",
-                    "deploy/advanced-services.compose.yml",
-                    "up",
-                    "-d",
-                    "advanced-milvus",
-                ],
-                env=compose_env,
-            )
-            run(
-                [
-                    sys.executable,
-                    "-m",
-                    "pytest",
-                    "tests/integration/test_advanced_milvus.py",
-                    "-q",
-                    "-m",
-                    "integration",
-                ],
-                env=env,
-            )
+            run([docker, "compose", "-f", "deploy/advanced-services.compose.yml", "up", "-d", "advanced-milvus"], env=compose_env)
+            run([
+                sys.executable, "-m", "pytest", "tests/integration/test_advanced_milvus.py", "-q", "-m", "integration"
+            ], env=env)
         else:
-            print(
-                "REAL_MILVUS_GATE_NOT_RUN: set RUN_ADVANCED_MILVUS_INTEGRATION=1 "
-                "with integration URIs"
-            )
+            print("REAL_MILVUS_GATE_NOT_RUN: set RUN_ADVANCED_MILVUS_INTEGRATION=1 with integration URIs")
 
     run(["git", "status", "--short", "--branch"])
     run(["git", "rev-parse", "HEAD"])
