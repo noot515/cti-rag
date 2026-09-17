@@ -6,7 +6,6 @@ import json
 from pathlib import Path
 from typing import Any
 
-from benchmark.advanced.metrics import citation_support, citation_validity
 from benchmark.advanced.report import MetricResult, MetricStatus
 from benchmark.advanced.run_retrieval_eval import (
     _atomic_text,
@@ -35,20 +34,22 @@ def run_answer_evaluation(
 ) -> dict[str, Any]:
     """Produce a complete report without inventing generator/judge results.
 
-    This repository phase intentionally ships no default generator or judge adapter.
-    Permission plus an exact model identifier are prerequisites for any later adapter;
-    absent those, answer/support metrics remain null `not_run` while retrieval mechanics
-    and report artifacts are still generated deterministically.
+    This phase ships no default generator/judge adapter. Permission plus an exact
+    model identifier are prerequisites for any later adapter. Authorization is
+    validated before even the retrieval report is executed so a malformed model
+    request cannot trigger unrelated work first.
     """
+    if allow_model_egress and not generator_model:
+        raise ValueError("model egress permission requires an exact --generator-model")
+    if generator_model and not allow_model_egress:
+        raise ValueError("generator model use requires explicit --allow-model-egress")
+    if judge_model and not allow_model_egress:
+        raise ValueError("judge model use requires explicit --allow-model-egress")
+
     retrieval_summary = run_retrieval_evaluation(
         config_path=config_path,
         output=output,
     )
-
-    if allow_model_egress and not generator_model:
-        raise ValueError("model egress permission requires an exact --generator-model")
-    if judge_model and not allow_model_egress:
-        raise ValueError("judge model use requires explicit --allow-model-egress")
 
     generator_reason = (
         "no generator adapter/model configured; answer-quality evaluation was not run"
@@ -67,8 +68,6 @@ def run_answer_evaluation(
         )
     )
 
-    # No generated answers means no emitted citations. Do not convert that absence
-    # into 100% validity or support.
     answer_metrics = {
         "answer_quality": _unavailable(generator_reason),
         "citation_validity": _unavailable(
@@ -77,6 +76,9 @@ def run_answer_evaluation(
         "citation_support": _unavailable(judge_reason),
         "abstention": _unavailable(
             "answer-generation adapter unavailable; abstention behavior not observed"
+        ),
+        "false_evidence_rate": _unavailable(
+            "answer-generation adapter unavailable; unanswerable response behavior not observed"
         ),
         "real_quality_promotion": _unavailable(
             "synthetic fixture and unavailable generator/judge cannot authorize quality promotion"
@@ -96,12 +98,17 @@ def run_answer_evaluation(
         "- answer generation: not_run",
         "- citation validity: not_run (no emitted generated citations)",
         "- independent citation support: not_run",
-        "- model/judge egress: " + ("authorized but no adapter configured" if allow_model_egress else "not authorized"),
+        "- abstention / false-evidence behavior: not_run",
+        "- model/judge egress: "
+        + ("authorized but no adapter configured" if allow_model_egress else "not authorized"),
         "- real quality promotion: not_run",
         "",
         "Citation validity and claim support remain separate metrics; neither is inferred from the other.",
     ]
-    _atomic_text(report_path, existing.rstrip() + "\n" + "\n".join(appendix) + "\n")
+    _atomic_text(
+        report_path,
+        existing.rstrip() + "\n" + "\n".join(appendix) + "\n",
+    )
     return {
         "schema_version": "advanced-answer-eval-report-v1",
         "output": str(output),
@@ -114,7 +121,9 @@ def run_answer_evaluation(
 
 
 def _parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Run advanced answer/citation evaluation")
+    parser = argparse.ArgumentParser(
+        description="Run advanced answer/citation evaluation"
+    )
     parser.add_argument("--config", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--allow-model-egress", action="store_true")
