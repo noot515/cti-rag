@@ -7,7 +7,7 @@ from pathlib import Path
 from benchmark.advanced.report import MetricResult, MetricStatus
 from benchmark.advanced.run_answer_eval import run_answer_evaluation
 from benchmark.advanced.run_retrieval_eval import _report_files
-from benchmark.advanced.splits import QueryGrouping
+from benchmark.advanced.splits import QueryGrouping, grouped_split
 from packages.evidence.config import load_advanced_rag_config
 
 
@@ -30,6 +30,7 @@ def test_report_bundle_contains_required_artifacts_and_honest_gates(tmp_path):
         {
             "query_id": "q1",
             "query": "fixture one",
+            "task": "mapping",
             "execution_status": "ok",
             "execution_errors": [],
             "latency_ms": 1.0,
@@ -41,6 +42,7 @@ def test_report_bundle_contains_required_artifacts_and_honest_gates(tmp_path):
         {
             "query_id": "q2",
             "query": "fixture two",
+            "task": "general",
             "execution_status": "failed",
             "execution_errors": ["TimeoutError"],
             "latency_ms": 3.0,
@@ -50,10 +52,12 @@ def test_report_bundle_contains_required_artifacts_and_honest_gates(tmp_path):
             "evaluation": {},
         },
     ]
-    groupings = {
-        "q1": QueryGrouping("q1", "c1", "f1"),
-        "q2": QueryGrouping("q2", "c2", "f2"),
-    }
+    split = grouped_split(
+        (
+            QueryGrouping("q1", "c1", "f1"),
+            QueryGrouping("q2", "c2", "f2"),
+        )
+    )
     unavailable = MetricResult(
         status=MetricStatus.NOT_RUN,
         reason="fixture unavailable",
@@ -75,12 +79,14 @@ def test_report_bundle_contains_required_artifacts_and_honest_gates(tmp_path):
         }
     )
     _report_files(
-        config_path=CONFIG,
         output=tmp_path,
         config=config,
         predictions=predictions,
-        grouping_by_id=groupings,
-        ingest_report={"generation_id": "g1", "network_used": False},
+        ingest_report={
+            "generation_id": "g1",
+            "network_used": False,
+            "frozen_split": split.as_dict(),
+        },
         retrieval_metrics=retrieval_metrics,
     )
 
@@ -100,6 +106,10 @@ def test_report_bundle_contains_required_artifacts_and_honest_gates(tmp_path):
     environment = json.loads((tmp_path / "environment.json").read_text())
     assert environment["network_used"] is False
     assert environment["throughput_claim"] is False
+    split_payload = json.loads((tmp_path / "split.manifest.json").read_text())
+    assert split_payload["seed"] == split.seed
+    assert split_payload["grouping_sha256"] == split.grouping_sha256
+    assert split_payload["split_sha256"] == split.split_sha256
     latency = json.loads((tmp_path / "latency_metrics.json").read_text())
     assert latency["sample_count"] == 2
     assert latency["concurrency"] == 1
@@ -109,7 +119,14 @@ def test_report_bundle_contains_required_artifacts_and_honest_gates(tmp_path):
     with (tmp_path / "ablation_summary.csv").open(newline="", encoding="utf-8") as handle:
         rows = list(csv.DictReader(handle))
     assert {row["name"] for row in rows} == {
-        "R1", "R2", "R3", "R4", "R5", "R6", "C1-basic", "C1-structured"
+        "R1",
+        "R2",
+        "R3",
+        "R4",
+        "R5",
+        "R6",
+        "C1-basic",
+        "C1-structured",
     }
     assert "not a real-quality promotion claim" in (tmp_path / "report.md").read_text()
 
@@ -122,7 +139,6 @@ def test_answer_runner_requires_permission_and_exact_model_for_egress(monkeypatc
         "run_retrieval_evaluation",
         lambda **_kwargs: {"queries": 2},
     )
-    # Create a report shell so the answer runner can append its honest gate section.
     (tmp_path / "report.md").write_text("# report\n", encoding="utf-8")
 
     try:
