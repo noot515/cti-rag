@@ -1,19 +1,23 @@
 # Current state and sequencing handoff
 
-Prompt 08 begins from Prompt 07 documented head `ecc28482f57e93fa6d90cbf99f90146c762cd9fb` and is stacked on `feat/advanced-08-embedding-provider-contract`. Prompt 08 implementation code reached `14df9ae472fa0bb54e6e574ec02d100b05bb9d63` before this documentation commit.
+Prompt 09 begins from Prompt 08 documented head `397f3ba49b94bc93a462b7e09c2f7d51f76bd4c5` on `feat/advanced-08-embedding-provider-contract` and is stacked on `feat/advanced-09-milvus-projection`.
 
 Reconciliation notes:
 
-1. The predecessor already had a compact provider fingerprint in `packages/evidence/config.py`; Prompt 08 extends it with metric, document/query instructions, tokenizer and optional artifact hash instead of introducing a competing configuration model.
-2. The predecessor default embedding revision `v1` is preserved. Reproducibility is strengthened by hashing the complete provider fingerprint rather than changing a revision label without need.
-3. Advanced provider contracts live in `packages/retrieval/providers.py`; they do not import `packages/models/embedding.py`, OpenAI/Zhipu/FlagEmbedding, requests, model artifacts or network clients at import time.
-4. Provider selection is trusted and lazy. Missing real providers are unavailable errors; no same-dimension substitution or fixture fallback is allowed.
-5. Document/query egress destinations are explicit. Authorization occurs before encoding, and invalid output ID mappings, non-finite values, dimensions or required normalization fail before persistence/search.
-6. The deterministic fixture provider is stdlib-only and mechanics-only. Its fingerprint includes separate document/query instructions and a deterministic artifact hash; cross-process stability is covered by the focused tests.
-7. `packages/retrieval/dense.py` is a local generation-scoped fixture projection, not the Milvus implementation. It persists numeric vectors as validated JSON, reopens against Prompt 06 generation membership, and enforces provider fingerprint, scope and snapshot identity.
-8. Dense hits remain untrusted backend output until catalog membership, live lifecycle state and caller policy are checked during candidate construction.
-9. The Prompt 07 fixture CLI is narrowly extended to register exact, lexical and dense writers in the same Prompt 06 publication transaction. Graph remains disabled; fixture networking/downloads/web remain forbidden.
-10. `requirements-advanced-models.txt` deliberately adds no heavyweight dependency for fixture mechanics. Any future real provider must be explicitly selected, pinned and authorized rather than becoming an import-time dependency.
-11. Legacy embedding implementations, aliases, collections and API/session behavior remain unchanged.
-12. Focused Prompt 08 sandbox validation passed (`12 passed`) on Python 3.13.5. Exact Python 3.11 full-checkout and real-model gates remain `not_run`.
-13. Prompt 09 may use the fingerprint-bound provider and Prompt 06 projection contract to build an isolated Milvus adapter. Real Milvus compatibility/legacy-isolation evidence remains an independent release gate.
+1. Prompt 08 is the embedding/model identity authority. Prompt 09 does not infer dimensions or model identity from Milvus; the generation dense projection fingerprint must equal the selected provider fingerprint exactly.
+2. Prompt 06 remains the publication authority. `MilvusProjection` is a projection writer that must verify its generation visibility before its receipt can participate in activation; Prompt 09 does not add a second active-generation pointer.
+3. Full evidence, policy and provenance stay in the Prompt 05 SQLite catalog. Milvus stores only retrieval keys, generation/scope/model identity and the vector needed for dense retrieval.
+4. Advanced collection identity is generation-scoped and namespaced. A different scope or generation gets a different collection name. Reingesting the same generation uses upsert and the same collection rather than delete/recreate.
+5. Existing collection schema mismatch fails closed. The advanced client protocol and `Pymilvus23Adapter` intentionally expose no collection drop method, so this path cannot silently destroy an incompatible collection.
+6. All VARCHAR limits are checked in UTF-8 bytes before collection creation/write side effects. `chunk_uid` is a manual string primary key; vector dimension comes only from the fingerprint-bound provider.
+7. Evidence destination authorization occurs before document embedding. Query embedding requires an explicitly allowed resolved-scope destination before provider work.
+8. Milvus search uses backend prefilters for domain, scope, generation and embedding fingerprint, but the catalog remains authoritative. Every backend result is rechecked against pinned snapshot membership plus current object revision, so stale backend rows are dropped.
+9. Over-fetch is explicit and bounded; query statistics record backend limit/rows, accepted rows and truncation. Prompt 09 performs no BM25 and no reranking inside Milvus.
+10. Service outages are explicit channel errors. There is no fallback to a legacy Milvus endpoint, another model, or another generation.
+11. `Pymilvus23Adapter` is optional/lazy and checks the pinned client version before connection. The service matrix pairs Milvus 2.3.4 with PyMilvus 2.3.7; exact live compatibility remains a real-service gate.
+12. `deploy/advanced-services.compose.yml` uses a separate Compose project, internal network, unique volumes and loopback host port 19531. etcd/MinIO are not host-published. MinIO credentials have mandatory environment placeholders and no committed defaults.
+13. The default compatibility Compose stack does not establish authenticated Milvus users. Therefore it is suitable only for isolated synthetic/public compatibility testing; restricted-evidence service promotion is blocked until an authenticated advanced configuration is supplied and tested.
+14. Real legacy isolation is not inferred from the namespacing design. `tests/integration/test_advanced_milvus.py` separately verifies that a configured legacy endpoint cannot see the advanced collection when both integration URIs are supplied.
+15. Focused Prompt 08/09 sandbox validation passed (`24 passed`: 12 P08 + 12 P09 fake-client tests). Real integration collected as `2 skipped` because service URIs are absent. Docker is unavailable, so Compose parse/start is `not_run` in the implementation sandbox.
+16. `scripts/validate_advanced_08_09.py` is the fail-fast Python 3.11 handoff. It verifies this branch descends from the documented Prompt 08 head, chains all 24 focused tests, compile validation and `git diff --check`, then validates Compose if Docker exists. Real service startup is opt-in and requires explicit integration URIs.
+17. Exact Python 3.11/full-repository validation, real Milvus 2.3.4/PyMilvus 2.3.7 roundtrip, legacy-endpoint isolation, authenticated restricted-evidence service configuration, and retrieval-quality gates remain release blockers and must not be inferred from fake-client results.
