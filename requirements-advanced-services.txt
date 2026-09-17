@@ -1,0 +1,2 @@
+# Milvus 2.3.x server family: official compatibility table recommends PyMilvus 2.3.7.
+pymilvus==2.3.7
