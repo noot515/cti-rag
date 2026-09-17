@@ -15,6 +15,7 @@ from packages.evidence.schema import (
 )
 from packages.retrieval.rerank import (
     IndexedRerankScore,
+    RequiredRerankerUnavailable,
     RerankProviderError,
     RerankResult,
     SingleFinalReranker,
@@ -152,9 +153,11 @@ def test_missing_duplicate_and_out_of_range_indices_fail(items):
         )
 
 
-def test_non_integer_and_nonfinite_raw_items_fail():
+def test_non_integer_missing_index_and_nonfinite_raw_items_fail():
     with pytest.raises(Exception):
         IndexedRerankScore(index=0.0, score=1.0)
+    with pytest.raises(Exception):
+        IndexedRerankScore.model_validate({"score": 1.0})
     with pytest.raises(Exception):
         IndexedRerankScore(index=0, score=float("nan"))
     with pytest.raises(Exception):
@@ -229,6 +232,39 @@ def test_provider_failure_and_timeout_restore_complete_order():
         assert outcome.status == "unavailable"
         assert outcome.candidates == candidates
         assert provider.calls == 1
+
+
+def test_expired_request_deadline_calls_provider_zero_times():
+    provider = Provider()
+    outcome = SingleFinalReranker(
+        provider=provider,
+        egress_guard=Guard(),
+    ).rerank(
+        "q",
+        (candidate(0),),
+        scope=scope(),
+        snapshot=snapshot(),
+        request_deadline=time.monotonic() - 1,
+    )
+    assert outcome.status == "unavailable"
+    assert outcome.reason == "timeout"
+    assert provider.calls == 0
+
+
+def test_required_reranker_failure_is_request_failure_not_silent_fallback():
+    provider = Provider(exc=RerankProviderError("down"))
+    with pytest.raises(RequiredRerankerUnavailable, match="provider-error"):
+        SingleFinalReranker(
+            provider=provider,
+            egress_guard=Guard(),
+            required=True,
+        ).rerank(
+            "q",
+            (candidate(0),),
+            scope=scope(),
+            snapshot=snapshot(),
+            request_deadline=time.monotonic() + 5,
+        )
 
 
 def test_exact_priority_tier_survives_high_nonexact_rerank_score():
