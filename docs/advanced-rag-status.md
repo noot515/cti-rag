@@ -1,83 +1,61 @@
 # Advanced RAG V3 implementation status
 
-Updated: 2026-09-17. Prompt 14 documented head / Prompt 15 predecessor: `65701c1885ead1901e0f84c95227a1ced25190e2`. Current stacked branch: `feat/advanced-15-trusted-principal-and-corpus-access`. Legacy retriever/data/session routes remain available; advanced authorization does not infer ownership from legacy request-body fields.
+Updated: 2026-09-17. Prompt 15 documented head / Prompt 16 predecessor: `66075304be97c6234d7863cf186d97f51ce16776`. Current stacked branch: `feat/advanced-16-authenticated-advanced-api`. Legacy retriever/data/session routes remain available and advanced retrieval is still default-disabled.
 
 ## Prompt 14 - evidence packing and citations
 
-Prompt 14 adds terminal token-budgeted evidence packing after final candidate ordering. `CitationRef` preserves stable evidence/revision/scope/snapshot/source coordinates while response-local labels such as `CTI-001` are assigned only to actually emitted evidence. Context budgeting counts rendered labels/headers/separators with an injected tokenizer, paths are indivisible node/assertion/support bundles, contradictory evidence is retained, evidence text is quoted as untrusted content, and accepted blocks are resolved/authorized again before return so a last-moment withdrawal causes suppression/rebuild.
+Prompt 14 provides terminal token-budgeted evidence packing after final candidate ordering. Response-local citations preserve exact evidence/revision/scope/snapshot/source coordinates; paths are indivisible node/assertion/support bundles; untrusted evidence text cannot execute tools; and selected evidence is resolved/authorized again before response egress.
 
-Focused local compatibility gate:
+Focused local compatibility gate: `10 passed`. Combined locally feasible Prompt 12-14 mechanics: `42 passed`.
 
-```text
-python -m pytest tests/unit/retrieval/test_context_packer.py tests/unit/retrieval/test_citations.py tests/e2e/test_evidence_egress.py -q
-10 passed
-```
+## Prompt 15 - trusted identity and corpus grants
 
-Combined Prompt 12/13/14 compatibility mechanics: `42 passed`.
+Prompt 15 establishes canonical namespaced `User.id` principals, the separate `CorpusAccessStore`, server-owned corpus/domain/scope/catalog/policy grants, mid-query grant revalidation, fail-closed 401/403/503 mapping, pinned python-jose handling and trusted local corpus registration. Legacy `User.user_id` and caller-populated `KnowledgeDatabase.user_id` do not grant advanced access.
 
-## Prompt 15 - trusted API identity and server-owned corpus grants
+Dependency-free local access/identity core: `7 passed`. Combined locally feasible Prompt 12-15 mechanics/core: `49 passed`. Full JOSE token execution remains target-environment validation because the sandbox cannot install packages.
 
-Prompt 15 creates a new advanced authorization boundary rather than trusting legacy knowledge-database ownership:
+## Prompt 16 - isolated authenticated advanced API
 
-- `TrustedPrincipal` now requires an explicit ID namespace. API authentication constructs `principal_namespace="user.id"` from canonical authenticated `User.id`; the inspected legacy/login `User.user_id` is not used as advanced identity;
-- `ResolvedScope` can carry the trusted principal namespace and server-owned `active_catalog_id` while remaining backward-compatible with earlier scope constructors;
-- `CorpusAccessStore` is an advanced SQLite authority store with WAL/foreign keys/full synchronous writes, restrictive local permissions where supported, explicit corpora and grant tables, no result cache and no import of the legacy MySQL manager;
-- corpus registration owns `domain`, `scope_id`, active catalog, policy version, source allowlist, destinations and namespaced grants. Unknown, disabled, ownerless and unauthorized corpora all fail closed; external unknown/unauthorized behavior is intentionally indistinguishable;
-- `CorpusGrantPolicy` revalidates the current grant and corpus version on every evidence authorization. Grant revocation, catalog change, policy-version change or source/destination mismatch therefore invalidates a previously resolved/pinned scope instead of being cached permissively;
-- advanced evidence authorization remains fail closed for unresolved/granular markings and for restricted dissemination until an explicit production marking policy exists. Public fixture behavior remains separately controlled by `PublicFixturePolicy`;
-- `rag/api/advanced_dependencies.py` converts only canonical authenticated users to trusted principals, maps identity failure to 401, unknown/unauthorized corpus to 403, and grant-store outage to 503. User-controlled body fields such as `user_id`, principal or policy names are not inputs to this resolution;
-- construction of the protected FastAPI dependency is the advanced startup boundary: `AuthUtils.configure_advanced_signing()` requires an explicitly configured non-default signing authority before the legacy DB-backed user lookup is imported/used;
-- `AuthUtils` now catches the actual python-jose `ExpiredSignatureError`/`JWTError` classes rather than PyJWT-style attributes. The advanced API dependency profile pins FastAPI, python-jose and passlib separately in `requirements-advanced-api.txt`;
-- token issuer/verifier can share the validated `JwtSigningConfig`. The key itself is not logged. `docs/advanced-auth-transition.md` documents the operator transition: changing the authority invalidates older tokens and requires re-authentication rather than a permissive dual-key/fallback mode;
-- `python -m packages.evidence.cli register-corpus --config CONFIG --grant-file FILE` is the only new corpus-registration surface. It requires a trusted-local administrator capability and validates an administrator-authored manifest; nothing is added to the unprotected legacy data route.
+Prompt 16 adds an opt-in advanced HTTP surface without replacing the legacy application:
 
-### Prompt 15 validation status
+- `rag.api.routers.advanced_retrieval_api.create_advanced_router()` creates the direct `POST /chat/advanced-retrieval` route only when an already validated `AdvancedRagConfig` is enabled;
+- the request accepts only `query`, `db_id`, bounded `top_k`, bounded `max_graph_hops`, `response_mode`, and omitted/false `web_search`. Pydantic forbids caller principal/policy/backend/filter fields and `web_search=true`; the query is additionally bounded to 8192 UTF-8 bytes;
+- trusted identity and server-owned corpus grant resolution run before the runtime provider is invoked, so a denied request cannot construct/use retrieval backends or model providers;
+- `response_mode=full` separately requires the server-owned `evidence:debug` capability. Debug candidates are emitted only through a final candidate-authorizer callback;
+- the runtime executes a final result reauthorization/finalization callback immediately before serialization, after Prompt 14's packed-evidence recheck;
+- successful empty retrieval returns HTTP 200 with `status=no_evidence`; all-channel unavailability returns 503; identity is 401; unknown/unauthorized corpus is indistinguishable 403; malformed/extra request fields remain FastAPI 422; there is no legacy fallback;
+- responses expose retrieval context, citations, channel states, degraded channels, truncation, timings and model fingerprints, not a generated answer;
+- `rag.api.routers.__init__` now assembles legacy routers lazily. Importing the advanced submodule no longer imports legacy chat/data/graph/token routers or the MySQL manager first;
+- `rag.api.server.create_fastapi_server()` preserves the module-level legacy `fastapi_server` with no advanced router by default. `config.yaml` records `advanced_rag.enabled: false` and the direct path/proxy distinction;
+- `rag.api.advanced_app.create_fixture_app()` builds an advanced-only application with injected identity/access/runtime pieces. Fixture configuration requires no outbound networking, no service Milvus and no legacy MySQL/Redis/RabbitMQ/GPU construction at import time;
+- `docs/advanced-rag-api.md` documents the direct URL, request/response contract, feature flag, error semantics and fixture application.
 
-Locally feasible dependency-free core on Python 3.13.5:
+### Prompt 16 target validation
 
-```text
-python -m pytest <dependency-free identity core> tests/unit/evidence/test_corpus_access.py -q
-7 passed
-```
-
-Combined locally feasible Prompt 12-15 mechanics/core:
+Required target commands:
 
 ```text
-49 passed
+python -m pytest tests/unit/api/test_advanced_route.py tests/e2e/test_advanced_api.py -q
+python -m pytest tests/unit/evidence/test_imports.py -q
 ```
 
-The complete requested Prompt 15 command is intentionally `not_run` in this sandbox because the pinned JOSE dependency cannot be installed: package-network DNS is unavailable. The branch nevertheless contains the full target tests for valid, expired, malformed and wrong-signature tokens, missing signing authority, canonical ID/login-ID collision, forged body ownership, ownerless corpus, two tenants, mid-query grant revocation, policy-store failure and zero backend/provider calls on denied access.
+The committed tests cover disabled 404 behavior, unknown authority fields, web-search rejection, independent debug permission, successful/empty/partial/all-down responses, cross-tenant denial before backend calls, final withdrawal/finalizer execution, and a fresh-process import check that asserts legacy service routers/managers are absent.
 
-The target command remains:
-
-```text
-python -m pytest tests/unit/api/test_advanced_identity.py tests/unit/evidence/test_corpus_access.py -q
-```
+These exact commands remain `not_run` in the implementation sandbox because the intended Python 3.11 advanced API environment (including pinned FastAPI/httpx/python-jose) is unavailable here. No target-environment pass is inferred from code publication.
 
 ## Chained validation
 
-`scripts/validate_advanced_04_15.py` is the strict Python 3.11 handoff. It verifies the Prompt 14 ancestor, runs `scripts/validate_advanced_04_13.py`, then Prompt 14, Prompt 15, fresh import safety, compileall, `git diff --check`, and a final full-repository collection at the Prompt 15 head.
-
-The exact chain remains `not_run` here because:
-
-```text
-Python 3.13.5
-Python 3.11 unavailable
-Docker unavailable
-package-network DNS unavailable
-```
-
-No prior compatibility result is relabeled as that exit gate.
+`scripts/validate_advanced_04_15.py` remains the strict predecessor Python 3.11 chain. Prompt 17 will extend the handoff through Prompt 16 and native evaluation rather than replacing the unresolved predecessor gates.
 
 ## Remaining operational/quality gates
 
-- `python scripts/validate_advanced_04_15.py` on a complete Python 3.11 checkout with `requirements-advanced-dev.txt` installed;
-- final full repository collection on the Prompt 15 head;
-- real Milvus/Neo4j roundtrip and legacy-isolation gates inherited from earlier phases;
-- deployment wiring of protected advanced routes using `make_advanced_access_dependency`;
-- production restricted-marking policy beyond fail-closed behavior;
-- real reranker/model compatibility and retrieval-quality/promotion gates.
+- exact Python 3.11 Prompt 04+ chain with `requirements-advanced-dev.txt` installed;
+- full repository collection on the final descendant;
+- real Milvus/Neo4j roundtrip and legacy-isolation gates;
+- deployment wiring of the enabled protected route and operator signing authority;
+- production restricted-marking policy;
+- real reranker/generator/judge compatibility and retrieval-quality/promotion gates.
 
 ## Handoff
 
-Prompt 15 correctness mechanics are implemented on top of Prompt 14. Later protected retrieval/API phases may consume `AdvancedAccessContext`, `TrustedPrincipal`, `CorpusAccessStore` and `CorpusGrantPolicy`, but must not accept body principals or legacy database ownership as authorization.
+Prompt 16 correctness contracts are implemented on top of Prompt 15. Prompt 17 may evaluate the native advanced route/retrieval outputs, but fixture mechanics cannot be promoted into a real-quality claim and authorization must never be ablated.
