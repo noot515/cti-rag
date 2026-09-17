@@ -12,6 +12,7 @@ from .candidate import (
 )
 
 __all__ = [
+    "AdvancedRetrievalOrchestrator",
     "BackendHit",
     "Candidate",
     "CatalogNeighborReader",
@@ -20,14 +21,17 @@ __all__ = [
     "ChunkCandidate",
     "DeterministicQueryPlanner",
     "ExactIndex",
+    "FusionOutcome",
     "GraphSearchEngine",
     "LexicalIndex",
     "Neo4jNeighborReader",
     "ObjectCandidate",
     "PathCandidate",
     "QueryPlan",
+    "RetrievalUnavailable",
     "TargetObjectRef",
     "TargetProjection",
+    "fuse_channel_results",
 ]
 
 
@@ -50,5 +54,17 @@ def __getattr__(name: str):
         return {
             "DeterministicQueryPlanner": DeterministicQueryPlanner,
             "QueryPlan": QueryPlan,
+        }[name]
+    if name in {"FusionOutcome", "fuse_channel_results"}:
+        from .fusion import FusionOutcome, fuse_channel_results
+        return {
+            "FusionOutcome": FusionOutcome,
+            "fuse_channel_results": fuse_channel_results,
+        }[name]
+    if name in {"AdvancedRetrievalOrchestrator", "RetrievalUnavailable"}:
+        from .orchestrator import AdvancedRetrievalOrchestrator, RetrievalUnavailable
+        return {
+            "AdvancedRetrievalOrchestrator": AdvancedRetrievalOrchestrator,
+            "RetrievalUnavailable": RetrievalUnavailable,
         }[name]
     raise AttributeError(name)
