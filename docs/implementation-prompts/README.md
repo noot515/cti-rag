@@ -4,17 +4,18 @@ This directory tracks implementation-state handoffs, not the full external promp
 
 - Prompt 01: predecessor accepted on stacked branch `feat/advanced-01-offline-foundation` at `312e11837bde5b525d277bf7387c57ce30487bb3`.
 - Prompt 02/03: implemented and later validated on Windows/Python 3.11, including full repository collection at that stack.
-- Prompt 04/05: implemented; focused sandbox gates passed, but their exact later Python 3.11 chain remains tracked separately.
-- Prompt 06: implemented on `feat/advanced-06-snapshot-publication`; focused publication/recovery sandbox gate passed (`14 passed`).
-- Prompt 07: implemented/documented on `feat/advanced-07-chunk-exact-lexical`; exact full-checkout Python 3.11 chain remains separately unresolved.
-- Prompt 08: implemented/documented on `feat/advanced-08-embedding-provider-contract`; focused sandbox gate passed (`12 passed`).
-- Prompt 09: implemented/documented on `feat/advanced-09-milvus-projection` at `b76830493d41bb0b6931187ffbd8a406299aedb3`; combined Prompt 08/09 offline gate passed (`24 passed`), while real Milvus service/isolation remained separate.
-- Prompt 10: implemented/documented on `feat/advanced-10-neo4j-evidence-projection` at `1667ddb1d155412a46fa86c3c17acef30d76da54`; focused local mechanics passed (`15 passed`), real Neo4j service/isolation separate.
-- Prompt 11: implemented/documented on `feat/advanced-11-deterministic-query-planner` at `86593709fff8bab1b7b0153b1bad32f86ed3b651`; focused planner/target passed (`18 passed`), combined Prompt 10/11 mechanics (`33 passed`).
-- Prompt 12: implemented/documented on `feat/advanced-12-fusion-and-orchestration` at `358be5665a6d124bad5c5f01c794fe898ff30afb`; final descendant P12 mechanics passed `15` local tests.
-- Prompt 13: implemented/documented on `feat/advanced-13-single-final-reranker` at `73a0429dc7de58714148197172f9fffb68baf052`; focused local gate `17 passed`, combined P12/13 `32 passed`.
-- Prompt 14: implemented/documented on `feat/advanced-14-evidence-packing` at `65701c1885ead1901e0f84c95227a1ced25190e2`; focused local gate `10 passed`, combined P12-14 `42 passed`.
+- Prompt 04/05: implemented; focused sandbox gates passed, exact later Python 3.11 chain tracked separately.
+- Prompt 06: implemented on `feat/advanced-06-snapshot-publication`; focused publication/recovery gate `14 passed`.
+- Prompt 07: implemented/documented on `feat/advanced-07-chunk-exact-lexical`; exact later Python 3.11 chain remains tracked.
+- Prompt 08: implemented/documented on `feat/advanced-08-embedding-provider-contract`; focused sandbox gate `12 passed`.
+- Prompt 09: implemented/documented on `feat/advanced-09-milvus-projection` at `b76830493d41bb0b6931187ffbd8a406299aedb3`; combined Prompt 08/09 offline gate `24 passed`; real Milvus separate.
+- Prompt 10: implemented/documented on `feat/advanced-10-neo4j-evidence-projection` at `1667ddb1d155412a46fa86c3c17acef30d76da54`; focused local mechanics `15 passed`; real Neo4j separate.
+- Prompt 11: implemented/documented on `feat/advanced-11-deterministic-query-planner` at `86593709fff8bab1b7b0153b1bad32f86ed3b651`; focused planner/target `18 passed`, combined Prompt 10/11 `33 passed`.
+- Prompt 12: implemented/documented on `feat/advanced-12-fusion-and-orchestration` at `358be5665a6d124bad5c5f01c794fe898ff30afb`; final descendant P12 mechanics `15 passed` locally.
+- Prompt 13: implemented/documented on `feat/advanced-13-single-final-reranker` at `73a0429dc7de58714148197172f9fffb68baf052`; focused local `17 passed`, combined P12/13 `32 passed`.
+- Prompt 14: implemented/documented on `feat/advanced-14-evidence-packing` at `65701c1885ead1901e0f84c95227a1ced25190e2`; focused local `10 passed`, combined P12-14 `42 passed`.
 - Prompt 15: implemented/documented on `feat/advanced-15-trusted-principal-and-corpus-access` at `66075304be97c6234d7863cf186d97f51ce16776`; canonical namespaced identity/server-owned grant mechanics are present. Dependency-free local core passed `7`; full JOSE token tests remain target-environment validation.
-- Prompt 16: implemented on `feat/advanced-16-authenticated-advanced-api` from Prompt 15 head `66075304be97c6234d7863cf186d97f51ce16776`; default-disabled isolated route factory, lazy legacy router assembly, advanced-only fixture app, strict request contract, grant-before-runtime ordering, independent debug permission, final pre-serialization callback and structured API status/egress behavior are present. Exact Python 3.11 ASGI/import-safety exit commands remain target-environment validation.
+- Prompt 16: implemented/documented on `feat/advanced-16-authenticated-advanced-api` at `1b0e03fc3a54367cb0930318db6477a2667b8e02`; default-disabled isolated advanced route, lazy legacy-router assembly, fixture-only app, strict request contract, grant-before-runtime ordering, independent debug permission and final pre-serialization callback are present. Exact Python 3.11 ASGI/import-safety exits remain target-environment validation.
+- Prompt 17: implemented on `feat/advanced-17-native-evaluation-and-ablations` from Prompt 16 head `1b0e03fc3a54367cb0930318db6477a2667b8e02`; deduplicated target metrics, complete-path/citation/unanswerable contracts, grouped split hashes, deterministic cluster bootstrap, R1-R6/C1 ablation matrix, label-blind fixture retrieval execution, complete report bundles and honest null quality/model gates are present. Exact Python 3.11 tests and one-command report execution remain target-environment validation.
 
-`scripts/validate_advanced_04_15.py` is the strict predecessor Python 3.11 correctness handoff. Prompt 17 extends validation through Prompt 16 and native evaluation while retaining all unresolved predecessor gates as explicit prerequisites rather than implied success.
+`scripts/validate_advanced_04_17.py` is the current strict Python 3.11 correctness handoff. It retains every unresolved predecessor correctness gate before Prompt 16/17 tests and report generation; fixture mechanics never imply service/model compatibility or quality promotion.
