@@ -48,6 +48,7 @@ class SnapshotHandleLike(Protocol):
     def snapshot(self) -> SnapshotRef: ...
 
     def __enter__(self): ...
+
     def __exit__(self, *args): ...
 
 
@@ -105,7 +106,7 @@ class RetrievalExecution:
 
 
 class AdvancedRetrievalOrchestrator:
-    """Resolve authority/snapshot once, execute channels, then fuse deterministically."""
+    """Resolve authority/snapshot once, execute channels, fuse, rerank, then pack."""
 
     def __init__(
         self,
@@ -120,6 +121,7 @@ class AdvancedRetrievalOrchestrator:
         clock: Callable[[], float] = time.monotonic,
         executor_factory: Callable[[], BoundedExecutor] | None = None,
         reranker: Any | None = None,
+        context_packer: Any | None = None,
     ) -> None:
         if total_timeout_seconds <= 0 or channel_timeout_seconds <= 0:
             raise ValueError("retrieval deadlines must be positive")
@@ -137,12 +139,12 @@ class AdvancedRetrievalOrchestrator:
         self.pre_rerank_limit = pre_rerank_limit
         self.clock = clock
         self.reranker = reranker
+        self.context_packer = context_packer
         factory = executor_factory or (
             lambda: BoundedExecutor(max_workers=3, queue_capacity=2)
         )
-        # One bounded executor is shared by requests handled by this orchestrator.
-        # A timed-out running call therefore continues to occupy a permit until it
-        # actually exits instead of escaping into an unbounded sequence of pools.
+        # Shared across requests so a timed-out running call continues to occupy
+        # its permit until it actually exits instead of escaping into new pools.
         self._executor = factory()
 
     def close(self, *, wait: bool = False) -> None:
@@ -324,8 +326,6 @@ class AdvancedRetrievalOrchestrator:
                     total_deadline,
                 )
 
-            # Exact is collected first only because graph depends on authorized
-            # deterministic seed evidence. Lexical/dense continue independently.
             if "exact" in submitted:
                 executions["exact"] = self._collect(
                     "exact",
@@ -375,10 +375,7 @@ class AdvancedRetrievalOrchestrator:
                 )
 
             for name in sorted(submitted):
-                executions[name] = self._collect(
-                    name,
-                    *submitted[name],
-                )
+                executions[name] = self._collect(name, *submitted[name])
 
             ordered_results = tuple(
                 executions[name].result for name in sorted(executions)
@@ -397,9 +394,7 @@ class AdvancedRetrievalOrchestrator:
                 result for result in ordered_results if self._is_degraded(result)
             ]
             if not usable:
-                raise RetrievalUnavailable(
-                    "no usable configured retrieval channel"
-                )
+                raise RetrievalUnavailable("no usable configured retrieval channel")
 
             final_plan = graph_plan
             fusion = fuse_channel_results(
@@ -479,31 +474,53 @@ class AdvancedRetrievalOrchestrator:
         else:
             trace.append("reranker=status=not_run")
 
+        selected = candidates[: request.top_k]
+        answer_context = ""
+        citations = ()
+        if self.context_packer is None:
+            trace.append("packer=status=not_configured")
+        elif selected:
+            started = self.clock()
+            packed = self.context_packer.pack(
+                request.query,
+                selected,
+                scope=execution.scope,
+                snapshot=execution.snapshot,
+                destination="caller",
+            )
+            timings["packer"] = max(
+                0.0,
+                (self.clock() - started) * 1000.0,
+            )
+            answer_context = packed.answer_context
+            citations = packed.citation_records()
+            trace.append(
+                f"packer=status=ok;blocks={len(packed.packed_evidence)};"
+                f"tokens={packed.tokens_used};omitted={len(packed.omissions)}"
+            )
+        else:
+            trace.append("packer=status=not_run")
+
         timings["total"] = max(
             0.0,
             (self.clock() - execution.started_at) * 1000.0,
         )
-        selected = candidates[: request.top_k]
-        output_truncated = (
-            execution.truncated or len(candidates) > len(selected)
-        )
-        run_id = canonical_hash(
-            [
-                "advanced-retrieval-run-v1",
-                execution.snapshot.snapshot_id,
-                execution.request.query,
-                execution.request.corpus_id,
-                execution.request.top_k,
-            ]
-        )
+        output_truncated = execution.truncated or len(candidates) > len(selected)
+        run_id = canonical_hash([
+            "advanced-retrieval-run-v1",
+            execution.snapshot.snapshot_id,
+            execution.request.query,
+            execution.request.corpus_id,
+            execution.request.top_k,
+        ])
         return RetrievalResult(
             retrieval_run_id=run_id,
             domain=execution.scope.domain,
             snapshot=execution.snapshot,
             status=status,
             candidates=selected,
-            answer_context="",
-            citations=(),
+            answer_context=answer_context,
+            citations=citations,
             authorized_trace=tuple(trace),
             truncated=output_truncated,
             timings_ms=timings,
