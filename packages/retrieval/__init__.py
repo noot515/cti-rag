@@ -15,18 +15,25 @@ __all__ = [
     "AdvancedRetrievalOrchestrator",
     "BackendHit",
     "Candidate",
+    "CatalogEvidenceResolver",
     "CatalogNeighborReader",
     "Channel",
     "ChannelResult",
     "ChunkCandidate",
+    "CitationEntry",
+    "CitationRef",
+    "ContextPacker",
     "DeterministicQueryPlanner",
     "ExactIndex",
+    "FixtureGeneratorTokenizer",
     "FusionOutcome",
     "GraphSearchEngine",
     "IndexedRerankScore",
     "LexicalIndex",
     "Neo4jNeighborReader",
     "ObjectCandidate",
+    "PackResult",
+    "PackingBudget",
     "PathCandidate",
     "QueryPlan",
     "RerankResult",
@@ -88,5 +95,29 @@ def __getattr__(name: str):
             "RerankResult": RerankResult,
             "SingleFinalReranker": SingleFinalReranker,
             "StrictRerankEgressGuard": StrictRerankEgressGuard,
+        }[name]
+    if name in {"CitationEntry", "CitationRef"}:
+        from .citations import CitationEntry, CitationRef
+        return {"CitationEntry": CitationEntry, "CitationRef": CitationRef}[name]
+    if name in {
+        "CatalogEvidenceResolver",
+        "ContextPacker",
+        "FixtureGeneratorTokenizer",
+        "PackResult",
+        "PackingBudget",
+    }:
+        from .context_packer import (
+            CatalogEvidenceResolver,
+            ContextPacker,
+            FixtureGeneratorTokenizer,
+            PackResult,
+            PackingBudget,
+        )
+        return {
+            "CatalogEvidenceResolver": CatalogEvidenceResolver,
+            "ContextPacker": ContextPacker,
+            "FixtureGeneratorTokenizer": FixtureGeneratorTokenizer,
+            "PackResult": PackResult,
+            "PackingBudget": PackingBudget,
         }[name]
     raise AttributeError(name)
