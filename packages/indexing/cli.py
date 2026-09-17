@@ -17,6 +17,7 @@ from packages.retrieval.dense import DenseProjectionWriter
 from packages.retrieval.providers import DeterministicFixtureEmbeddingProvider
 
 from .chunker import ChunkingConfig, DeterministicTokenizer, chunk_objects
+from .graph_indexer import CatalogGraphProjectionWriter
 from .lexical_indexer import ExactProjectionWriter, LexicalProjectionWriter
 from .manifests import GenerationManifest, GenerationMember, ProjectionSpec
 from .orchestrator import PublicationOrchestrator
@@ -123,6 +124,7 @@ def _generation_manifest(
     exact_writer: ExactProjectionWriter,
     lexical_writer: LexicalProjectionWriter,
     dense_writer: DenseProjectionWriter,
+    graph_writer: CatalogGraphProjectionWriter,
     tokenizer: DeterministicTokenizer,
     chunk_config: ChunkingConfig,
 ) -> GenerationManifest:
@@ -142,7 +144,7 @@ def _generation_manifest(
         ProjectionSpec(backend="exact", enabled=True, required=True, fingerprint=exact_writer.fingerprint),
         ProjectionSpec(backend="lexical", enabled=True, required=True, fingerprint=lexical_writer.fingerprint),
         ProjectionSpec(backend="dense", enabled=True, required=True, fingerprint=dense_writer.fingerprint),
-        ProjectionSpec(backend="graph", enabled=False, required=False, fingerprint="not-configured"),
+        ProjectionSpec(backend="graph", enabled=True, required=True, fingerprint=graph_writer.fingerprint),
     )
     return GenerationManifest.create(
         domain=batch.domain,
@@ -157,7 +159,7 @@ def _generation_manifest(
             "exact": exact_writer.fingerprint,
             "lexical": lexical_writer.fingerprint,
             "dense": dense_writer.fingerprint,
-            "graph": "not-configured",
+            "graph": graph_writer.fingerprint,
         },
     )
 
@@ -166,10 +168,15 @@ def ingest_fixture(*, config_path: Path, manifest_path: Path) -> dict[str, Any]:
     config = load_advanced_rag_config(config_path)
     if config.profile != "fixture":
         raise IngestionError("advanced fixture CLI supports fixture profile only")
-    if not config.channels.exact_enabled or not config.channels.lexical_enabled or not config.channels.dense_enabled:
-        raise IngestionError("fixture ingestion requires exact, lexical, and deterministic dense channels")
-    if config.channels.graph_enabled:
-        raise IngestionError("fixture profile must record graph as not configured")
+    if not all((
+        config.channels.exact_enabled,
+        config.channels.lexical_enabled,
+        config.channels.dense_enabled,
+        config.channels.graph_enabled,
+    )):
+        raise IngestionError(
+            "fixture ingestion requires exact, lexical, deterministic dense, and catalog graph channels"
+        )
     if config.network.allow_outbound or config.network.allow_downloads or config.network.web_search:
         raise IngestionError("fixture ingestion must remain offline")
 
@@ -191,11 +198,7 @@ def ingest_fixture(*, config_path: Path, manifest_path: Path) -> dict[str, Any]:
     batch = load_cti_corpus_fixture(manifest_path)
     if batch.domain != scope.domain or batch.scope_id != scope.scope_id:
         raise IngestionError("normalized fixture does not match resolved trusted scope")
-    source_instances = {
-        ref.source_instance
-        for obj in batch.objects
-        for ref in obj.source_refs
-    }
+    source_instances = {ref.source_instance for obj in batch.objects for ref in obj.source_refs}
     if not source_instances or not source_instances.issubset(scope.source_allowlist):
         raise IngestionError("fixture source is not on the resolved source allowlist")
 
@@ -243,16 +246,20 @@ def ingest_fixture(*, config_path: Path, manifest_path: Path) -> dict[str, Any]:
             policy=policy,
             destination="local_generator",
         )
+        graph_writer = CatalogGraphProjectionWriter(store)
         generation = _generation_manifest(
             batch,
             corpus_id=config.source.corpus_id,
             exact_writer=exact_writer,
             lexical_writer=lexical_writer,
             dense_writer=dense_writer,
+            graph_writer=graph_writer,
             tokenizer=tokenizer,
             chunk_config=chunk_config,
         )
-        PublicationOrchestrator.trusted(store, [exact_writer, lexical_writer, dense_writer]).publish(generation)
+        PublicationOrchestrator.trusted(
+            store, [exact_writer, lexical_writer, dense_writer, graph_writer]
+        ).publish(generation)
         active = store.connection.execute(
             "SELECT generation_id,manifest_sha256 FROM active_generations WHERE domain=? AND scope_id=? AND corpus_id=?",
             (batch.domain, batch.scope_id, config.source.corpus_id),
@@ -269,7 +276,7 @@ def ingest_fixture(*, config_path: Path, manifest_path: Path) -> dict[str, Any]:
             "logical_changes": persist.logical_changes,
             "required_projections": [item.backend for item in generation.enabled_projections if item.required],
             "dense": "configured",
-            "graph": "not_configured",
+            "graph": "configured",
             "network_used": False,
         }
 
