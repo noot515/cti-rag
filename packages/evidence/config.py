@@ -13,6 +13,7 @@ import json
 import os
 from pathlib import Path
 from typing import Any, Callable, Literal, Mapping
+from urllib.parse import urlparse
 
 import yaml
 from pydantic import BaseModel, ConfigDict, Field, StrictBool, StrictFloat, StrictInt, ValidationError, field_validator, model_validator
@@ -127,6 +128,29 @@ class TimeoutConfig(_StrictModel):
     reranker_seconds: StrictFloat = Field(default=4.0, gt=0)
 
 
+class MilvusServiceConfig(_StrictModel):
+    enabled: StrictBool = False
+    uri: str = Field(default="http://127.0.0.1:19531", min_length=1)
+    deployment_id: str = Field(default="advanced-local", min_length=1)
+    collection_prefix: str = Field(default="adv_cti", min_length=1, max_length=48)
+    expected_server_version: str = Field(default="2.3.4", min_length=1)
+    expected_client_version: str = Field(default="2.3.7", min_length=1)
+    token_env: str | None = None
+
+    @model_validator(mode="after")
+    def validate_advanced_endpoint(self) -> "MilvusServiceConfig":
+        parsed = urlparse(self.uri)
+        if parsed.scheme not in {"http", "https", "tcp"} or not parsed.hostname:
+            raise ValueError("advanced Milvus URI must be an explicit http/https/tcp endpoint")
+        if not self.deployment_id.startswith("advanced-"):
+            raise ValueError("Milvus deployment_id must identify an advanced deployment")
+        if self.collection_prefix.startswith(("kb_", "legacy_")):
+            raise ValueError("advanced Milvus collection prefix cannot use a legacy namespace")
+        if self.token_env is not None and not self.token_env.strip():
+            raise ValueError("Milvus token_env must be a non-empty environment variable name")
+        return self
+
+
 class NetworkConfig(_StrictModel):
     allow_outbound: StrictBool = False
     allow_downloads: StrictBool = False
@@ -147,6 +171,7 @@ class AdvancedRagConfig(_StrictModel):
     policy: PolicyConfig = Field(default_factory=PolicyConfig)
     timeouts: TimeoutConfig = Field(default_factory=TimeoutConfig)
     network: NetworkConfig = Field(default_factory=NetworkConfig)
+    milvus: MilvusServiceConfig = Field(default_factory=MilvusServiceConfig)
 
     @model_validator(mode="after")
     def enforce_profile_invariants(self) -> "AdvancedRagConfig":
@@ -159,6 +184,8 @@ class AdvancedRagConfig(_StrictModel):
                 raise ValueError("fixture profile requires a local reranker provider")
             if self.reranker.remote:
                 raise ValueError("fixture profile cannot select a remote reranker")
+            if self.milvus.enabled:
+                raise ValueError("fixture profile cannot connect to the Milvus services backend")
         return self
 
     def serializable_snapshot(self) -> dict[str, Any]:
@@ -197,6 +224,11 @@ _ENV_OVERRIDES: dict[str, tuple[tuple[str, ...], Callable[[str], Any]]] = {
     "ADVANCED_RAG_GRAPH_MAX_HOPS": (("graph", "max_hops"), lambda value: _parse_int("ADVANCED_RAG_GRAPH_MAX_HOPS", value)),
     "ADVANCED_RAG_REQUEST_TIMEOUT_SECONDS": (("timeouts", "request_seconds"), lambda value: _parse_float("ADVANCED_RAG_REQUEST_TIMEOUT_SECONDS", value)),
     "ADVANCED_RAG_CHANNEL_TIMEOUT_SECONDS": (("timeouts", "channel_seconds"), lambda value: _parse_float("ADVANCED_RAG_CHANNEL_TIMEOUT_SECONDS", value)),
+    "ADVANCED_RAG_MILVUS_ENABLED": (("milvus", "enabled"), lambda value: _parse_bool("ADVANCED_RAG_MILVUS_ENABLED", value)),
+    "ADVANCED_RAG_MILVUS_URI": (("milvus", "uri"), str),
+    "ADVANCED_RAG_MILVUS_DEPLOYMENT_ID": (("milvus", "deployment_id"), str),
+    "ADVANCED_RAG_MILVUS_COLLECTION_PREFIX": (("milvus", "collection_prefix"), str),
+    "ADVANCED_RAG_MILVUS_TOKEN_ENV": (("milvus", "token_env"), str),
 }
 
 
@@ -317,6 +349,7 @@ __all__ = [
     "ChannelConfig",
     "ContextConfig",
     "GraphConfig",
+    "MilvusServiceConfig",
     "NetworkConfig",
     "PolicyConfig",
     "ProviderConfig",
