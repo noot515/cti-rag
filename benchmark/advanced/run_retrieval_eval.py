@@ -59,26 +59,41 @@ def _sha256(path: Path) -> str:
 
 def _atomic_text(path: Path, text: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    temp = path.with_name(f".{path.name}.tmp")
-    temp.write_text(text, encoding="utf-8")
-    os.replace(temp, path)
+    temporary = path.with_name(f".{path.name}.tmp")
+    temporary.write_text(text, encoding="utf-8")
+    os.replace(temporary, path)
 
 
 def _write_json(path: Path, payload: Any) -> None:
-    _atomic_text(path, json.dumps(payload, indent=2, sort_keys=True, ensure_ascii=False) + "\n")
+    _atomic_text(
+        path,
+        json.dumps(payload, indent=2, sort_keys=True, ensure_ascii=False) + "\n",
+    )
+
+
+def _unavailable(status: MetricStatus, reason: str) -> MetricResult:
+    return MetricResult(
+        status=status,
+        reason=reason,
+        support_count=0,
+        annotation_coverage=0.0,
+        value=None,
+    )
 
 
 def _load_queries() -> list[dict[str, Any]]:
     records: list[dict[str, Any]] = []
+    forbidden = {"answer", "ground_truth", "ground_truth_answer", "qrels", "relevance", "label"}
     for line in QUERY_PATH.read_text(encoding="utf-8").splitlines():
         if not line.strip():
             continue
         record = json.loads(line)
         if record.get("schema_version") != "query-record-v1":
             raise ValueError("unexpected fixture query schema")
-        forbidden = {"answer", "ground_truth", "qrels", "relevance", "label"}
         if forbidden & set(record):
             raise ValueError("retrieval runner received an answer-bearing query record")
+        if forbidden & set((record.get("options") or {})):
+            raise ValueError("retrieval runner received answer labels in query options")
         records.append(record)
     return records
 
@@ -103,7 +118,7 @@ def _groupings(
     return tuple(rows)
 
 
-def _scope(config: AdvancedRagConfig):
+def _fixture_policy(config: AdvancedRagConfig):
     policy = PublicFixturePolicy.trusted(
         corpus_id=config.source.corpus_id,
         scope_id=config.source.scope_id,
@@ -134,7 +149,8 @@ def _active_manifest(store: EvidenceStore, config: AdvancedRagConfig) -> Generat
     row = store.connection.execute(
         "SELECT gm.manifest_json FROM active_generations ag JOIN generation_manifests gm "
         "ON gm.domain=ag.domain AND gm.scope_id=ag.scope_id AND gm.corpus_id=ag.corpus_id "
-        "AND gm.generation_id=ag.generation_id WHERE ag.domain=? AND ag.scope_id=? AND ag.corpus_id=?",
+        "AND gm.generation_id=ag.generation_id "
+        "WHERE ag.domain=? AND ag.scope_id=? AND ag.corpus_id=?",
         ("cti", config.source.scope_id, config.source.corpus_id),
     ).fetchone()
     if row is None:
@@ -142,13 +158,14 @@ def _active_manifest(store: EvidenceStore, config: AdvancedRagConfig) -> Generat
     return GenerationManifest.model_validate_json(row["manifest_json"])
 
 
-def _object_hit_allowed(store: EvidenceStore, policy: Any, scope: Any, hit: Any) -> bool:
+def _object_hit_allowed(
+    store: EvidenceStore, policy: Any, scope: Any, hit: Any
+) -> bool:
     revision_uid = str(hit.metadata["object_revision_uid"])
     row = store.get_revision(hit.domain, hit.scope_id, revision_uid)
     if row is None:
         return False
     payload = row["payload"]
-    sources = row.get("sources") or []
     view = AuthorizedEvidenceView(
         evidence_uid=revision_uid,
         domain=hit.domain,
@@ -157,7 +174,7 @@ def _object_hit_allowed(store: EvidenceStore, policy: Any, scope: Any, hit: Any)
             sorted(
                 {
                     str(item["source_instance"])
-                    for item in sources
+                    for item in row.get("sources") or []
                     if item.get("source_instance")
                 }
             )
@@ -188,21 +205,28 @@ def _rrf(rankings: Sequence[Sequence[str]]) -> list[str]:
 
 def _predict_fixture_queries(
     *, config_path: Path, config: AdvancedRagConfig
-) -> tuple[list[dict[str, Any]], dict[str, QueryGrouping], dict[str, Any]]:
-    """Execute retrieval before importing/loading any qrel or path annotation payload."""
+) -> tuple[
+    list[dict[str, Any]],
+    dict[str, QueryGrouping],
+    dict[str, Any],
+]:
+    """Execute all native retrieval before qrels/path annotations are opened."""
     ingest_report = ingest_fixture(
         config_path=config_path,
         manifest_path=CORPUS_MANIFEST,
     )
-    state_dir = Path(config.state_dir)
     adapter = CtiDomainAdapter()
     planner = DeterministicQueryPlanner(adapter)
     queries = _load_queries()
-    grouping_rows = _groupings(queries, adapter)
-    grouping_by_id = {row.query_id: row for row in grouping_rows}
-    policy, scope = _scope(config)
+    groupings = _groupings(queries, adapter)
+    grouping_by_id = {item.query_id: item for item in groupings}
+    # Freeze the deterministic grouped split before retrieval or evaluation. The
+    # returned manifest is written later, but its seed/hashes are determined here.
+    frozen_split = grouped_split(groupings)
+    policy, scope = _fixture_policy(config)
     provider = _provider(config)
     tokenizer = DeterministicTokenizer()
+    state_dir = Path(config.state_dir)
     predictions: list[dict[str, Any]] = []
 
     with EvidenceStore(state_dir / "catalog.db", state_dir / "raw") as store:
@@ -213,11 +237,11 @@ def _predict_fixture_queries(
             snapshot_id=manifest.generation_id,
             manifest_sha256=manifest.manifest_sha256,
         )
-        root = state_dir / "indexes"
+        index_root = state_dir / "indexes"
         exact = ExactIndex.open(
             store,
             path=ExactIndex.path_for(
-                root,
+                index_root,
                 domain=manifest.domain,
                 scope_id=manifest.scope_id,
                 generation_id=manifest.generation_id,
@@ -226,7 +250,7 @@ def _predict_fixture_queries(
         lexical = LexicalIndex.open(
             store,
             path=LexicalIndex.path_for(
-                root,
+                index_root,
                 domain=manifest.domain,
                 scope_id=manifest.scope_id,
                 generation_id=manifest.generation_id,
@@ -236,28 +260,28 @@ def _predict_fixture_queries(
         dense = DenseIndex.open(
             store,
             path=DenseIndex.path_for(
-                root,
+                index_root,
                 domain=manifest.domain,
                 scope_id=manifest.scope_id,
                 generation_id=manifest.generation_id,
             ),
             provider=provider,
         )
-        all_patterns = {
+        patterns = {
             pattern.pattern_id: pattern
             for hint in ("general", "mapping", "three_hop_mapping")
             for pattern in adapter.allowed_graph_patterns(hint)
         }
-        graph_engine = GraphSearchEngine(
+        graph = GraphSearchEngine(
             CatalogNeighborReader(store),
-            allowed_pattern_ids=frozenset(all_patterns),
+            allowed_pattern_ids=frozenset(patterns),
         )
 
         for record in queries:
-            started = time.monotonic()
             query_id = str(record["query_id"])
             query = str(record["query"])
-            per_channel: dict[str, list[str]] = {
+            started = time.monotonic()
+            rankings: dict[str, list[str]] = {
                 "exact": [],
                 "lexical": [],
                 "dense": [],
@@ -265,8 +289,11 @@ def _predict_fixture_queries(
             }
             predicted_paths: list[list[str]] = []
             errors: list[str] = []
+            task = "unknown"
             try:
                 identifiers = adapter.parse_identifiers(query)
+                task = adapter.infer_task_hint(query, identifiers)
+
                 exact_hits: list[Any] = []
                 for identifier in identifiers:
                     exact_hits.extend(
@@ -283,7 +310,7 @@ def _predict_fixture_queries(
                         str(hit.metadata.get("object_uid", "")),
                     )
                 )
-                per_channel["exact"] = _dedupe(
+                rankings["exact"] = _dedupe(
                     str(hit.metadata["object_uid"])
                     for hit in exact_hits
                     if _object_hit_allowed(store, policy, scope, hit)
@@ -304,8 +331,8 @@ def _predict_fixture_queries(
                         )
                     except PermissionError:
                         continue
-                    per_channel["lexical"].append(str(hit.metadata["object_uid"]))
-                per_channel["lexical"] = _dedupe(per_channel["lexical"])
+                    rankings["lexical"].append(str(hit.metadata["object_uid"]))
+                rankings["lexical"] = _dedupe(rankings["lexical"])
 
                 for hit in dense.search(
                     query,
@@ -325,12 +352,12 @@ def _predict_fixture_queries(
                         )
                     except PermissionError:
                         continue
-                    per_channel["dense"].append(candidate.object_uid)
-                per_channel["dense"] = _dedupe(per_channel["dense"])
+                    rankings["dense"].append(candidate.object_uid)
+                rankings["dense"] = _dedupe(rankings["dense"])
 
                 plan = planner.plan(
                     query,
-                    authorized_seed_ids=per_channel["exact"],
+                    authorized_seed_ids=rankings["exact"],
                     max_graph_hops=config.graph.max_mapping_hops,
                     top_k=12,
                     lexical_enabled=True,
@@ -338,9 +365,9 @@ def _predict_fixture_queries(
                 )
                 if plan.graph_enabled:
                     for pattern_id in plan.pattern_ids:
-                        result = graph_engine.search(
+                        search = graph.search(
                             manifest=manifest,
-                            pattern=all_patterns[pattern_id],
+                            pattern=patterns[pattern_id],
                             authorized_seed_ids=plan.authorized_seed_ids,
                             scope=scope,
                             snapshot=snapshot,
@@ -348,32 +375,27 @@ def _predict_fixture_queries(
                             deadline=time.monotonic() + config.timeouts.channel_seconds,
                             max_hops=plan.bounds.max_graph_hops,
                         )
-                        for path in result.paths:
+                        for path in search.paths:
                             predicted_paths.append(list(path.ordered_node_uids))
-                            per_channel["graph"].append(path.ordered_node_uids[-1])
-                    per_channel["graph"] = _dedupe(per_channel["graph"])
+                            rankings["graph"].append(path.ordered_node_uids[-1])
+                    rankings["graph"] = _dedupe(rankings["graph"])
             except Exception as exc:
-                # Failures stay in the per-query report and remain in metric
-                # denominators as empty predictions rather than disappearing.
+                # A failed query remains in per_query and later metric denominators.
                 errors.append(type(exc).__name__)
 
-            rankings = {
-                "R1": list(per_channel["dense"]),
-                "R2": list(per_channel["lexical"]),
-                "R3": _rrf((per_channel["dense"], per_channel["lexical"])),
+            ablations = {
+                "R1": list(rankings["dense"]),
+                "R2": list(rankings["lexical"]),
+                "R3": _rrf((rankings["dense"], rankings["lexical"])),
                 "R4": _rrf(
-                    (
-                        per_channel["dense"],
-                        per_channel["lexical"],
-                        per_channel["exact"],
-                    )
+                    (rankings["dense"], rankings["lexical"], rankings["exact"])
                 ),
                 "R5": _rrf(
                     (
-                        per_channel["dense"],
-                        per_channel["lexical"],
-                        per_channel["exact"],
-                        per_channel["graph"],
+                        rankings["dense"],
+                        rankings["lexical"],
+                        rankings["exact"],
+                        rankings["graph"],
                     )
                 ),
             }
@@ -381,11 +403,15 @@ def _predict_fixture_queries(
                 {
                     "query_id": query_id,
                     "query": query,
+                    "task": task,
                     "execution_status": "failed" if errors else "ok",
                     "execution_errors": errors,
-                    "latency_ms": max(0.0, (time.monotonic() - started) * 1000.0),
-                    "channel_rankings": per_channel,
-                    "rankings": rankings,
+                    "latency_ms": max(
+                        0.0,
+                        (time.monotonic() - started) * 1000.0,
+                    ),
+                    "channel_rankings": rankings,
+                    "rankings": ablations,
                     "predicted_paths": predicted_paths,
                     "R6_status": "not_run",
                     "R6_reason": (
@@ -394,38 +420,40 @@ def _predict_fixture_queries(
                     ),
                     "C1_status": "not_run",
                     "C1_reason": (
-                        "context comparison requires the unavailable R6/final answer stage"
+                        "C1 answer/context comparison requires the unavailable final "
+                        "reranker/generator evaluation stage"
                     ),
                 }
             )
-    return predictions, grouping_by_id, ingest_report
+
+    return (
+        predictions,
+        grouping_by_id,
+        {
+            **ingest_report,
+            "frozen_split": frozen_split.as_dict(),
+        },
+    )
 
 
 def _aggregate(results: Sequence[MetricResult], *, reason: str) -> MetricResult:
-    ok = [
+    applicable = [
         item
         for item in results
         if item.status == MetricStatus.OK and item.value is not None
     ]
-    if not ok:
-        statuses = {item.status for item in results}
+    if not applicable:
         status = (
             MetricStatus.NOT_APPLICABLE
-            if statuses == {MetricStatus.NOT_APPLICABLE}
+            if results and {item.status for item in results} == {MetricStatus.NOT_APPLICABLE}
             else MetricStatus.NOT_RUN
         )
-        return MetricResult(
-            status=status,
-            reason=reason,
-            support_count=0,
-            annotation_coverage=0.0,
-            value=None,
-        )
+        return _unavailable(status, reason)
     return MetricResult(
         status=MetricStatus.OK,
-        support_count=len(ok),
-        annotation_coverage=len(ok) / len(results) if results else 0.0,
-        value=sum(float(item.value) for item in ok) / len(ok),
+        support_count=len(applicable),
+        annotation_coverage=len(applicable) / len(results),
+        value=sum(float(item.value) for item in applicable) / len(applicable),
     )
 
 
@@ -433,40 +461,28 @@ def _evaluate_predictions(
     predictions: list[dict[str, Any]],
     grouping_by_id: Mapping[str, QueryGrouping],
 ) -> tuple[dict[str, Any], list[dict[str, Any]]]:
-    # Evaluation-only labels are loaded only after every prediction is frozen.
-    qrels_payload = json.loads(QRELS_PATH.read_text(encoding="utf-8"))
-    qrels = qrels_payload.get("qrels", {})
-    path_payload = json.loads(PATH_ANNOTATIONS.read_text(encoding="utf-8"))
+    """Open evaluation-only labels only after native predictions are immutable records."""
+    qrels = json.loads(QRELS_PATH.read_text(encoding="utf-8")).get("qrels", {})
+    annotations = json.loads(PATH_ANNOTATIONS.read_text(encoding="utf-8"))
     paths_by_query: dict[str, list[list[str]]] = {}
-    for item in path_payload.get("paths", []):
+    for item in annotations.get("paths", []):
         paths_by_query.setdefault(str(item["query_id"]), []).append(
             list(item["ordered_object_uids"])
         )
 
-    metrics_by_ablation: dict[str, dict[str, list[MetricResult]]] = {
-        name: {
-            metric: []
-            for metric in (
-                "hit@1",
-                "hit@5",
-                "recall@10",
-                "mrr@10",
-                "ndcg@10",
-                "complete_path",
-            )
-        }
-        for name in ("R1", "R2", "R3", "R4", "R5")
-    }
-    recall10_by_query: dict[str, dict[str, float | None]] = {}
+    names = ("R1", "R2", "R3", "R4", "R5")
+    keys = ("hit@1", "hit@5", "recall@10", "mrr@10", "ndcg@10", "complete_path")
+    buckets = {name: {key: [] for key in keys} for name in names}
+    recall_by_query: dict[str, dict[str, float | None]] = {}
 
     for record in predictions:
         query_id = str(record["query_id"])
         labels = list(qrels.get(query_id, []))
+        recall_by_query[query_id] = {}
         record["evaluation"] = {}
-        recall10_by_query[query_id] = {}
-        for name in ("R1", "R2", "R3", "R4", "R5"):
+        for name in names:
             ranking = record["rankings"][name]
-            values = {
+            metrics = {
                 "hit@1": hit_at_k(ranking, labels, 1),
                 "hit@5": hit_at_k(ranking, labels, 5),
                 "recall@10": recall_at_k(ranking, labels, 10),
@@ -482,123 +498,109 @@ def _evaluate_predictions(
                 ),
             }
             record["evaluation"][name] = {
-                key: value.model_dump(mode="json") for key, value in values.items()
+                key: metric.model_dump(mode="json")
+                for key, metric in metrics.items()
             }
-            recall10_by_query[query_id][name] = values["recall@10"].value
-            for key, value in values.items():
-                metrics_by_ablation[name][key].append(value)
-        record["evaluation"]["evidence_document_recall@10"] = MetricResult(
-            status=MetricStatus.NOT_APPLICABLE,
-            reason=(
-                "fixture supplies target-object qrels but no separate evidence-document labels"
-            ),
-            support_count=0,
-            annotation_coverage=0.0,
-            value=None,
+            recall_by_query[query_id][name] = metrics["recall@10"].value
+            for key, metric in metrics.items():
+                buckets[name][key].append(metric)
+        record["evaluation"]["evidence_document_recall@10"] = _unavailable(
+            MetricStatus.NOT_APPLICABLE,
+            "fixture has target-object qrels but no independent evidence-document labels",
         ).model_dump(mode="json")
 
-    aggregate: dict[str, Any] = {}
-    for name, metric_map in metrics_by_ablation.items():
-        aggregate[name] = {
-            metric: _aggregate(
-                values,
-                reason=f"no applicable {metric} annotations",
-            ).model_dump(mode="json")
-            for metric, values in metric_map.items()
+    aggregate: dict[str, Any] = {
+        name: {
+            key: _aggregate(values, reason=f"no applicable {key} annotations").model_dump(
+                mode="json"
+            )
+            for key, values in metric_map.items()
         }
-
-    unavailable = MetricResult(
-        status=MetricStatus.NOT_RUN,
-        reason="fixture has no configured final reranker provider",
-        support_count=0,
-        annotation_coverage=0.0,
-        value=None,
-    ).model_dump(mode="json")
-    aggregate["R6"] = {
-        metric: dict(unavailable)
-        for metric in (
-            "hit@1",
-            "hit@5",
-            "recall@10",
-            "mrr@10",
-            "ndcg@10",
-            "complete_path",
-        )
+        for name, metric_map in buckets.items()
     }
-    c1_unavailable = MetricResult(
-        status=MetricStatus.NOT_RUN,
-        reason="no final generator/context-quality evaluation configured",
-        support_count=0,
-        annotation_coverage=0.0,
-        value=None,
+    r6 = _unavailable(
+        MetricStatus.NOT_RUN,
+        "fixture has no configured final reranker provider",
     ).model_dump(mode="json")
-    aggregate["C1-basic"] = {"context_quality": dict(c1_unavailable)}
-    aggregate["C1-structured"] = {"context_quality": dict(c1_unavailable)}
+    aggregate["R6"] = {key: dict(r6) for key in keys}
+    c1 = _unavailable(
+        MetricStatus.NOT_RUN,
+        "no final reranker/generator context-quality evaluation configured",
+    ).model_dump(mode="json")
+    aggregate["C1-basic"] = {"context_quality": dict(c1)}
+    aggregate["C1-structured"] = {"context_quality": dict(c1)}
     aggregate["L0"] = {
-        "object_recall@10": MetricResult(
-            status=MetricStatus.NOT_COMPARABLE,
-            reason="L0 canonical object mapping is unavailable for the fixture comparator",
-            support_count=0,
-            annotation_coverage=0.0,
-            value=None,
+        "object_recall@10": _unavailable(
+            MetricStatus.NOT_COMPARABLE,
+            "L0 canonical object mapping is unavailable for this fixture comparator",
         ).model_dump(mode="json")
     }
+    aggregate["evidence_document_metrics"] = {
+        "status": "not_applicable",
+        "reason": "no separate evidence-document labels",
+    }
+    aggregate["unanswerable"] = {
+        "false_evidence_rate": _unavailable(
+            MetricStatus.NOT_APPLICABLE,
+            "fixture has no independent unanswerable-query annotation set",
+        ).model_dump(mode="json"),
+        "abstention_rate": _unavailable(
+            MetricStatus.NOT_APPLICABLE,
+            "fixture has no independent unanswerable-query annotation set",
+        ).model_dump(mode="json"),
+    }
 
-    clustered: dict[str, list[float]] = {}
-    for query_id, values in recall10_by_query.items():
-        if values.get("R5") is None or values.get("R4") is None:
+    # Graph-gain uses mapping queries only, grouped by the frozen near-duplicate
+    # family. It is intentionally distinct from held-out-edge generalization.
+    graph_differences: dict[str, list[float]] = {}
+    for record in predictions:
+        if record.get("task") != "mapping":
             continue
-        group = grouping_by_id[query_id].near_duplicate_family
-        clustered.setdefault(group, []).append(
-            float(values["R5"]) - float(values["R4"])
+        query_id = str(record["query_id"])
+        r5 = recall_by_query[query_id].get("R5")
+        r4 = recall_by_query[query_id].get("R4")
+        if r5 is None or r4 is None:
+            continue
+        family = grouping_by_id[query_id].near_duplicate_family
+        graph_differences.setdefault(family, []).append(float(r5) - float(r4))
+    graph_interval = paired_cluster_bootstrap(graph_differences)
+    if graph_interval is None:
+        graph_gain = _unavailable(
+            MetricStatus.INCONCLUSIVE,
+            "mapping-subset graph gain has fewer than two independent query-family clusters",
         )
-    interval = paired_cluster_bootstrap(clustered)
-    if interval is None:
-        graph_gain = MetricResult(
-            status=MetricStatus.INCONCLUSIVE,
-            reason=(
-                "mapping-subset graph gain has fewer than two independent query-family clusters"
-            ),
-            support_count=0,
-            annotation_coverage=0.0,
-            value=None,
-        )
-    elif interval.lower_95 > 0.0:
+    elif graph_interval.lower_95 > 0.0:
         graph_gain = MetricResult(
             status=MetricStatus.OK,
-            support_count=interval.cluster_count,
+            support_count=graph_interval.cluster_count,
             annotation_coverage=1.0,
-            value=interval.mean,
+            value=graph_interval.mean,
         )
     else:
         graph_gain = MetricResult(
             status=MetricStatus.INCONCLUSIVE,
             reason=(
-                f"graph-gain lower 95% bound {interval.lower_95:.6f} "
-                "is not greater than zero"
+                f"mapping-subset graph-gain lower 95% bound "
+                f"{graph_interval.lower_95:.6f} is not greater than zero"
             ),
-            support_count=interval.cluster_count,
+            support_count=graph_interval.cluster_count,
             annotation_coverage=1.0,
             value=None,
         )
+
     aggregate["gates"] = {
-        "R6_vs_R5_recall10_noninferiority": MetricResult(
-            status=MetricStatus.NOT_RUN,
-            reason="R6 unavailable without an explicit reranker provider/model",
-            support_count=0,
-            annotation_coverage=0.0,
-            value=None,
+        "R6_vs_R5_recall10_noninferiority": _unavailable(
+            MetricStatus.NOT_RUN,
+            "R6 unavailable without an explicit reranker provider/model",
         ).model_dump(mode="json"),
-        "R5_vs_R4_graph_gain": graph_gain.model_dump(mode="json"),
-        "real_quality_promotion": MetricResult(
-            status=MetricStatus.NOT_RUN,
-            reason=(
-                "synthetic fixture establishes mechanics only; real held-out quality "
-                "data/model gates were not run"
-            ),
-            support_count=0,
-            annotation_coverage=0.0,
-            value=None,
+        "R5_vs_R4_mapping_graph_gain": graph_gain.model_dump(mode="json"),
+        "held_out_edge_generalization": _unavailable(
+            MetricStatus.NOT_RUN,
+            "catalog fixture mapping is not a held-out-edge experiment",
+        ).model_dump(mode="json"),
+        "real_quality_promotion": _unavailable(
+            MetricStatus.NOT_RUN,
+            "synthetic fixture establishes mechanics only; real held-out quality gates were not run",
         ).model_dump(mode="json"),
     }
     return aggregate, predictions
@@ -606,19 +608,18 @@ def _evaluate_predictions(
 
 def _report_files(
     *,
-    config_path: Path,
     output: Path,
     config: AdvancedRagConfig,
     predictions: list[dict[str, Any]],
-    grouping_by_id: Mapping[str, QueryGrouping],
     ingest_report: Mapping[str, Any],
     retrieval_metrics: Mapping[str, Any],
 ) -> None:
     output.mkdir(parents=True, exist_ok=True)
-    config_payload = yaml.safe_load(config_path.read_text(encoding="utf-8"))
+    # Serialize the validated model, not the raw file/environment, so secret-like
+    # unknown keys can never leak into a report snapshot.
     _atomic_text(
         output / "config.snapshot.yaml",
-        yaml.safe_dump(config_payload, sort_keys=True),
+        yaml.safe_dump(config.serializable_snapshot(), sort_keys=True),
     )
     _write_json(
         output / "environment.json",
@@ -636,17 +637,19 @@ def _report_files(
             "judge": None,
         },
     )
-    corpus_payload = json.loads(CORPUS_MANIFEST.read_text(encoding="utf-8"))
     _write_json(
         output / "corpus.manifest.snapshot.json",
         {
             "sha256": _sha256(CORPUS_MANIFEST),
-            "manifest": corpus_payload,
-            "ingest_report": dict(ingest_report),
+            "manifest": json.loads(CORPUS_MANIFEST.read_text(encoding="utf-8")),
+            "ingest_report": {
+                key: value
+                for key, value in ingest_report.items()
+                if key != "frozen_split"
+            },
         },
     )
-    split = grouped_split(grouping_by_id.values())
-    _write_json(output / "split.manifest.json", split.as_dict())
+    _write_json(output / "split.manifest.json", ingest_report["frozen_split"])
     _atomic_text(
         output / "per_query.jsonl",
         "".join(
@@ -655,45 +658,37 @@ def _report_files(
         ),
     )
     _write_json(output / "retrieval_metrics.json", retrieval_metrics)
-    latency = [float(item["latency_ms"]) for item in predictions]
+    latencies = [float(item["latency_ms"]) for item in predictions]
     _write_json(
         output / "latency_metrics.json",
         {
-            "status": "ok" if latency else "not_run",
-            "sample_count": len(latency),
+            "status": "ok" if latencies else "not_run",
+            "sample_count": len(latencies),
             "concurrency": 1,
             "cache_state": "fixture-local-persistent-index-reopen",
-            "mean_ms": sum(latency) / len(latency) if latency else None,
-            "max_ms": max(latency) if latency else None,
+            "mean_ms": sum(latencies) / len(latencies) if latencies else None,
+            "max_ms": max(latencies) if latencies else None,
             "throughput_reported": False,
         },
     )
     _write_json(
         output / "answer_metrics.json",
         {
-            "answer_quality": MetricResult(
-                status=MetricStatus.NOT_RUN,
-                reason="retrieval evaluation does not invoke a generator",
-                support_count=0,
-                annotation_coverage=0.0,
-                value=None,
+            "answer_quality": _unavailable(
+                MetricStatus.NOT_RUN,
+                "retrieval evaluation does not invoke a generator",
             ).model_dump(mode="json"),
-            "citation_validity": MetricResult(
-                status=MetricStatus.NOT_RUN,
-                reason="retrieval-only runner does not pack/generate response citations",
-                support_count=0,
-                annotation_coverage=0.0,
-                value=None,
+            "citation_validity": _unavailable(
+                MetricStatus.NOT_RUN,
+                "retrieval-only runner emits no generated response citations",
             ).model_dump(mode="json"),
-            "citation_support": MetricResult(
-                status=MetricStatus.NOT_RUN,
-                reason="no independent answer/citation support judgments configured",
-                support_count=0,
-                annotation_coverage=0.0,
-                value=None,
+            "citation_support": _unavailable(
+                MetricStatus.NOT_RUN,
+                "no independent answer/citation support judgments configured",
             ).model_dump(mode="json"),
         },
     )
+
     specs = native_ablation_matrix()
     validate_fair_matrix(specs)
     with (output / "ablation_summary.csv").open(
@@ -725,14 +720,12 @@ def _report_files(
                     "context_budget": spec.context_budget,
                 }
             )
+
     l0 = l0_comparator_metadata(canonical_mapping_available=False)
-    report_lines = [
+    report = [
         "# Advanced fixture retrieval evaluation",
         "",
-        (
-            "This report is a deterministic synthetic-fixture mechanics report, "
-            "not a real-quality promotion claim."
-        ),
+        "This is a deterministic synthetic-fixture mechanics report, not a real-quality promotion claim.",
         "",
         f"- queries: {len(predictions)}",
         f"- active generation: {ingest_report.get('generation_id')}",
@@ -742,16 +735,15 @@ def _report_files(
             else "- L0 comparator: not_comparable"
         ),
         "- R6 reranker: not_run (no explicit fixture reranker provider)",
+        "- C1 answer/context comparison: not_run",
+        "- held-out-edge generalization: not_run",
         "- answer/generator/judge quality: not_run",
         "- authorization ablation: forbidden/not performed",
         "- throughput claim: none (sequential fixture run)",
         "",
-        (
-            "See retrieval_metrics.json, answer_metrics.json, latency_metrics.json, "
-            "per_query.jsonl and ablation_summary.csv for machine-readable details."
-        ),
+        "See retrieval_metrics.json, answer_metrics.json, latency_metrics.json, per_query.jsonl and ablation_summary.csv for machine-readable details.",
     ]
-    _atomic_text(output / "report.md", "\n".join(report_lines) + "\n")
+    _atomic_text(output / "report.md", "\n".join(report) + "\n")
 
 
 def run_retrieval_evaluation(
@@ -760,24 +752,19 @@ def run_retrieval_evaluation(
     config = load_advanced_rag_config(config_path)
     if config.profile != "fixture":
         raise RuntimeError(
-            "the offline native evaluation command currently requires the deterministic fixture profile"
+            "offline native evaluation currently requires the deterministic fixture profile"
         )
-    predictions, grouping_by_id, ingest_report = _predict_fixture_queries(
+    predictions, groupings, ingest_report = _predict_fixture_queries(
         config_path=config_path,
         config=config,
     )
-    retrieval_metrics, predictions = _evaluate_predictions(
-        predictions,
-        grouping_by_id,
-    )
+    metrics, predictions = _evaluate_predictions(predictions, groupings)
     _report_files(
-        config_path=config_path,
         output=output,
         config=config,
         predictions=predictions,
-        grouping_by_id=grouping_by_id,
         ingest_report=ingest_report,
-        retrieval_metrics=retrieval_metrics,
+        retrieval_metrics=metrics,
     )
     return {
         "schema_version": "advanced-retrieval-eval-report-v1",
