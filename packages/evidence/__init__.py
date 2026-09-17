@@ -1,4 +1,12 @@
 """Pure contracts for the advanced evidence/RAG implementation."""
+from .access import (
+    CorpusAccessDenied,
+    CorpusAccessStore,
+    CorpusAccessUnavailable,
+    CorpusGrant,
+    CorpusGrantPolicy,
+    CorpusRegistrationManifest,
+)
 from .config import AdvancedRagConfig, AdvancedRagConfigError, RuntimeFactories, load_advanced_rag_config
 from .domain import DomainAdapter, GraphPattern, NormalizedEvidenceBatch
 from .ids import chunk_uid, object_uid, path_uid, physical_key, relation_revision_uid, relation_uid, revision_uid
@@ -35,11 +43,12 @@ from .store import CheckpointUpdate, EvidenceStore, PersistResult
 
 __all__ = [
     "AdvancedRagConfig", "AdvancedRagConfigError", "AuthorizedScope", "Candidate", "CheckpointUpdate",
-    "ChunkCandidate", "DenyByDefaultPolicy", "DomainAdapter", "EvidenceChunk", "EvidenceObject",
-    "EvidencePath", "EvidenceRelation", "EvidenceStore", "ExternalIdentifier", "GraphPattern", "MigrationError",
-    "NormalizedEvidenceBatch", "ObjectCandidate", "PathCandidate", "PersistResult", "PolicyDenied", "Principal",
-    "PublicFixturePolicy", "RawHashConflict", "RawHashMismatch", "RawPayloadStore", "RawStoreError", "ResolvedScope",
-    "RetrievalCandidate", "RetrievalPolicy", "RetrievalRequest", "RetrievalResult", "RuntimeFactories", "SnapshotRef",
-    "SourceRef", "TrustedPrincipal", "authorize_evidence_set", "chunk_uid", "load_advanced_rag_config", "object_uid",
-    "path_uid", "physical_key", "relation_revision_uid", "relation_uid", "revision_uid",
+    "ChunkCandidate", "CorpusAccessDenied", "CorpusAccessStore", "CorpusAccessUnavailable", "CorpusGrant",
+    "CorpusGrantPolicy", "CorpusRegistrationManifest", "DenyByDefaultPolicy", "DomainAdapter", "EvidenceChunk",
+    "EvidenceObject", "EvidencePath", "EvidenceRelation", "EvidenceStore", "ExternalIdentifier", "GraphPattern",
+    "MigrationError", "NormalizedEvidenceBatch", "ObjectCandidate", "PathCandidate", "PersistResult", "PolicyDenied",
+    "Principal", "PublicFixturePolicy", "RawHashConflict", "RawHashMismatch", "RawPayloadStore", "RawStoreError",
+    "ResolvedScope", "RetrievalCandidate", "RetrievalPolicy", "RetrievalRequest", "RetrievalResult", "RuntimeFactories",
+    "SnapshotRef", "SourceRef", "TrustedPrincipal", "authorize_evidence_set", "chunk_uid", "load_advanced_rag_config",
+    "object_uid", "path_uid", "physical_key", "relation_revision_uid", "relation_uid", "revision_uid",
 ]
