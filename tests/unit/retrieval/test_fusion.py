@@ -84,9 +84,16 @@ def test_hand_computed_rrf_and_merge():
         ),
         plan=_plan(),
     )
-    merged = next(candidate for candidate in outcome.candidates if candidate.object_uid == object_uid)
+    merged = next(
+        candidate
+        for candidate in outcome.candidates
+        if candidate.object_uid == object_uid
+    )
     assert math.isclose(merged.fused_score, 1 / 61 + 1 / 62)
-    assert [score.channel for score in merged.channel_scores] == ["exact", "lexical"]
+    assert [score.channel for score in merged.channel_scores] == [
+        "exact",
+        "lexical",
+    ]
 
 
 def test_duplicate_candidate_within_channel_is_rejected():
@@ -136,3 +143,25 @@ def test_exact_priority_reserved_only_for_entity_lookup():
 def test_nonfinite_score_rejected_by_candidate_contract():
     with pytest.raises(Exception):
         _candidate("dense", 1, "1" * 64, "2" * 64, raw=float("inf"))
+
+
+def test_same_identity_with_inconsistent_evidence_payload_is_rejected():
+    revision = "1" * 64
+    first = _candidate("lexical", 1, revision, "2" * 64)
+    second = _candidate("dense", 1, revision, "3" * 64)
+    with pytest.raises(FusionError, match="inconsistent evidence"):
+        fuse_channel_results(
+            (
+                ChannelResult(
+                    channel="lexical",
+                    status="ok",
+                    candidates=(first,),
+                ),
+                ChannelResult(
+                    channel="dense",
+                    status="ok",
+                    candidates=(second,),
+                ),
+            ),
+            plan=_plan(),
+        )
