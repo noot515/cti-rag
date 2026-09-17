@@ -22,7 +22,9 @@ class _WriterBase:
         if spec is None:
             raise RuntimeError(f"manifest does not enable {self.backend} projection")
         if spec.fingerprint != self.fingerprint:
-            raise RuntimeError(f"{self.backend} projection fingerprint mismatch: manifest={spec.fingerprint} writer={self.fingerprint}")
+            raise RuntimeError(
+                f"{self.backend} projection fingerprint mismatch: manifest={spec.fingerprint} writer={self.fingerprint}"
+            )
         return spec
 
     def _receipt(self, manifest: GenerationManifest, artifact_sha256: str, sentinel: str) -> ProjectionReceipt:
@@ -50,12 +52,21 @@ class ExactProjectionWriter(_WriterBase):
     def build(self, manifest: GenerationManifest) -> ProjectionReceipt:
         self._spec(manifest)
         index = ExactIndex.build(self.store, root=self.root, manifest=manifest)
-        return self._receipt(manifest, index.artifact_sha256, f"exact:{len(index.entries)}:{index.artifact_sha256[:16]}")
+        return self._receipt(
+            manifest,
+            index.artifact_sha256,
+            f"exact:{len(index.entries)}:{index.artifact_sha256[:16]}",
+        )
 
     def verify(self, manifest: GenerationManifest, receipt: ProjectionReceipt) -> bool:
         try:
             self._spec(manifest)
-            path = ExactIndex.path_for(self.root, domain=manifest.domain, scope_id=manifest.scope_id, generation_id=manifest.generation_id)
+            path = ExactIndex.path_for(
+                self.root,
+                domain=manifest.domain,
+                scope_id=manifest.scope_id,
+                generation_id=manifest.generation_id,
+            )
             index = ExactIndex.open(self.store, path=path)
         except (ExactIndexError, OSError, RuntimeError):
             return False
@@ -67,6 +78,7 @@ class ExactProjectionWriter(_WriterBase):
             and receipt.member_count == len(manifest.membership)
             and receipt.fingerprint == self.fingerprint
             and receipt.artifact_sha256 == index.artifact_sha256
+            and receipt.sentinel == f"exact:{len(index.entries)}:{index.artifact_sha256[:16]}"
             and receipt.visibility_verified
         )
 
@@ -74,22 +86,48 @@ class ExactProjectionWriter(_WriterBase):
 class LexicalProjectionWriter(_WriterBase):
     backend = "lexical"
 
-    def __init__(self, store, root: Path | str, *, tokenizer: DeterministicTokenizer | None = None, k1: float = 1.5, b: float = 0.75) -> None:
+    def __init__(
+        self,
+        store,
+        root: Path | str,
+        *,
+        tokenizer: DeterministicTokenizer | None = None,
+        k1: float = 1.5,
+        b: float = 0.75,
+    ) -> None:
         super().__init__(store, root)
         self.tokenizer = tokenizer or DeterministicTokenizer()
         self.k1 = k1
         self.b = b
-        self.fingerprint = canonical_hash(["lexical-projection-v1", self.tokenizer.fingerprint, self.k1, self.b, "persistent-json-bm25"])
+        self.fingerprint = canonical_hash(
+            ["lexical-projection-v1", self.tokenizer.fingerprint, self.k1, self.b, "persistent-json-bm25"]
+        )
 
     def build(self, manifest: GenerationManifest) -> ProjectionReceipt:
         self._spec(manifest)
-        index = LexicalIndex.build(self.store, root=self.root, manifest=manifest, tokenizer=self.tokenizer, k1=self.k1, b=self.b)
-        return self._receipt(manifest, index.artifact_sha256, f"lexical:{len(index.docs)}:{index.artifact_sha256[:16]}")
+        index = LexicalIndex.build(
+            self.store,
+            root=self.root,
+            manifest=manifest,
+            tokenizer=self.tokenizer,
+            k1=self.k1,
+            b=self.b,
+        )
+        return self._receipt(
+            manifest,
+            index.artifact_sha256,
+            f"lexical:{len(index.docs)}:{index.artifact_sha256[:16]}",
+        )
 
     def verify(self, manifest: GenerationManifest, receipt: ProjectionReceipt) -> bool:
         try:
             self._spec(manifest)
-            path = LexicalIndex.path_for(self.root, domain=manifest.domain, scope_id=manifest.scope_id, generation_id=manifest.generation_id)
+            path = LexicalIndex.path_for(
+                self.root,
+                domain=manifest.domain,
+                scope_id=manifest.scope_id,
+                generation_id=manifest.generation_id,
+            )
             index = LexicalIndex.open(self.store, path=path, tokenizer=self.tokenizer)
         except (LexicalIndexError, OSError, RuntimeError):
             return False
@@ -101,6 +139,7 @@ class LexicalProjectionWriter(_WriterBase):
             and receipt.member_count == len(manifest.membership)
             and receipt.fingerprint == self.fingerprint
             and receipt.artifact_sha256 == index.artifact_sha256
+            and receipt.sentinel == f"lexical:{len(index.docs)}:{index.artifact_sha256[:16]}"
             and receipt.visibility_verified
         )
 

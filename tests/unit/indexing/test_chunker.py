@@ -21,7 +21,11 @@ def test_small_object_stays_intact_and_is_deterministic():
     second = chunk_object(obj, **kwargs)
     assert first == second
     assert len(first) == 1
+    assert isinstance(first[0], CtiChunk)
     assert first[0].object_revision_uid == obj.revision_uid
+    assert first[0].effective_marking_refs == obj.marking_refs
+    assert first[0].granular_selectors == obj.policy.granular_selectors
+    assert first[0].citation_locator == "object"
     assert first[0].tokenizer_fingerprint == tokenizer.fingerprint
     assert first[0].content_hash
     assert "CVE-2026-999999" in first[0].text

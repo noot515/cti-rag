@@ -100,7 +100,6 @@ def _make_chunk(
     section_path: str,
     ordinal: int,
     segments: list[dict[str, Any]],
-    token_count: int,
     tokenizer: DeterministicTokenizer,
     config: ChunkingConfig,
     chunk_class: type[EvidenceChunk],
@@ -114,6 +113,14 @@ def _make_chunk(
         ordinal=ordinal,
         content_hash=content_hash,
     )
+    domain_fields: dict[str, Any] = {}
+    model_fields = getattr(chunk_class, "model_fields", {})
+    if "effective_marking_refs" in model_fields:
+        domain_fields["effective_marking_refs"] = tuple(getattr(obj, "marking_refs", ()))
+    if "granular_selectors" in model_fields:
+        domain_fields["granular_selectors"] = tuple(obj.policy.granular_selectors)
+    if "citation_locator" in model_fields:
+        domain_fields["citation_locator"] = section_path
     return chunk_class(
         uid=uid,
         object_uid=obj.uid,
@@ -131,6 +138,7 @@ def _make_chunk(
         policy=obj.policy,
         extension_type=f"{obj.domain}-chunk",
         extension=_extension(segments),
+        **domain_fields,
     )
 
 
@@ -180,19 +188,19 @@ def chunk_object(
                 }
             )
         joined = "".join(parts)
-        return (
-            _make_chunk(
-                obj=obj,
-                text=joined,
-                section_path="object",
-                ordinal=0,
-                segments=segments,
-                token_count=total_tokens,
-                tokenizer=tokenizer,
-                config=config,
-                chunk_class=chunk_class,
-            ),
-        )
+        if len(tokenizer.tokens(joined)) <= config.target_tokens:
+            return (
+                _make_chunk(
+                    obj=obj,
+                    text=joined,
+                    section_path="object",
+                    ordinal=0,
+                    segments=segments,
+                    tokenizer=tokenizer,
+                    config=config,
+                    chunk_class=chunk_class,
+                ),
+            )
 
     chunks: list[EvidenceChunk] = []
     ordinal = 0
@@ -220,7 +228,6 @@ def chunk_object(
                             "emitted_end": len(emitted),
                         }
                     ],
-                    token_count=len(window),
                     tokenizer=tokenizer,
                     config=config,
                     chunk_class=chunk_class,

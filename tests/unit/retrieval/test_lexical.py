@@ -2,12 +2,14 @@ from __future__ import annotations
 
 from hashlib import sha256
 import json
+from pathlib import Path
 
 import pytest
 
 from packages.domains.cti import CtiDomainAdapter, CtiChunk
-from packages.evidence.ids import chunk_uid
+from packages.evidence.ids import canonical_json, chunk_uid
 from packages.evidence.policy import PolicyDenied, Principal, PublicFixturePolicy
+from packages.evidence.schema import SnapshotRef
 from packages.evidence.store import EvidenceStore
 from packages.indexing.chunker import ChunkingConfig, DeterministicTokenizer, chunk_objects
 from packages.indexing.lexical_indexer import LexicalProjectionWriter
@@ -15,7 +17,20 @@ from packages.indexing.manifests import GenerationManifest, GenerationMember, Pr
 from packages.indexing.orchestrator import PublicationOrchestrator
 from packages.retrieval.lexical import LexicalIndex, LexicalIndexError
 
-from tests.unit.indexing._helpers import batch_and_raw
+FIXTURE = Path(__file__).resolve().parents[2] / "fixtures" / "cti" / "public_fixture.json"
+
+
+def _batch_and_raw(*, name_suffix: str = ""):
+    payload = json.loads(FIXTURE.read_text(encoding="utf-8"))
+    if name_suffix:
+        payload["objects"][0]["name"] += name_suffix
+        payload["source_snapshot_id"] += name_suffix.replace(" ", "-")
+    batch = CtiDomainAdapter().normalize(payload)
+    raw = {}
+    for record in payload["objects"] + payload["relations"]:
+        encoded = canonical_json(record).encode("utf-8")
+        raw[sha256(encoded).hexdigest()] = encoded
+    return batch, raw
 
 
 def _with_chunks(batch):
@@ -54,14 +69,17 @@ def _scope_snapshot(manifest):
         corpus_id="fixture-cti", scope_id="public-fixture", source_allowlist=frozenset({"fixture-public"})
     )
     scope = policy.resolve_scope(Principal(principal_id="test", source="trusted_local_cli"), "fixture-cti")
-    snapshot = __import__("packages.evidence.schema", fromlist=["SnapshotRef"]).SnapshotRef(
-        domain=manifest.domain, scope_id=manifest.scope_id, snapshot_id=manifest.generation_id, manifest_sha256=manifest.manifest_sha256
+    snapshot = SnapshotRef(
+        domain=manifest.domain,
+        scope_id=manifest.scope_id,
+        snapshot_id=manifest.generation_id,
+        manifest_sha256=manifest.manifest_sha256,
     )
     return policy, scope, snapshot
 
 
 def _publish(tmp_path, *, name_suffix=""):
-    batch, raw = batch_and_raw(name_suffix=name_suffix)
+    batch, raw = _batch_and_raw(name_suffix=name_suffix)
     batch, tokenizer = _with_chunks(batch)
     store = EvidenceStore(tmp_path / "catalog.db", tmp_path / "raw")
     store.persist_batch(batch, raw_payloads=raw)
@@ -69,7 +87,9 @@ def _publish(tmp_path, *, name_suffix=""):
     manifest = _manifest(batch, writer, tokenizer)
     PublicationOrchestrator.trusted(store, [writer]).publish(manifest)
     policy, scope, snapshot = _scope_snapshot(manifest)
-    path = LexicalIndex.path_for(tmp_path / "indexes", domain="cti", scope_id="public-fixture", generation_id=manifest.generation_id)
+    path = LexicalIndex.path_for(
+        tmp_path / "indexes", domain="cti", scope_id="public-fixture", generation_id=manifest.generation_id
+    )
     return store, batch, manifest, policy, scope, snapshot, path
 
 
@@ -109,7 +129,7 @@ def test_corrupt_persistent_index_refuses_open(tmp_path):
 
 
 def test_unauthorized_chunk_is_never_hydrated(tmp_path):
-    batch, raw = batch_and_raw()
+    batch, raw = _batch_and_raw()
     tokenizer = DeterministicTokenizer()
     obj = batch.objects[0]
     text = "restricted lexical sentinel"
@@ -147,9 +167,42 @@ def test_unauthorized_chunk_is_never_hydrated(tmp_path):
         policy, scope, snapshot = _scope_snapshot(manifest)
         index = LexicalIndex.open(
             store,
-            path=LexicalIndex.path_for(tmp_path / "indexes", domain="cti", scope_id="public-fixture", generation_id=manifest.generation_id),
+            path=LexicalIndex.path_for(
+                tmp_path / "indexes", domain="cti", scope_id="public-fixture", generation_id=manifest.generation_id
+            ),
             tokenizer=tokenizer,
         )
         hit = index.search("restricted", scope=scope, snapshot=snapshot)[0]
         with pytest.raises(PolicyDenied):
             index.hydrate(hit, scope=scope, snapshot=snapshot, policy=policy)
+
+
+def test_corrupt_projection_artifact_never_activates_generation(tmp_path):
+    batch, raw = _batch_and_raw()
+    batch, tokenizer = _with_chunks(batch)
+    with EvidenceStore(tmp_path / "catalog.db", tmp_path / "raw") as store:
+        store.persist_batch(batch, raw_payloads=raw)
+
+        class CorruptingWriter(LexicalProjectionWriter):
+            def build(self, manifest):
+                receipt = super().build(manifest)
+                path = LexicalIndex.path_for(
+                    self.root,
+                    domain=manifest.domain,
+                    scope_id=manifest.scope_id,
+                    generation_id=manifest.generation_id,
+                )
+                payload = json.loads(path.read_text(encoding="utf-8"))
+                payload["documents"][0]["content_hash"] = "0" * 64
+                path.write_text(json.dumps(payload), encoding="utf-8")
+                return receipt
+
+        writer = CorruptingWriter(store, tmp_path / "indexes", tokenizer=tokenizer)
+        manifest = _manifest(batch, writer, tokenizer)
+        with pytest.raises(Exception, match="projection verification failed"):
+            PublicationOrchestrator.trusted(store, [writer]).publish(manifest)
+        active = store.connection.execute(
+            "SELECT 1 FROM active_generations WHERE domain=? AND scope_id=? AND corpus_id=?",
+            (manifest.domain, manifest.scope_id, manifest.corpus_id),
+        ).fetchone()
+        assert active is None

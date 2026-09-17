@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 from hashlib import sha256
+import json
+from pathlib import Path
 
 from packages.domains.cti import CtiDomainAdapter
 from packages.evidence.ids import canonical_json
@@ -12,11 +14,15 @@ from packages.indexing.manifests import GenerationManifest, GenerationMember, Pr
 from packages.indexing.orchestrator import PublicationOrchestrator
 from packages.retrieval.exact import ExactIndex
 
-from tests.unit.indexing._helpers import manifest_payload
+FIXTURE = Path(__file__).resolve().parents[2] / "fixtures" / "cti" / "public_fixture.json"
+
+
+def _manifest_payload():
+    return json.loads(FIXTURE.read_text(encoding="utf-8"))
 
 
 def _batch_and_raw_with_body_identifier(body_identifier: str | None = None):
-    payload = manifest_payload()
+    payload = _manifest_payload()
     if body_identifier:
         payload["objects"][0]["description"] += f" Body-only mention: {body_identifier}."
     batch = CtiDomainAdapter().normalize(payload)
@@ -69,7 +75,9 @@ def test_valid_exact_id_and_source_id_are_persistent_snapshot_hits(tmp_path):
         manifest = _manifest(batch, writer)
         PublicationOrchestrator.trusted(store, [writer]).publish(manifest)
         scope, snapshot = _scope_and_snapshot(manifest)
-        path = ExactIndex.path_for(tmp_path / "indexes", domain="cti", scope_id="public-fixture", generation_id=manifest.generation_id)
+        path = ExactIndex.path_for(
+            tmp_path / "indexes", domain="cti", scope_id="public-fixture", generation_id=manifest.generation_id
+        )
         index = ExactIndex.open(store, path=path)
         hits = index.lookup(
             ExternalIdentifier(namespace="cve", value="CVE-2026-999999", domain="cti"),
@@ -78,7 +86,9 @@ def test_valid_exact_id_and_source_id_are_persistent_snapshot_hits(tmp_path):
         )
         assert len(hits) == 1
         assert hits[0].metadata["match_kind"] == "external_identifier"
-        source_hits = index.lookup("source:fixture-public:fixture-cve-2026-999999", scope=scope, snapshot=snapshot)
+        source_hits = index.lookup(
+            "source:fixture-public:fixture-cve-2026-999999", scope=scope, snapshot=snapshot
+        )
         assert [hit.logical_uid for hit in source_hits] == [hits[0].logical_uid]
 
 
@@ -91,7 +101,12 @@ def test_body_mention_is_not_exact_identity_and_unknown_is_legitimate_miss(tmp_p
         manifest = _manifest(batch, writer)
         PublicationOrchestrator.trusted(store, [writer]).publish(manifest)
         scope, snapshot = _scope_and_snapshot(manifest)
-        index = ExactIndex.open(store, path=ExactIndex.path_for(tmp_path / "indexes", domain="cti", scope_id="public-fixture", generation_id=manifest.generation_id))
+        index = ExactIndex.open(
+            store,
+            path=ExactIndex.path_for(
+                tmp_path / "indexes", domain="cti", scope_id="public-fixture", generation_id=manifest.generation_id
+            ),
+        )
         assert index.lookup(
             ExternalIdentifier(namespace="cve", value=body_only, domain="cti"),
             scope=scope,
@@ -110,7 +125,9 @@ def test_exact_artifact_reopens_without_rebuilding(tmp_path):
         manifest = _manifest(batch, writer)
         PublicationOrchestrator.trusted(store, [writer]).publish(manifest)
         scope, snapshot = _scope_and_snapshot(manifest)
-        path = ExactIndex.path_for(index_root, domain="cti", scope_id="public-fixture", generation_id=manifest.generation_id)
+        path = ExactIndex.path_for(
+            index_root, domain="cti", scope_id="public-fixture", generation_id=manifest.generation_id
+        )
     with EvidenceStore(db, raw_root) as reopened:
         index = ExactIndex.open(reopened, path=path)
         hits = index.lookup(
