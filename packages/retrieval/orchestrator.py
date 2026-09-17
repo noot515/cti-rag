@@ -136,10 +136,17 @@ class AdvancedRetrievalOrchestrator:
         self.channel_timeout_seconds = channel_timeout_seconds
         self.pre_rerank_limit = pre_rerank_limit
         self.clock = clock
-        self.executor_factory = executor_factory or (
+        self.reranker = reranker
+        factory = executor_factory or (
             lambda: BoundedExecutor(max_workers=3, queue_capacity=2)
         )
-        self.reranker = reranker
+        # One bounded executor is shared by requests handled by this orchestrator.
+        # A timed-out running call therefore continues to occupy a permit until it
+        # actually exits instead of escaping into an unbounded sequence of pools.
+        self._executor = factory()
+
+    def close(self, *, wait: bool = False) -> None:
+        self._executor.shutdown(wait=wait)
 
     def _invoke_channel(
         self,
@@ -185,7 +192,6 @@ class AdvancedRetrievalOrchestrator:
 
     def _submit(
         self,
-        executor: BoundedExecutor,
         channel: RetrievalChannel,
         plan: QueryPlan,
         scope: ResolvedScope,
@@ -194,7 +200,7 @@ class AdvancedRetrievalOrchestrator:
     ) -> tuple[Future | None, float, ChannelExecution | None]:
         deadline = min(total_deadline, self.clock() + self.channel_timeout_seconds)
         try:
-            future = executor.submit(
+            future = self._executor.submit(
                 self._invoke_channel,
                 channel,
                 plan,
@@ -261,6 +267,12 @@ class AdvancedRetrievalOrchestrator:
             )
         )[:8]
 
+    @staticmethod
+    def _is_degraded(result: ChannelResult) -> bool:
+        if result.status in {"timeout", "error"}:
+            return True
+        return result.status == "not_run" and result.reason == "not-configured"
+
     def _initial_plan(self, request: RetrievalRequest) -> QueryPlan:
         return self.planner.plan(
             request.query,
@@ -281,96 +293,92 @@ class AdvancedRetrievalOrchestrator:
         with self.snapshot_manager.pin_active(scope) as handle:
             snapshot = handle.snapshot
             plan = self._initial_plan(request)
-            executor = self.executor_factory()
             executions: dict[str, ChannelExecution] = {}
             submitted: dict[
                 str,
                 tuple[Future | None, float, ChannelExecution | None],
             ] = {}
-            try:
-                for name, enabled in (
-                    ("exact", plan.exact_enabled),
-                    ("lexical", plan.lexical_enabled),
-                    ("dense", plan.dense_enabled),
-                ):
-                    if not enabled:
-                        continue
-                    channel = self.channels.get(name)
-                    if channel is None:
-                        executions[name] = ChannelExecution(
-                            ChannelResult(
-                                channel=name,
-                                status="not_run",
-                                reason="not-configured",
-                            ),
-                            0.0,
-                        )
-                        continue
-                    submitted[name] = self._submit(
-                        executor,
-                        channel,
-                        plan,
-                        scope,
-                        snapshot,
-                        total_deadline,
+            for name, enabled in (
+                ("exact", plan.exact_enabled),
+                ("lexical", plan.lexical_enabled),
+                ("dense", plan.dense_enabled),
+            ):
+                if not enabled:
+                    continue
+                channel = self.channels.get(name)
+                if channel is None:
+                    executions[name] = ChannelExecution(
+                        ChannelResult(
+                            channel=name,
+                            status="not_run",
+                            reason="not-configured",
+                        ),
+                        0.0,
                     )
-
-                if "exact" in submitted:
-                    executions["exact"] = self._collect(
-                        "exact",
-                        *submitted.pop("exact"),
-                    )
-
-                seed_ids = self._seed_ids(
-                    executions.get("exact").result
-                    if "exact" in executions
-                    else None
+                    continue
+                submitted[name] = self._submit(
+                    channel,
+                    plan,
+                    scope,
+                    snapshot,
+                    total_deadline,
                 )
-                graph_plan = self.planner.plan(
-                    request.query,
-                    authorized_seed_ids=seed_ids,
-                    max_graph_hops=request.max_graph_hops,
-                    top_k=request.top_k,
-                    lexical_enabled="lexical" in self.channels,
-                    dense_enabled="dense" in self.channels,
+
+            # Exact is collected first only because graph depends on authorized
+            # deterministic seed evidence. Lexical/dense continue independently.
+            if "exact" in submitted:
+                executions["exact"] = self._collect(
+                    "exact",
+                    *submitted.pop("exact"),
                 )
-                if graph_plan.graph_enabled:
-                    channel = self.channels.get("graph")
-                    if channel is None:
-                        executions["graph"] = ChannelExecution(
-                            ChannelResult(
-                                channel="graph",
-                                status="not_run",
-                                reason="not-configured",
-                            ),
-                            0.0,
-                        )
-                    else:
-                        submitted["graph"] = self._submit(
-                            executor,
-                            channel,
-                            graph_plan,
-                            scope,
-                            snapshot,
-                            total_deadline,
-                        )
-                elif "graph" in self.channels:
+
+            seed_ids = self._seed_ids(
+                executions.get("exact").result
+                if "exact" in executions
+                else None
+            )
+            graph_plan = self.planner.plan(
+                request.query,
+                authorized_seed_ids=seed_ids,
+                max_graph_hops=request.max_graph_hops,
+                top_k=request.top_k,
+                lexical_enabled="lexical" in self.channels,
+                dense_enabled="dense" in self.channels,
+            )
+            if graph_plan.graph_enabled:
+                channel = self.channels.get("graph")
+                if channel is None:
                     executions["graph"] = ChannelExecution(
                         ChannelResult(
                             channel="graph",
                             status="not_run",
-                            reason="no-authorized-seed-or-plan-disabled",
+                            reason="not-configured",
                         ),
                         0.0,
                     )
-
-                for name in sorted(submitted):
-                    executions[name] = self._collect(
-                        name,
-                        *submitted[name],
+                else:
+                    submitted["graph"] = self._submit(
+                        channel,
+                        graph_plan,
+                        scope,
+                        snapshot,
+                        total_deadline,
                     )
-            finally:
-                executor.shutdown(wait=False)
+            elif "graph" in self.channels:
+                executions["graph"] = ChannelExecution(
+                    ChannelResult(
+                        channel="graph",
+                        status="not_run",
+                        reason="plan-disabled",
+                    ),
+                    0.0,
+                )
+
+            for name in sorted(submitted):
+                executions[name] = self._collect(
+                    name,
+                    *submitted[name],
+                )
 
             ordered_results = tuple(
                 executions[name].result for name in sorted(executions)
@@ -386,9 +394,7 @@ class AdvancedRetrievalOrchestrator:
                 or bool(result.candidates)
             ]
             failures = [
-                result
-                for result in ordered_results
-                if result.status in {"timeout", "error", "not_run"}
+                result for result in ordered_results if self._is_degraded(result)
             ]
             if not usable:
                 raise RetrievalUnavailable(
@@ -464,16 +470,19 @@ class AdvancedRetrievalOrchestrator:
                 (self.clock() - started) * 1000.0,
             )
             candidates = outcome.candidates
-            trace.append(f"reranker=status={outcome.status}")
+            safe_reason = f";reason={outcome.reason}" if outcome.reason else ""
+            trace.append(f"reranker=status={outcome.status}{safe_reason}")
             if outcome.model_fingerprint:
-                model_fingerprints["reranker"] = (
-                    outcome.model_fingerprint
-                )
+                model_fingerprints["reranker"] = outcome.model_fingerprint
             if outcome.status == "unavailable" and status == "ok":
                 status = "partial"
         else:
             trace.append("reranker=status=not_run")
 
+        timings["total"] = max(
+            0.0,
+            (self.clock() - execution.started_at) * 1000.0,
+        )
         selected = candidates[: request.top_k]
         output_truncated = (
             execution.truncated or len(candidates) > len(selected)
