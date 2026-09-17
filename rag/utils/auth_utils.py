@@ -1,4 +1,3 @@
-import hashlib
 # rag/utils/auth_utils.py
 import os
 from dataclasses import dataclass
@@ -17,11 +16,10 @@ class JwtSigningConfig:
 
 
 class AuthUtils:
-    # Password hashing is legacy behavior retained for compatibility.
     pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 
-    # Legacy routes retain their historical fallback. Advanced service startup
-    # must call advanced_signing_config(), which rejects missing/default config.
+    # Legacy routes retain their historical fallback. Advanced startup must use
+    # configure_advanced_signing(), which rejects missing/default authority.
     _LEGACY_DEFAULT_SECRET = "br-chat-aision"
     SECRET_KEY = os.getenv("JWT_SECRET_KEY", _LEGACY_DEFAULT_SECRET)
     ALGORITHM = "HS256"
@@ -39,7 +37,6 @@ class AuthUtils:
 
     @classmethod
     def hash_password(cls, password):
-        # Preserve existing behavior without logging password contents.
         password_bytes = (
             password.encode("utf-8") if isinstance(password, str) else password
         )
@@ -57,10 +54,7 @@ class AuthUtils:
         cls,
         environ: Mapping[str, str] | None = None,
     ) -> JwtSigningConfig:
-        """Return explicit advanced signing config or fail startup closed.
-
-        The configured key is never included in an exception or log message.
-        """
+        """Return explicit advanced signing config or fail startup closed."""
         values = os.environ if environ is None else environ
         configured = values.get("JWT_SECRET_KEY")
         if not configured or configured == cls._LEGACY_DEFAULT_SECRET:
@@ -71,6 +65,17 @@ class AuthUtils:
             secret_key=configured,
             algorithm=cls.ALGORITHM,
         )
+
+    @classmethod
+    def configure_advanced_signing(
+        cls,
+        environ: Mapping[str, str] | None = None,
+    ) -> JwtSigningConfig:
+        """Validate and activate one shared issuer/verifier configuration."""
+        config = cls.advanced_signing_config(environ)
+        cls.SECRET_KEY = config.secret_key
+        cls.ALGORITHM = config.algorithm
+        return config
 
     @classmethod
     def create_access_token(
