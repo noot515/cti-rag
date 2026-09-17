@@ -34,9 +34,15 @@ def _validate_channel_result(result: ChannelResult) -> None:
         if identity in seen_identity:
             raise FusionError(f"duplicate candidate in channel {result.channel}")
         seen_identity.add(identity)
-        own = tuple(score for score in candidate.channel_scores if score.channel == result.channel)
+        own = tuple(
+            score
+            for score in candidate.channel_scores
+            if score.channel == result.channel
+        )
         if len(own) != 1 or len(candidate.channel_scores) != 1:
-            raise FusionError("each channel candidate must contain exactly one contribution from that channel")
+            raise FusionError(
+                "each channel candidate must contain exactly one contribution from that channel"
+            )
         score = own[0]
         if score.rank in seen_rank:
             raise FusionError(f"duplicate rank in channel {result.channel}")
@@ -45,22 +51,24 @@ def _validate_channel_result(result: ChannelResult) -> None:
             raise FusionError("channel raw scores must be finite when present")
 
 
+def _merge_signature(candidate: Candidate) -> dict:
+    """Compare all evidence semantics while ignoring channel-local ranking fields."""
+    payload = candidate.model_dump(mode="json")
+    payload.pop("candidate_id", None)
+    payload.pop("channel_scores", None)
+    payload.pop("fused_score", None)
+    payload.pop("rerank_score", None)
+    return payload
+
+
 def _same_evidence(left: Candidate, right: Candidate) -> bool:
-    if type(left) is not type(right):
-        return False
-    if (left.domain, left.scope_id, left.snapshot) != (right.domain, right.scope_id, right.snapshot):
-        return False
-    if isinstance(left, ObjectCandidate) and isinstance(right, ObjectCandidate):
-        return left.object_uid == right.object_uid and left.authorized_view.evidence_uid == right.authorized_view.evidence_uid
-    if isinstance(left, ChunkCandidate) and isinstance(right, ChunkCandidate):
-        return left.chunk_uid == right.chunk_uid and left.object_uid == right.object_uid
-    if isinstance(left, PathCandidate) and isinstance(right, PathCandidate):
-        return left.path_id == right.path_id
-    return False
+    return type(left) is type(right) and _merge_signature(left) == _merge_signature(right)
 
 
 def _is_exact_priority(candidate: Candidate, plan: QueryPlan) -> bool:
-    return plan.task == "entity_lookup" and any(score.channel == "exact" for score in candidate.channel_scores)
+    return plan.task == "entity_lookup" and any(
+        score.channel == "exact" for score in candidate.channel_scores
+    )
 
 
 @dataclass(frozen=True)
@@ -98,19 +106,30 @@ def fuse_channel_results(
             else:
                 base, contributions = existing
                 if not _same_evidence(base, candidate):
-                    raise FusionError("identical fusion identity maps to inconsistent evidence")
-                if any(item.channel == contribution.channel for item in contributions):
-                    raise FusionError("candidate received more than one contribution from the same channel")
+                    raise FusionError(
+                        "identical fusion identity maps to inconsistent evidence"
+                    )
+                if any(
+                    item.channel == contribution.channel
+                    for item in contributions
+                ):
+                    raise FusionError(
+                        "candidate received more than one contribution from the same channel"
+                    )
                 contributions.append(contribution)
 
     fused: list[Candidate] = []
     for identity, (base, contributions) in grouped.items():
-        contributions.sort(key=lambda score: (score.channel, score.rank, score.score_kind))
+        contributions.sort(
+            key=lambda score: (score.channel, score.rank, score.score_kind)
+        )
         score = 0.0
         for contribution in contributions:
             weight = float(weights.get(contribution.channel, 1.0))
             score += weight / (k + contribution.rank)
-        fused_id = canonical_hash(["fused-candidate-v1", identity[0], identity[1]])
+        fused_id = canonical_hash(
+            ["fused-candidate-v1", identity[0], identity[1]]
+        )
         fused.append(
             base.model_copy(
                 update={
@@ -130,9 +149,17 @@ def fuse_channel_results(
         )
     )
     fused = fused[:limit]
-    priority = tuple(candidate.candidate_id for candidate in fused if _is_exact_priority(candidate, plan))
+    priority = tuple(
+        candidate.candidate_id
+        for candidate in fused
+        if _is_exact_priority(candidate, plan)
+    )
     target_order = deduplicate_target_objects(target_projections)
-    return FusionOutcome(candidates=tuple(fused), target_order=target_order, exact_priority_candidate_ids=priority)
+    return FusionOutcome(
+        candidates=tuple(fused),
+        target_order=target_order,
+        exact_priority_candidate_ids=priority,
+    )
 
 
 __all__ = [
