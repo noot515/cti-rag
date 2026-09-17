@@ -10,12 +10,25 @@ source:
 channels:
   exact_enabled: true
   lexical_enabled: true
-  dense_enabled: false
+  dense_enabled: true
   graph_enabled: false
   exact_top_k: 10
   lexical_top_k: 40
   dense_top_k: 40
   graph_top_k: 40
+providers:
+  embedding:
+    provider: fixture
+    model: deterministic-hash-embedding
+    revision: v1
+    dimension: 64
+    metric: cosine
+    normalization: l2
+    document_instruction: fixture-document
+    query_instruction: fixture-query
+    tokenizer: utf8-bytes-sha256-v1
+    artifact_sha256: 3fc40254c00d381abc6f2fc6d23fd0e833725ae5a47bd19e0fe4f743755e17e9
+    remote: false
 network:
   allow_outbound: false
   allow_downloads: false

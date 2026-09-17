@@ -15,7 +15,9 @@ from pathlib import Path
 from typing import Any, Callable, Literal, Mapping
 
 import yaml
-from pydantic import BaseModel, ConfigDict, Field, StrictBool, StrictFloat, StrictInt, ValidationError, model_validator
+from pydantic import BaseModel, ConfigDict, Field, StrictBool, StrictFloat, StrictInt, ValidationError, field_validator, model_validator
+
+from .validation import require_sha256
 
 
 class AdvancedRagConfigError(ValueError):
@@ -77,8 +79,20 @@ class ProviderFingerprint(_StrictModel):
     model: str = Field(min_length=1)
     revision: str = Field(min_length=1)
     dimension: StrictInt = Field(ge=1)
+    metric: Literal["cosine", "ip", "l2"] = "cosine"
     normalization: Literal["none", "l2"] = "none"
+    document_instruction: str = ""
+    query_instruction: str = ""
+    tokenizer: str = Field(default="unspecified", min_length=1)
+    artifact_sha256: str | None = None
     remote: StrictBool = False
+
+    @field_validator("artifact_sha256")
+    @classmethod
+    def validate_artifact_sha256(cls, value: str | None) -> str | None:
+        if value is None:
+            return None
+        return require_sha256(value, field_name="artifact_sha256")
 
 
 class ProviderConfig(_StrictModel):
@@ -88,7 +102,12 @@ class ProviderConfig(_StrictModel):
             model="deterministic-hash-embedding",
             revision="v1",
             dimension=64,
+            metric="cosine",
             normalization="l2",
+            document_instruction="fixture-document",
+            query_instruction="fixture-query",
+            tokenizer="utf8-bytes-sha256-v1",
+            artifact_sha256="3fc40254c00d381abc6f2fc6d23fd0e833725ae5a47bd19e0fe4f743755e17e9",
             remote=False,
         )
     )

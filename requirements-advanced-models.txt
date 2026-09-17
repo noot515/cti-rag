@@ -1,0 +1,4 @@
+# Prompt 08 deterministic fixture embeddings use only the Python standard library.
+# Real embedding providers are optional and must be explicitly selected, pinned,
+# authorized, and installed by a future/explicit provider profile. No heavyweight
+# model SDK is installed merely to run the fixture correctness gate.

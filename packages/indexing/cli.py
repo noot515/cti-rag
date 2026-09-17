@@ -13,6 +13,8 @@ from packages.evidence.config import load_advanced_rag_config
 from packages.evidence.ids import canonical_json
 from packages.evidence.policy import Principal, PublicFixturePolicy
 from packages.evidence.store import EvidenceStore
+from packages.retrieval.dense import DenseProjectionWriter
+from packages.retrieval.providers import DeterministicFixtureEmbeddingProvider
 
 from .chunker import ChunkingConfig, DeterministicTokenizer, chunk_objects
 from .lexical_indexer import ExactProjectionWriter, LexicalProjectionWriter
@@ -80,7 +82,11 @@ def _raw_payloads_for_fixture(manifest_path: Path, manifest_payload: dict[str, A
         raw = canonical_json(relation).encode("utf-8")
         candidates[sha256(raw).hexdigest()] = raw
 
-    source_id_by_uid = {obj.uid: obj.source_refs[0].source_object_id for obj in batch.objects if obj.source_refs}
+    source_id_by_uid = {
+        obj.uid: obj.source_refs[0].source_object_id
+        for obj in batch.objects
+        if obj.source_refs
+    }
     for relation in batch.relations:
         if relation.assertion_kind != "embedded_reference":
             continue
@@ -116,16 +122,26 @@ def _generation_manifest(
     corpus_id: str,
     exact_writer: ExactProjectionWriter,
     lexical_writer: LexicalProjectionWriter,
+    dense_writer: DenseProjectionWriter,
     tokenizer: DeterministicTokenizer,
     chunk_config: ChunkingConfig,
 ) -> GenerationManifest:
-    membership = [GenerationMember(kind="object", evidence_uid=item.uid, revision_uid=item.revision_uid) for item in batch.objects]
-    membership.extend(GenerationMember(kind="relation", evidence_uid=item.uid, revision_uid=item.revision_uid) for item in batch.relations)
-    membership.extend(GenerationMember(kind="chunk", evidence_uid=item.uid, revision_uid=item.uid) for item in batch.chunks)
+    membership = [
+        GenerationMember(kind="object", evidence_uid=item.uid, revision_uid=item.revision_uid)
+        for item in batch.objects
+    ]
+    membership.extend(
+        GenerationMember(kind="relation", evidence_uid=item.uid, revision_uid=item.revision_uid)
+        for item in batch.relations
+    )
+    membership.extend(
+        GenerationMember(kind="chunk", evidence_uid=item.uid, revision_uid=item.uid)
+        for item in batch.chunks
+    )
     projections = (
         ProjectionSpec(backend="exact", enabled=True, required=True, fingerprint=exact_writer.fingerprint),
         ProjectionSpec(backend="lexical", enabled=True, required=True, fingerprint=lexical_writer.fingerprint),
-        ProjectionSpec(backend="dense", enabled=False, required=False, fingerprint="not-configured"),
+        ProjectionSpec(backend="dense", enabled=True, required=True, fingerprint=dense_writer.fingerprint),
         ProjectionSpec(backend="graph", enabled=False, required=False, fingerprint="not-configured"),
     )
     return GenerationManifest.create(
@@ -140,7 +156,7 @@ def _generation_manifest(
             "tokenizer": tokenizer.fingerprint,
             "exact": exact_writer.fingerprint,
             "lexical": lexical_writer.fingerprint,
-            "dense": "not-configured",
+            "dense": dense_writer.fingerprint,
             "graph": "not-configured",
         },
     )
@@ -149,17 +165,21 @@ def _generation_manifest(
 def ingest_fixture(*, config_path: Path, manifest_path: Path) -> dict[str, Any]:
     config = load_advanced_rag_config(config_path)
     if config.profile != "fixture":
-        raise IngestionError("Prompt 07 CLI currently supports fixture profile only")
-    if not config.channels.exact_enabled or not config.channels.lexical_enabled:
-        raise IngestionError("fixture ingestion requires exact and lexical channels")
-    if config.channels.dense_enabled or config.channels.graph_enabled:
-        raise IngestionError("fixture Prompt 07 profile must record dense and graph as not configured")
+        raise IngestionError("advanced fixture CLI supports fixture profile only")
+    if not config.channels.exact_enabled or not config.channels.lexical_enabled or not config.channels.dense_enabled:
+        raise IngestionError("fixture ingestion requires exact, lexical, and deterministic dense channels")
+    if config.channels.graph_enabled:
+        raise IngestionError("fixture profile must record graph as not configured")
     if config.network.allow_outbound or config.network.allow_downloads or config.network.web_search:
         raise IngestionError("fixture ingestion must remain offline")
 
     manifest_path = _fixture_manifest_path(manifest_path)
     manifest_payload = _read_fixture_manifest(manifest_path)
-    principal = Principal(principal_id="advanced-fixture-cli", source="trusted_local_cli", capabilities=frozenset({"index:fixture"}))
+    principal = Principal(
+        principal_id="advanced-fixture-cli",
+        source="trusted_local_cli",
+        capabilities=frozenset({"index:fixture"}),
+    )
     policy = PublicFixturePolicy.trusted(
         corpus_id=config.source.corpus_id,
         scope_id=config.source.scope_id,
@@ -171,7 +191,11 @@ def ingest_fixture(*, config_path: Path, manifest_path: Path) -> dict[str, Any]:
     batch = load_cti_corpus_fixture(manifest_path)
     if batch.domain != scope.domain or batch.scope_id != scope.scope_id:
         raise IngestionError("normalized fixture does not match resolved trusted scope")
-    source_instances = {ref.source_instance for obj in batch.objects for ref in obj.source_refs}
+    source_instances = {
+        ref.source_instance
+        for obj in batch.objects
+        for ref in obj.source_refs
+    }
     if not source_instances or not source_instances.issubset(scope.source_allowlist):
         raise IngestionError("fixture source is not on the resolved source allowlist")
 
@@ -197,15 +221,38 @@ def ingest_fixture(*, config_path: Path, manifest_path: Path) -> dict[str, Any]:
         persist = store.persist_batch(batch, raw_payloads=raw_payloads)
         exact_writer = ExactProjectionWriter(store, index_root)
         lexical_writer = LexicalProjectionWriter(store, index_root, tokenizer=tokenizer, k1=1.5, b=0.75)
+        embedding = config.providers.embedding
+        if embedding.provider != "fixture" or embedding.model != "deterministic-hash-embedding":
+            raise IngestionError("fixture profile requires the explicit deterministic fixture embedding provider")
+        provider = DeterministicFixtureEmbeddingProvider(
+            dimensions=embedding.dimension,
+            metric=embedding.metric,
+            normalization=embedding.normalization,
+            revision=embedding.revision,
+            document_instruction=embedding.document_instruction,
+            query_instruction=embedding.query_instruction,
+            tokenizer=embedding.tokenizer,
+        )
+        if embedding.artifact_sha256 and embedding.artifact_sha256 != provider.fingerprint.artifact_sha256:
+            raise IngestionError("fixture embedding artifact fingerprint does not match trusted configuration")
+        dense_writer = DenseProjectionWriter(
+            store,
+            index_root,
+            provider=provider,
+            scope=scope,
+            policy=policy,
+            destination="local_generator",
+        )
         generation = _generation_manifest(
             batch,
             corpus_id=config.source.corpus_id,
             exact_writer=exact_writer,
             lexical_writer=lexical_writer,
+            dense_writer=dense_writer,
             tokenizer=tokenizer,
             chunk_config=chunk_config,
         )
-        PublicationOrchestrator.trusted(store, [exact_writer, lexical_writer]).publish(generation)
+        PublicationOrchestrator.trusted(store, [exact_writer, lexical_writer, dense_writer]).publish(generation)
         active = store.connection.execute(
             "SELECT generation_id,manifest_sha256 FROM active_generations WHERE domain=? AND scope_id=? AND corpus_id=?",
             (batch.domain, batch.scope_id, config.source.corpus_id),
@@ -221,7 +268,7 @@ def ingest_fixture(*, config_path: Path, manifest_path: Path) -> dict[str, Any]:
             "chunks": len(batch.chunks),
             "logical_changes": persist.logical_changes,
             "required_projections": [item.backend for item in generation.enabled_projections if item.required],
-            "dense": "not_configured",
+            "dense": "configured",
             "graph": "not_configured",
             "network_used": False,
         }
