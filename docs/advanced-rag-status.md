@@ -1,6 +1,6 @@
 # Advanced RAG V3 implementation status
 
-Updated: 2026-09-17. Prompt 16 documented head / Prompt 17 predecessor: `1b0e03fc3a54367cb0930318db6477a2667b8e02`. Current stacked branch: `feat/advanced-17-native-evaluation-and-ablations`. Legacy retrieval/benchmark behavior remains available and unchanged.
+Updated: 2026-09-17. Prompt 16 documented head / Prompt 17 predecessor: `1b0e03fc3a54367cb0930318db6477a2667b8e02`. Prompt 17 implementation/test head before final handoff documentation: `9fd83dc85c4575f3ef6518940449a0d93af494e5`. Current stacked branch: `feat/advanced-17-native-evaluation-and-ablations`. Legacy retrieval/benchmark behavior remains available and unchanged.
 
 ## Prompt 16 - isolated authenticated advanced API
 
@@ -14,12 +14,12 @@ Prompt 17 adds an evaluation path beside the legacy benchmark without changing t
 - all metric results retain explicit status/reason/support/annotation coverage/value. Empty/unjudged labels become `not_applicable`, missing models/judgments remain null `not_run`, and small bootstrap samples become `inconclusive` rather than numeric successes;
 - `benchmark/advanced/splits.py` creates deterministic grouped dev/test manifests using both object/report clusters and near-duplicate query families. The manifest records seed plus grouping/split SHA-256 hashes and rejects transitive leakage;
 - `benchmark/advanced/ablations.py` preregisters R1 dense, R2 lexical, R3 dense+lexical, R4 +exact, R5 +graph, R6 +single final reranker, and equal-budget C1 basic/structured context. Candidate/final/context budgets remain fixed and authorization cannot be ablated;
-- `run_retrieval_eval` executes the deterministic fixture ingestion/indexes without reading qrels/path annotations, freezes per-query channel/ablation predictions, and only then opens evaluation labels. Exact/lexical/dense/graph evidence still passes the public-fixture policy before it contributes to rankings;
-- the fixture command writes `config.snapshot.yaml`, `environment.json`, a corpus manifest snapshot, `split.manifest.json`, `per_query.jsonl`, retrieval/answer/latency metrics, `ablation_summary.csv`, and `report.md`;
+- `run_retrieval_eval` executes the deterministic fixture ingestion/indexes without reading qrels/path annotations, freezes the grouped split and per-query channel/ablation predictions first, and only then opens evaluation labels. Exact/lexical/dense/graph evidence still passes the public-fixture policy before it contributes to rankings;
+- the fixture command writes `config.snapshot.yaml`, `environment.json`, a corpus manifest snapshot, `split.manifest.json`, `per_query.jsonl`, retrieval/answer/latency metrics, `ablation_summary.csv`, and `report.md`; the configuration snapshot is emitted from the validated secret-free config model rather than raw environment data;
 - failed query executions remain present in `per_query.jsonl`; latency records sample count, sequential concurrency and cache state, and explicitly makes no throughput claim;
 - the fixture has no configured final reranker, generator, or independent judge. R6, C1 answer/context quality, answer generation, citation support, abstention/false-evidence behavior, and real-quality promotion therefore serialize as null `not_run`, not fallback scores;
 - L0 object retrieval remains `not_comparable` unless a canonical legacy object mapping is supplied. Separate evidence-document metrics remain `not_applicable` because the fixture currently provides object qrels but no independent evidence-document labels;
-- catalog mapping and held-out-edge generalization are not conflated. The synthetic fixture reports mechanics only; held-out-edge/generalization and real-quality promotion remain unrun quality gates;
+- graph-gain bootstrap is restricted to mapping queries and is distinct from held-out-edge generalization. The synthetic catalog fixture reports mechanics only; held-out-edge/generalization and real-quality promotion remain unrun quality gates;
 - optional future generator/judge use requires explicit model-egress permission plus exact model identifiers. Prompt 17 itself ships no default model/judge adapter and performs no external model egress.
 
 ### Prompt 17 validation surfaces
