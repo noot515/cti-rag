@@ -38,7 +38,6 @@ def trusted_principal_from_user(user: Any) -> TrustedPrincipal:
     canonical_id = getattr(user, "id", None)
     if canonical_id is None:
         raise AdvancedIdentityError("authenticated-user-required")
-    # User has is_active in the inspected schema. No deleted column is invented.
     if getattr(user, "is_active", True) is False:
         raise AdvancedIdentityError("authenticated-user-disabled")
     return TrustedPrincipal(
@@ -65,7 +64,6 @@ def resolve_advanced_access_http(
     corpus_key: str,
     access_store: CorpusAccessStore,
 ) -> AdvancedAccessContext:
-    """Transport-neutral status mapping used by the FastAPI dependency and tests."""
     try:
         return resolve_advanced_access(
             user=user,
@@ -75,7 +73,6 @@ def resolve_advanced_access_http(
     except AdvancedIdentityError as exc:
         raise AdvancedAccessHTTPError(401, "invalid credentials") from exc
     except CorpusAccessDenied as exc:
-        # Unknown and unauthorized corpus are intentionally indistinguishable.
         raise AdvancedAccessHTTPError(403, "corpus access denied") from exc
     except CorpusAccessUnavailable as exc:
         raise AdvancedAccessHTTPError(
@@ -87,8 +84,15 @@ def resolve_advanced_access_http(
 def make_advanced_access_dependency(
     access_store_provider: Callable[[], CorpusAccessStore],
 ):
-    """Construct FastAPI integration lazily; core advanced imports stay side-effect free."""
+    """Construct protected FastAPI integration and fail startup if signing is unsafe."""
     from fastapi import Depends, HTTPException
+    from rag.utils.auth_utils import AuthUtils
+
+    # Construction is the advanced startup boundary: issuer/verifier must share
+    # one explicit operator-managed authority before protected retrieval exists.
+    AuthUtils.configure_advanced_signing()
+
+    # Import the legacy user lookup only after advanced signing has been validated.
     from rag.utils.auth_middleware import get_required_user
 
     async def dependency(
