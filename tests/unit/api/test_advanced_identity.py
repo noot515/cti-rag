@@ -14,6 +14,7 @@ from packages.evidence.access import (
 from packages.evidence.policy import TrustedPrincipal
 from rag.api.advanced_dependencies import (
     AdvancedAccessHTTPError,
+    make_advanced_access_dependency,
     resolve_advanced_access,
     resolve_advanced_access_http,
     trusted_principal_from_user,
@@ -72,7 +73,7 @@ def test_valid_expired_malformed_and_wrong_signature_tokens():
         AuthUtils.verify_access_token(wrong, config)
 
 
-def test_advanced_signing_authority_requires_explicit_nondefault_key():
+def test_advanced_signing_authority_requires_explicit_nondefault_key(monkeypatch):
     with pytest.raises(RuntimeError, match="not explicitly configured"):
         AuthUtils.advanced_signing_config({})
     with pytest.raises(RuntimeError, match="not explicitly configured"):
@@ -84,6 +85,11 @@ def test_advanced_signing_authority_requires_explicit_nondefault_key():
     )
     assert configured.algorithm == "HS256"
     assert configured.secret_key == "operator-provided-test-key"
+
+    monkeypatch.delenv("JWT_SECRET_KEY", raising=False)
+    with pytest.raises(RuntimeError, match="not explicitly configured"):
+        # Fails before importing/using the legacy DB-backed user dependency.
+        make_advanced_access_dependency(lambda: None)
 
 
 def test_canonical_user_id_not_login_user_id(tmp_path):
@@ -101,8 +107,6 @@ def test_canonical_user_id_not_login_user_id(tmp_path):
         )
         assert context.scope.principal_id == "11"
 
-        # Matching a legacy login ID or forged request-body ownership does not
-        # change the canonical authenticated User.id.
         forged_user = SimpleNamespace(id=12, user_id=11, is_active=True)
         with pytest.raises(AdvancedAccessHTTPError) as denied:
             resolve_advanced_access_http(
@@ -166,7 +170,7 @@ def test_unauthorized_request_makes_zero_backend_or_provider_calls(tmp_path):
             "user_id": "11",
             "policy": "allow-all",
         }
-        assert request_body  # user-controlled values are intentionally unused.
+        assert request_body
         with pytest.raises(AdvancedAccessHTTPError) as error:
             resolve_advanced_access_http(
                 user=SimpleNamespace(id=12, user_id=11, is_active=True),
