@@ -1,66 +1,37 @@
 # Advanced RAG V3 implementation status
 
-Updated: 2026-09-17. Reviewed application baseline: `15f4050a387bf41b8d77daf05e271ccfe9e522da`. Prompt 05 documented head: `ea127277f4fdade1aa66ee21d0ad37bc78f7d3c3`. Prompt 06 final documented head / Prompt 07 predecessor: `fb9a816ac083741fcce245c4e0b02fbd001e7c6e`. Prompt 07 implementation/hardening head before this documentation commit: `d59673c2fea84373d46b706a6786ea39d9bbe778`. Current stacked branch: `feat/advanced-07-chunk-exact-lexical`. Legacy retrieval remains available and the advanced path remains disabled by default.
+Updated: 2026-09-17. Prompt 07 documented head / Prompt 08 predecessor: `ecc28482f57e93fa6d90cbf99f90146c762cd9fb`. Prompt 08 implementation code head before this documentation commit: `14df9ae472fa0bb54e6e574ec02d100b05bb9d63`. Current stacked branch: `feat/advanced-08-embedding-provider-contract`. Legacy embedding providers and legacy retrieval remain untouched; the advanced path remains separate.
 
-## Prompt 06 - atomic generation publication and snapshot pinning
+## Prompt 08 - fingerprint-bound embedding providers and deterministic fixture dense retrieval
 
-Prompt 06 implements immutable generation manifests and projection receipts, durable publication/projection jobs, fake-backend visibility verification, `building -> ready -> active` publication state, an atomic catalog active pointer, request-lifetime `SnapshotHandle` pinning, live revocation/deletion overlays, and restart recovery for receipt/ready/activation crash windows. It reuses Prompt 05 snapshot membership rather than creating a second evidence catalog. Publication mechanics are trusted-code-only and preserve the legacy collection path.
+Implemented beside the legacy model stack:
 
-Prompt 06 uses explicit fake projection writers for mechanics tests. It does **not** claim distributed transactions or atomicity across real Milvus, Neo4j, OpenCTI, or other external services.
+- import-inert `EmbeddingProvider` contract with explicit `encode_documents` and `encode_queries` operations, deadline/cancellation checks, and no implicit provider fallback;
+- immutable embedding fingerprint covering provider, model, explicit revision, dimensions, metric, normalization, document/query instructions, tokenizer identity, optional artifact SHA-256, and remote/local status;
+- strict typed ID-to-vector outputs with exact output-ID coverage, duplicate rejection, finite-vector checks, dimension checks, and L2-normalization validation before index writes or query use;
+- same-dimension providers with different model/revision/instruction/tokenizer identity are not interchangeable; fingerprint mismatch requires reindexing;
+- deterministic stdlib-only fixture embeddings for mechanics testing with stable cross-process vectors and a content-derived artifact identity. They are not a semantic-quality claim;
+- trusted lazy `EmbeddingProviderRegistry`; an unavailable selected real provider raises instead of falling back to the fixture provider;
+- destination authorization happens before encoding. The fixture provider permits only its explicit local destination allowlist and performs zero vector work after a denial;
+- generation-scoped persistent dense JSON projection bound to the Prompt 06 manifest/membership and provider fingerprint, with reopen-time membership/vector/fingerprint validation and deterministic exact similarity ranking;
+- dense query and candidate construction require matching `ResolvedScope`/`SnapshotRef`, recheck live deletion/revocation state, and authorize evidence before returning a trusted candidate;
+- a Prompt 06-compatible `DenseProjectionWriter` reopens and verifies the persisted dense artifact before emitting a receipt;
+- fixture ingestion now publishes exact, lexical, and deterministic dense projections together while remaining network/download/web disabled;
+- real model SDKs remain optional and are not imported or installed for the fixture correctness path. Existing `packages/models/embedding.py` and legacy embedding aliases/provider behavior are unchanged.
 
-## Prompt 07 - deterministic chunks, exact lookup and persistent full-corpus BM25
+Reconciliation: the predecessor advanced config already exposed a small provider fingerprint. Prompt 08 extends that record rather than replacing it, and keeps its existing default embedding revision `v1` stable while adding metric, instructions, tokenizer and artifact identity. The fixture CLI is narrowly updated because Prompt 08 requires the local dense writer to participate in fixture publication.
 
-Implemented beside the legacy retriever without modifying the protected legacy indexing/BM25 path:
+## Prompt 08 validation
 
-- deterministic field-aware chunking with a pinned regex/unicode tokenizer, 450-token target, 75-token overlap, stable section order, whole CTI identifiers, content hashes, tokenizer/chunker fingerprints, and source-field character-offset metadata;
-- small objects stay intact when the emitted representation fits the budget; long prose uses deterministic overlapping windows;
-- CTI chunks inherit object policy metadata plus effective marking references/granular selectors/citation locator;
-- persistent exact indexes are generation-scoped validated JSON artifacts built only from canonical external identifiers, source identities and STIX IDs; aliases and body mentions never become exact identity;
-- exact lookup returns object-revision `BackendHit` records pinned to a `ResolvedScope` and `SnapshotRef`; unknown identifiers are successful misses;
-- persistent lexical indexes cover the complete generation chunk corpus, storing validated tokenization, document lengths, document frequencies, average length and declared BM25 `k1=1.5`, `b=0.75` parameters;
-- lexical indexes reopen from validated JSON without refitting per query, use deterministic score ties, return chunk-revision hits, and exclude zero-score nonmatches;
-- text hydration rechecks pinned generation membership, live tombstone/revocation state and retrieval policy authorization before returning chunk text;
-- exact and lexical projection writers produce Prompt 06 receipts only after reopening and verifying persisted artifacts. Receipt verification includes manifest/membership/fingerprint/artifact hash and visibility sentinel checks; a corrupted artifact cannot activate a generation;
-- fixture configuration enables exact/lexical only and records dense/graph as not configured with outbound networking disabled;
-- `python -m packages.indexing.cli ingest --config ... --manifest ...` validates the trusted fixture manifest and object-file hash, keeps corpus/evaluation roles separate, constructs a trusted fixture principal/source allowlist, normalizes, chunks, persists, builds both projections and atomically publishes the generation;
-- repeated no-change fixture ingest is designed to preserve the generation ID and produce zero logical catalog changes; changed object revisions produce new chunk membership rather than reusing stale chunks;
-- no pickle, model call, download, web request, dense search or graph search is introduced by this phase.
-
-The additional `scripts/validate_advanced_06_07.py` file exists because the implementation session explicitly requested one fail-fast chained validation entry point. It requires Python 3.11, verifies the Prompt 06 head is an ancestor, runs P06 and P07 tests in one pytest invocation, runs fixture CLI ingestion in a temporary state directory, then runs `compileall` and `git diff --check`.
-
-## Validation state
-
-Repository runtime target: Python 3.11. Available implementation sandbox: Python 3.13.5 and a partial scratch workspace, not a complete repository checkout.
-
-Prompt 06 authoritative focused result from its branch:
+Available implementation sandbox: Python 3.13.5. Repository target remains Python 3.11.
 
 ```text
-PYTHONPATH=. python -m pytest tests/unit/indexing/test_publication.py tests/unit/indexing/test_publication_recovery.py -q
-14 passed
-
-PYTHONPATH=. python -m compileall -q packages benchmark tests
-passed
+PYTHONPATH=. python -m pytest tests/unit/retrieval/test_embedding_provider.py tests/unit/retrieval/test_fixture_dense.py -q
+12 passed
 ```
 
-Prompt 07 local contract/integration harness after reconciling to the actual Prompt 06 `GenerationManifest`/`ProjectionReceipt` shape:
-
-```text
-PYTHONPATH=. python local_validate_p07.py
-LOCAL_P07_INTEGRATION_OK 1 1 1
-
-python -m py_compile packages/indexing/chunker.py packages/indexing/lexical_indexer.py packages/indexing/cli.py packages/retrieval/exact.py packages/retrieval/lexical.py tests/unit/indexing/test_chunker.py tests/unit/retrieval/test_exact.py tests/unit/retrieval/test_lexical.py tests/e2e/test_fixture_ingestion.py
-passed
-```
-
-The exact chained Prompt 06/07 validator is intentionally **not run** in this sandbox because it requires Python 3.11. The observed prerequisite failure is:
-
-```text
-python scripts/validate_advanced_06_07.py
-Prompt 06/07 validation requires Python 3.11; observed 3.13.5
-```
-
-An attempt to run the full Prompt 07 pytest files in the partial scratch workspace cannot collect because that scratch workspace does not contain the repository's `packages.domains` tree. That is recorded as an incomplete-checkout limitation, not as a passing or failing repository correctness result. Therefore the exact P07 full-checkout pytest gate, exact Python 3.11 chained gate, full repository collection, real-service compatibility and retrieval-quality gates remain `not_run`.
+The local compatibility pass also compiled the Prompt 08 modules/configuration and exercised deterministic reopen/ranking. Exact Python 3.11 full-checkout validation, the earlier Prompt 06/07 chained Python 3.11 gate, full-repository collection, optional real-model/provider tests, and retrieval-quality gates remain `not_run`; they are not inherited from predecessor results.
 
 ## Next-phase readiness
 
-Prompt 07 code is implemented and stacked on the verified Prompt 06 publication contract. Before treating Prompt 07 as a completed correctness gate or starting a dependent phase, run `python scripts/validate_advanced_06_07.py` from a clean/full checkout with the isolated Python 3.11 advanced environment. Real-service deployment/promotion remains blocked regardless of the offline mechanics result.
+Prompt 09 may build an isolated Milvus projection against this fingerprint/provider contract. Fake-client Milvus mechanics may proceed offline. Real Milvus client/server compatibility and legacy-access isolation remain separate release gates and must be reported as pass/fail/not_run rather than inferred from unit tests.
