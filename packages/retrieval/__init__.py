@@ -1,5 +1,15 @@
 """Pure retrieval contracts and lazy advanced channel implementations."""
-from .candidate import BackendHit, Candidate, Channel, ChannelResult, ChunkCandidate, ObjectCandidate, PathCandidate
+from .candidate import (
+    BackendHit,
+    Candidate,
+    Channel,
+    ChannelResult,
+    ChunkCandidate,
+    ObjectCandidate,
+    PathCandidate,
+    TargetObjectRef,
+    TargetProjection,
+)
 
 __all__ = [
     "BackendHit",
@@ -8,12 +18,16 @@ __all__ = [
     "Channel",
     "ChannelResult",
     "ChunkCandidate",
+    "DeterministicQueryPlanner",
     "ExactIndex",
     "GraphSearchEngine",
     "LexicalIndex",
     "Neo4jNeighborReader",
     "ObjectCandidate",
     "PathCandidate",
+    "QueryPlan",
+    "TargetObjectRef",
+    "TargetProjection",
 ]
 
 
@@ -30,5 +44,11 @@ def __getattr__(name: str):
             "CatalogNeighborReader": CatalogNeighborReader,
             "GraphSearchEngine": GraphSearchEngine,
             "Neo4jNeighborReader": Neo4jNeighborReader,
+        }[name]
+    if name in {"DeterministicQueryPlanner", "QueryPlan"}:
+        from .planner import DeterministicQueryPlanner, QueryPlan
+        return {
+            "DeterministicQueryPlanner": DeterministicQueryPlanner,
+            "QueryPlan": QueryPlan,
         }[name]
     raise AttributeError(name)
