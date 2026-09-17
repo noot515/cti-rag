@@ -1,0 +1,43 @@
+schema_version: advanced-rag-config-v1
+enabled: true
+profile: services
+state_dir: saves/advanced-services
+source:
+  corpus_id: fixture-cti
+  scope_id: public-fixture
+  source_allowlist:
+    - fixture-public
+channels:
+  exact_enabled: true
+  lexical_enabled: true
+  dense_enabled: true
+  graph_enabled: false
+  exact_top_k: 10
+  lexical_top_k: 40
+  dense_top_k: 40
+  graph_top_k: 40
+providers:
+  embedding:
+    provider: fixture
+    model: deterministic-hash-embedding
+    revision: v1
+    dimension: 64
+    metric: cosine
+    normalization: l2
+    document_instruction: fixture-document
+    query_instruction: fixture-query
+    tokenizer: utf8-bytes-sha256-v1
+    artifact_sha256: 3fc40254c00d381abc6f2fc6d23fd0e833725ae5a47bd19e0fe4f743755e17e9
+    remote: false
+milvus:
+  enabled: true
+  uri: http://127.0.0.1:19531
+  deployment_id: advanced-local
+  collection_prefix: adv_cti
+  expected_server_version: 2.3.4
+  expected_client_version: 2.3.7
+  token_env: null
+network:
+  allow_outbound: true
+  allow_downloads: false
+  web_search: false
