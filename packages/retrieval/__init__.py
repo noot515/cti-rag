@@ -4,11 +4,14 @@ from .candidate import BackendHit, Candidate, Channel, ChannelResult, ChunkCandi
 __all__ = [
     "BackendHit",
     "Candidate",
+    "CatalogNeighborReader",
     "Channel",
     "ChannelResult",
     "ChunkCandidate",
     "ExactIndex",
+    "GraphSearchEngine",
     "LexicalIndex",
+    "Neo4jNeighborReader",
     "ObjectCandidate",
     "PathCandidate",
 ]
@@ -21,4 +24,11 @@ def __getattr__(name: str):
     if name == "LexicalIndex":
         from .lexical import LexicalIndex
         return LexicalIndex
+    if name in {"CatalogNeighborReader", "GraphSearchEngine", "Neo4jNeighborReader"}:
+        from .graph import CatalogNeighborReader, GraphSearchEngine, Neo4jNeighborReader
+        return {
+            "CatalogNeighborReader": CatalogNeighborReader,
+            "GraphSearchEngine": GraphSearchEngine,
+            "Neo4jNeighborReader": Neo4jNeighborReader,
+        }[name]
     raise AttributeError(name)
