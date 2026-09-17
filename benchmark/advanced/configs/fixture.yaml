@@ -11,7 +11,7 @@ channels:
   exact_enabled: true
   lexical_enabled: true
   dense_enabled: true
-  graph_enabled: false
+  graph_enabled: true
   exact_top_k: 10
   lexical_top_k: 40
   dense_top_k: 40
