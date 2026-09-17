@@ -1,22 +1,21 @@
 # Current state and sequencing handoff
 
-Prompt 15 begins from Prompt 14 documented head `65701c1885ead1901e0f84c95227a1ced25190e2` on `feat/advanced-14-evidence-packing` and is stacked on `feat/advanced-15-trusted-principal-and-corpus-access`.
+Prompt 16 begins from Prompt 15 documented head `66075304be97c6234d7863cf186d97f51ce16776` on `feat/advanced-15-trusted-principal-and-corpus-access` and is stacked on `feat/advanced-16-authenticated-advanced-api`.
 
 Reconciliation notes:
 
-1. Prompt 14 remains the final evidence-packing/citation boundary. Prompt 15 changes who may resolve an advanced corpus; it does not alter retrieval ranking, reranking or packing semantics.
-2. The inspected authentication path already signs token `sub` with canonical `User.id`. The separate legacy/login `User.user_id` is therefore never accepted as advanced identity. `TrustedPrincipal` adds the explicit namespace `user.id`.
-3. The inspected `User` model has `is_active`; advanced identity rejects inactive users. No nonexistent deleted/disabled column is invented.
-4. Legacy `KnowledgeDatabase.user_id` is caller-populated through the legacy data route and is never imported into the advanced grant store. Request-body `user_id`, principal or policy fields cannot affect advanced authorization.
-5. `CorpusAccessStore` is a separate SQLite authority with server-owned corpus key, domain, scope, active catalog, policy version, source allowlist, destinations and namespaced grants. It uses no result cache and does not import the legacy DB manager.
-6. Unknown, disabled, ownerless and unauthorized corpus resolution fail closed. The advanced API maps unknown and unauthorized corpus to the same 403 response so existence is not disclosed through authorization behavior.
-7. Access-store errors raise `CorpusAccessUnavailable`; advanced HTTP mapping is 503 and there is no permissive fallback.
-8. `CorpusGrantPolicy` calls `assert_scope_current` during evidence authorization. Revoked grants, active-catalog changes, policy-version changes or changed allowlists/destinations invalidate a previously resolved scope during the same pinned query.
-9. Restricted dissemination remains fail closed unless an explicit production marking policy is added. `PublicFixturePolicy` remains the only narrow synthetic/public fixture exception and still requires its explicit source allowlist.
-10. `AuthUtils` now catches python-jose `ExpiredSignatureError` / `JWTError` rather than PyJWT-style attributes. `requirements-advanced-api.txt` pins the advanced API identity dependencies independently of the legacy API requirement set.
-11. Constructing `make_advanced_access_dependency` is the protected advanced startup boundary: `AuthUtils.configure_advanced_signing()` requires a non-default operator-managed `JWT_SECRET_KEY` and activates one issuer/verifier configuration before the DB-backed authenticated-user dependency is imported.
-12. A signing-key transition invalidates older tokens and requires reauthentication; `docs/advanced-auth-transition.md` explicitly rejects a temporary permissive fallback/dual-key mode. Environment examples show names/placeholders only.
-13. Corpus registration is `python -m packages.evidence.cli register-corpus --config CONFIG --grant-file FILE`. It requires a trusted-local principal with `corpus:register` capability and validates a local administrator-authored manifest; no public legacy route is widened.
-14. Local Python 3.13.5 dependency-free access/identity core passed `7` tests; combined locally feasible Prompt 12-15 mechanics/core passed `49`. Actual JOSE token tests remain `not_run` locally because package-network DNS is unavailable.
-15. `scripts/validate_advanced_04_15.py` is the new strict Python 3.11 correctness handoff. It invokes the full Prompt 04-13 chain, Prompt 14, Prompt 15, import safety, compile/whitespace and a final full collection.
-16. Exact Python 3.11, pinned JOSE token execution, full collection, live Milvus/Neo4j isolation, production restricted-marking policy and quality/promotion gates remain independent unresolved gates; offline mechanics do not authorize deployment.
+1. Prompt 15 remains the identity/grant authority. Prompt 16 does not accept body principals, legacy `User.user_id`, or legacy knowledge-database ownership.
+2. The direct FastAPI application route is `/chat/advanced-retrieval`; any external `/api` prefix is owned by a reverse proxy/gateway and is not silently assumed by application routing.
+3. `rag.api.routers.__init__` no longer imports chat/data/graph/token routers at package-import time. Legacy callers retain `from rag.api.routers import router` through lazy `__getattr__` assembly.
+4. The module-level legacy `fastapi_server` still mounts only legacy routes. `create_fastapi_server(advanced_router=...)` is the narrow opt-in extension point; `config.yaml` records advanced disabled by default.
+5. `create_advanced_router()` returns an empty router when the validated advanced config is disabled. Enabled construction may use the existing JWT-backed authenticated-user dependency, but fixture applications inject identity and therefore avoid importing the legacy MySQL-backed auth stack.
+6. Request shape is strict/extra-forbid: query, db_id, top_k, max_graph_hops, response_mode and omitted/false web_search only. UTF-8 query bytes, top_k and hop count are bounded.
+7. Authentication and `CorpusAccessStore.resolve_scope()` occur before `runtime_provider()` is called. A denied tenant/corpus therefore makes zero advanced backend/provider calls.
+8. `response_mode=full` is not itself authority. The server-owned `evidence:debug` capability is independently required, and debug candidates pass a final candidate-authorizer callback.
+9. The runtime finalizer is called immediately before API serialization. This is in addition to Prompt 14's post-pack evidence re-resolution and closes the route-level withdrawal/grant-change boundary.
+10. Successful empty evidence maps to HTTP 200 `no_evidence`; all-channel unavailability maps to 503; malformed input remains 422; unknown/unauthorized corpus stays indistinguishable 403; no failure delegates to legacy retrieval.
+11. Responses expose context/citations/status/telemetry/model fingerprints, not a generated answer. Scores/paths remain retrieval evidence rather than truth probabilities.
+12. `create_fixture_app()` is service-inert on import and accepts injected local exact/lexical/dense/catalog-graph runtime pieces. Fixture configuration forbids outbound networking/downloads/web search/service Milvus.
+13. Fresh-process tests assert importing `rag.api.advanced_app` does not import legacy chat/data/graph/token routers or the legacy DB manager.
+14. Exact Prompt 16 ASGI/import-safety execution is still a Python 3.11 target-environment gate because this sandbox lacks the pinned advanced API environment. No unrun gate is marked passed.
+15. Prompt 17 may evaluate native retrieval/API outputs from this boundary. It must not ablate authorization, tune held-out labels, or convert fixture-only mechanics into a quality-promotion claim.
