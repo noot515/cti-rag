@@ -13,19 +13,21 @@ Prompt 12 adds a separate advanced request-level orchestration boundary:
 - scope resolves once and one active snapshot is pinned for the request;
 - exact/lexical/dense are submitted concurrently under a hard-bounded executor; graph waits for authorized deterministic exact seeds;
 - default total/channel budgets are 10s/3s and each backend receives the smaller remaining deadline;
-- queue saturation, timeout, successful-empty and unavailable/error are explicit states;
+- the executor is owned by the orchestrator and shared across requests, so a timed-out running backend keeps its permit until it really exits instead of escaping into one new thread pool per request;
+- queue saturation, timeout, successful-empty and unavailable/error are explicit states. A planner-disabled graph trace is neutral rather than turning all-successful-empty retrieval into `partial`;
 - expected channel outage may yield partial evidence while unexpected catalog/policy failures remain fatal with no legacy fallback;
+- merging the same evidence identity across channels requires the complete non-ranking evidence payload to agree, not only its ID;
 - trace contains only channel/status/count/truncation and omits evidence IDs/text and raw provider/backend payloads;
 - `retrieve_candidates()` retains at most 60 fused candidates as the single pre-rerank boundary.
 
-Prompt 12 focused compatibility gate:
+Prompt 12's original handoff gate passed `12` tests. During Prompt 13 integration three predecessor-correctness tests were added for inconsistent same-identity evidence, planner-disabled graph empty-result semantics, and cross-request timeout permit retention. The final stacked branch therefore runs:
 
 ```text
 PYTHONPATH=. python -m pytest \
   tests/unit/retrieval/test_fusion.py \
   tests/unit/retrieval/test_orchestrator.py \
   tests/e2e/test_advanced_retrieval.py -q
-12 passed
+15 passed
 ```
 
 ## Prompt 13 - one final reranking stage with complete validation
@@ -33,17 +35,17 @@ PYTHONPATH=. python -m pytest \
 Prompt 13 inserts exactly one optional final reranking stage after Prompt 12 fusion and before final `top_k` truncation:
 
 - `RerankResult` preserves explicit provider status, model fingerprint, candidate-ID scores and failure reason; equal scores alone are never interpreted as provider failure;
-- indexed-provider output is accepted only when indices are strict integers, in range, unique, exhaustive and mapped one-to-one to the requested IDs; missing/defaulted indices are never zero-filled;
+- indexed-provider output is accepted only when indices are strict integers, present, in range, unique, exhaustive and mapped one-to-one to the requested IDs; missing/defaulted indices are never zero-filled;
 - every successful score must be finite and every requested candidate ID must be covered exactly once;
 - up to 60 unique fused candidates are reranked in one logical provider invocation. The non-reranked tail remains in its original order and is recorded separately;
-- the stage deadline is the smaller of the request's remaining total deadline and the nominal 4-second rerank budget;
+- the stage deadline is the smaller of the request's remaining total deadline and the nominal 4-second rerank budget; an already-expired request deadline sends no provider request;
 - optional timeout/provider failure/invalid response returns `reranker_unavailable` semantics and restores the complete pre-rerank order; a configured required reranker raises `RequiredRerankerUnavailable` instead of silently succeeding;
 - stable equal-score ties retain prior fused rank;
 - Prompt 12's exact lookup priority tier remains ahead of non-exact evidence even when a non-exact candidate receives a larger reranker score;
 - deterministic payload contract is `unicode-codepoint-v1` with head truncation, 8192 query codepoints, 12000 per document, 720000 total document codepoints and at most 60 candidates;
 - query destination and every evidence component are reauthorized immediately before payload construction. `StrictRerankEgressGuard` uses a resolver bundle plus `authorize_evidence_set`; path resolvers are required to return node, assertion and support views;
 - revocation/policy denial during this final egress gate aborts before any provider call, so forbidden text is not transmitted;
-- the advanced orchestrator records actual reranker status and provider fingerprint, and applies request `top_k` only after reranking/fallback.
+- the advanced orchestrator records reranker availability plus a safe status reason and provider fingerprint, then applies request `top_k` only after reranking/fallback.
 
 Prompt 13 focused compatibility gate:
 
@@ -51,10 +53,10 @@ Prompt 13 focused compatibility gate:
 PYTHONPATH=. python -m pytest \
   tests/unit/retrieval/test_reranker_contract.py \
   tests/unit/retrieval/test_reranker_egress.py -q
-15 passed
+17 passed
 ```
 
-Combined Prompt 12/13 mechanics:
+Combined Prompt 12/13 mechanics on the final stacked code:
 
 ```text
 PYTHONPATH=. python -m pytest \
@@ -63,10 +65,10 @@ PYTHONPATH=. python -m pytest \
   tests/e2e/test_advanced_retrieval.py \
   tests/unit/retrieval/test_reranker_contract.py \
   tests/unit/retrieval/test_reranker_egress.py -q
-27 passed
+32 passed
 ```
 
-`packages/retrieval/fusion.py`, `orchestrator.py` and `rerank.py` also passed local `py_compile`.
+`packages/retrieval/fusion.py`, `orchestrator.py` and `rerank.py` also passed local `py_compile` and contained no trailing whitespace in the compatibility workspace.
 
 ## Chained unresolved validation
 
