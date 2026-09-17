@@ -138,8 +138,10 @@ class FakeChannel:
         self.result = result
         self.delay = delay
         self.raise_backend = raise_backend
+        self.calls = 0
 
     def search(self, plan, scope, snapshot, deadline):
+        self.calls += 1
         if self.delay:
             time.sleep(self.delay)
         if self.raise_backend:
@@ -157,6 +159,10 @@ def make(channels, *, timeout=0.2, executor_factory=None):
         channel_timeout_seconds=timeout,
         executor_factory=executor_factory,
     )
+
+
+def principal():
+    return Principal(principal_id="u", source="trusted_local_cli")
 
 
 def test_independent_channels_fuse_and_repeat_stably():
@@ -185,9 +191,14 @@ def test_independent_channels_fuse_and_repeat_stably():
         corpus_id="fixture",
         top_k=10,
     )
-    principal = Principal(principal_id="u", source="trusted_local_cli")
-    first = make(channels).retrieve(request, principal)
-    second = make(channels).retrieve(request, principal)
+    first_orchestrator = make(channels)
+    second_orchestrator = make(channels)
+    try:
+        first = first_orchestrator.retrieve(request, principal())
+        second = second_orchestrator.retrieve(request, principal())
+    finally:
+        first_orchestrator.close()
+        second_orchestrator.close()
     assert first.status == "ok"
     assert len(first.candidates) == 1
     assert first.candidates[0].candidate_id == second.candidates[0].candidate_id
@@ -207,33 +218,58 @@ def test_backend_timeout_allows_successful_sibling_and_is_traced():
         "lexical": FakeChannel("lexical", good),
         "dense": FakeChannel("dense", delay=0.05),
     }
-    result = make(channels, timeout=0.01).retrieve(
-        RetrievalRequest(query="general", corpus_id="fixture"),
-        Principal(principal_id="u", source="trusted_local_cli"),
-    )
+    orchestrator = make(channels, timeout=0.01)
+    try:
+        result = orchestrator.retrieve(
+            RetrievalRequest(query="general", corpus_id="fixture"),
+            principal(),
+        )
+    finally:
+        orchestrator.close(wait=True)
     assert result.status == "partial"
     assert result.candidates
     assert any("status=timeout" in item for item in result.authorized_trace)
 
 
 def test_successful_empty_is_distinct_from_failed():
-    result = make({"lexical": FakeChannel("lexical")}).retrieve(
-        RetrievalRequest(query="general", corpus_id="fixture"),
-        Principal(principal_id="u", source="trusted_local_cli"),
-    )
-    assert result.status == "no_evidence"
-    with pytest.raises(RetrievalUnavailable):
-        make(
-            {
-                "lexical": FakeChannel(
-                    "lexical",
-                    raise_backend=True,
-                )
-            }
-        ).retrieve(
+    empty_orchestrator = make({"lexical": FakeChannel("lexical")})
+    try:
+        result = empty_orchestrator.retrieve(
             RetrievalRequest(query="general", corpus_id="fixture"),
-            Principal(principal_id="u", source="trusted_local_cli"),
+            principal(),
         )
+    finally:
+        empty_orchestrator.close()
+    assert result.status == "no_evidence"
+
+    failed = make({"lexical": FakeChannel("lexical", raise_backend=True)})
+    try:
+        with pytest.raises(RetrievalUnavailable):
+            failed.retrieve(
+                RetrievalRequest(query="general", corpus_id="fixture"),
+                principal(),
+            )
+    finally:
+        failed.close()
+
+
+def test_planner_disabled_graph_does_not_turn_successful_empty_into_partial():
+    orchestrator = make(
+        {
+            "lexical": FakeChannel("lexical"),
+            "dense": FakeChannel("dense"),
+            "graph": FakeChannel("graph"),
+        }
+    )
+    try:
+        result = orchestrator.retrieve(
+            RetrievalRequest(query="general", corpus_id="fixture"),
+            principal(),
+        )
+    finally:
+        orchestrator.close()
+    assert result.status == "no_evidence"
+    assert any("channel=graph;status=not_run" in item for item in result.authorized_trace)
 
 
 def test_exact_seed_enables_graph_after_exact_only():
@@ -251,13 +287,17 @@ def test_exact_seed_enables_graph_after_exact_only():
         "lexical": FakeChannel("lexical"),
         "dense": FakeChannel("dense"),
     }
-    execution = make(channels).retrieve_candidates(
-        RetrievalRequest(
-            query="map CVE-2026-999999 to CWE",
-            corpus_id="fixture",
-        ),
-        Principal(principal_id="u", source="trusted_local_cli"),
-    )
+    orchestrator = make(channels)
+    try:
+        execution = orchestrator.retrieve_candidates(
+            RetrievalRequest(
+                query="map CVE-2026-999999 to CWE",
+                corpus_id="fixture",
+            ),
+            principal(),
+        )
+    finally:
+        orchestrator.close()
     assert execution.plan.graph_enabled
     assert any(result.channel == "graph" for result in execution.channel_results)
 
@@ -268,15 +308,42 @@ def test_queue_saturation_is_bounded_and_explicit():
         "lexical": FakeChannel("lexical", delay=0.03),
         "dense": FakeChannel("dense", delay=0.03),
     }
-    execution = make(
+    orchestrator = make(
         channels,
         timeout=0.1,
         executor_factory=factory,
-    ).retrieve_candidates(
-        RetrievalRequest(query="general", corpus_id="fixture"),
-        Principal(principal_id="u", source="trusted_local_cli"),
     )
+    try:
+        execution = orchestrator.retrieve_candidates(
+            RetrievalRequest(query="general", corpus_id="fixture"),
+            principal(),
+        )
+    finally:
+        orchestrator.close(wait=True)
     assert any(result.status == "error" for result in execution.channel_results)
+
+
+def test_timed_out_work_keeps_shared_permit_until_backend_really_exits():
+    slow = FakeChannel("lexical", delay=0.08)
+    orchestrator = make(
+        {"lexical": slow},
+        timeout=0.01,
+        executor_factory=lambda: BoundedExecutor(max_workers=1, queue_capacity=0),
+    )
+    try:
+        with pytest.raises(RetrievalUnavailable):
+            orchestrator.retrieve(
+                RetrievalRequest(query="general", corpus_id="fixture"),
+                principal(),
+            )
+        with pytest.raises(RetrievalUnavailable):
+            orchestrator.retrieve(
+                RetrievalRequest(query="general", corpus_id="fixture"),
+                principal(),
+            )
+        assert slow.calls == 1
+    finally:
+        orchestrator.close(wait=True)
 
 
 def test_unexpected_policy_or_catalog_exception_is_fatal():
@@ -284,8 +351,12 @@ def test_unexpected_policy_or_catalog_exception_is_fatal():
         def search(self, *args, **kwargs):
             raise PermissionError("policy")
 
-    with pytest.raises(PermissionError):
-        make({"lexical": Fatal("lexical")}).retrieve(
-            RetrievalRequest(query="general", corpus_id="fixture"),
-            Principal(principal_id="u", source="trusted_local_cli"),
-        )
+    orchestrator = make({"lexical": Fatal("lexical")})
+    try:
+        with pytest.raises(PermissionError):
+            orchestrator.retrieve(
+                RetrievalRequest(query="general", corpus_id="fixture"),
+                principal(),
+            )
+    finally:
+        orchestrator.close()
