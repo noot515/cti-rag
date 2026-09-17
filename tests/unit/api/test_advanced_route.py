@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 from types import SimpleNamespace
+import subprocess
+import sys
 
 from fastapi.testclient import TestClient
 
@@ -125,3 +127,25 @@ def test_full_mode_requires_independent_debug_capability(tmp_path):
     assert response.status_code == 403
     assert orchestrator.calls == 0
     store.close()
+
+
+def test_fresh_process_import_does_not_load_legacy_service_routers():
+    code = r'''
+import sys
+import rag.api.advanced_app
+for forbidden in (
+    "rag.api.routers.chat_api",
+    "rag.api.routers.data_api",
+    "rag.api.routers.graph_api",
+    "rag.api.routers.token_api",
+    "packages.manager.db_manager",
+):
+    assert forbidden not in sys.modules, forbidden
+'''
+    completed = subprocess.run(
+        [sys.executable, "-c", code],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert completed.returncode == 0, completed.stderr
