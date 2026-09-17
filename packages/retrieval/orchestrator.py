@@ -11,7 +11,7 @@ from typing import Any, Callable, Mapping, Protocol
 
 from packages.evidence.ids import canonical_hash
 from packages.evidence.policy import Principal, ResolvedScope
-from packages.evidence.schema import Candidate, ObjectCandidate, RetrievalRequest, RetrievalResult, SnapshotRef
+from packages.evidence.schema import ObjectCandidate, RetrievalRequest, RetrievalResult, SnapshotRef
 from packages.retrieval.candidate import ChannelResult
 from packages.retrieval.fusion import FusionOutcome, fuse_channel_results
 from packages.retrieval.planner import DeterministicQueryPlanner, QueryPlan
@@ -91,6 +91,8 @@ class ChannelExecution:
 @dataclass(frozen=True)
 class RetrievalExecution:
     request: RetrievalRequest
+    started_at: float
+    deadline: float
     scope: ResolvedScope
     snapshot: SnapshotRef
     plan: QueryPlan
@@ -117,6 +119,7 @@ class AdvancedRetrievalOrchestrator:
         pre_rerank_limit: int = 60,
         clock: Callable[[], float] = time.monotonic,
         executor_factory: Callable[[], BoundedExecutor] | None = None,
+        reranker: Any | None = None,
     ) -> None:
         if total_timeout_seconds <= 0 or channel_timeout_seconds <= 0:
             raise ValueError("retrieval deadlines must be positive")
@@ -136,6 +139,7 @@ class AdvancedRetrievalOrchestrator:
         self.executor_factory = executor_factory or (
             lambda: BoundedExecutor(max_workers=3, queue_capacity=2)
         )
+        self.reranker = reranker
 
     def _invoke_channel(
         self,
@@ -239,7 +243,6 @@ class AdvancedRetrievalOrchestrator:
 
     @staticmethod
     def _trace(result: ChannelResult) -> str:
-        # Deliberately omit IDs, text, backend errors and provider payloads.
         return (
             f"channel={result.channel};status={result.status};"
             f"count={len(result.candidates)};"
@@ -312,8 +315,6 @@ class AdvancedRetrievalOrchestrator:
                         total_deadline,
                     )
 
-                # Exact is collected first only because graph seeds must be
-                # authorized deterministic exact evidence.
                 if "exact" in submitted:
                     executions["exact"] = self._collect(
                         "exact",
@@ -419,6 +420,8 @@ class AdvancedRetrievalOrchestrator:
             trace = tuple(self._trace(result) for result in ordered_results)
             return RetrievalExecution(
                 request=request,
+                started_at=total_started,
+                deadline=total_deadline,
                 scope=scope,
                 snapshot=snapshot,
                 plan=final_plan,
@@ -436,10 +439,44 @@ class AdvancedRetrievalOrchestrator:
         trusted_principal: Principal,
     ) -> RetrievalResult:
         execution = self.retrieve_candidates(request, trusted_principal)
-        selected = execution.fusion.candidates[: request.top_k]
+        candidates = execution.fusion.candidates
+        trace = list(execution.authorized_trace)
+        timings = dict(execution.timings_ms)
+        model_fingerprints: dict[str, str] = {}
+        status = execution.status
+
+        if self.reranker is None:
+            trace.append("reranker=status=not_configured")
+        elif candidates:
+            started = self.clock()
+            outcome = self.reranker.rerank(
+                request.query,
+                candidates,
+                scope=execution.scope,
+                snapshot=execution.snapshot,
+                exact_priority_candidate_ids=(
+                    execution.fusion.exact_priority_candidate_ids
+                ),
+                request_deadline=execution.deadline,
+            )
+            timings["reranker"] = max(
+                0.0,
+                (self.clock() - started) * 1000.0,
+            )
+            candidates = outcome.candidates
+            trace.append(f"reranker=status={outcome.status}")
+            if outcome.model_fingerprint:
+                model_fingerprints["reranker"] = (
+                    outcome.model_fingerprint
+                )
+            if outcome.status == "unavailable" and status == "ok":
+                status = "partial"
+        else:
+            trace.append("reranker=status=not_run")
+
+        selected = candidates[: request.top_k]
         output_truncated = (
-            execution.truncated
-            or len(execution.fusion.candidates) > len(selected)
+            execution.truncated or len(candidates) > len(selected)
         )
         run_id = canonical_hash(
             [
@@ -454,14 +491,14 @@ class AdvancedRetrievalOrchestrator:
             retrieval_run_id=run_id,
             domain=execution.scope.domain,
             snapshot=execution.snapshot,
-            status=execution.status,
+            status=status,
             candidates=selected,
             answer_context="",
             citations=(),
-            authorized_trace=execution.authorized_trace,
+            authorized_trace=tuple(trace),
             truncated=output_truncated,
-            timings_ms=execution.timings_ms,
-            model_fingerprints={},
+            timings_ms=timings,
+            model_fingerprints=model_fingerprints,
         )
 
 
