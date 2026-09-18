@@ -124,8 +124,9 @@ def create_live_transport(config: Any, *, environ: Mapping[str, str] | None = No
             token,
             ssl_verify=True,
             perform_health_check=False,
+            bundle_send_to_queue=False,
             requests_timeout=max(1, int(config.timeout_seconds)),
-            provider="cti-rag-readonly",
+            provider="ctirag/1.0",
         )
         response = api.query("query CtiRagAbout { about { version } }")
     except Exception as exc:
