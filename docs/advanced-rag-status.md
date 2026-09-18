@@ -1,6 +1,6 @@
 # Advanced RAG V3 implementation status
 
-Updated: 2026-09-17. Prompt 16 documented head / Prompt 17 predecessor: `1b0e03fc3a54367cb0930318db6477a2667b8e02`. Prompt 17 implementation/test head before final handoff documentation: `9fd83dc85c4575f3ef6518940449a0d93af494e5`. Current stacked branch: `feat/advanced-17-native-evaluation-and-ablations`. Legacy retrieval/benchmark behavior remains available and unchanged.
+Updated: 2026-09-18. Prompt 17 final predecessor: `1a39055dba7938f96b2462d1392e0f617242597b`. Prompt 18 implementation/test head before handoff documentation: `545a9efc73c0204f9a07b4c75bec2bf5df9f01d7`. Current stacked branch: `feat/advanced-18-cticonnect-adapter`. Legacy retrieval/benchmark behavior remains available and unchanged.
 
 ## Prompt 16 - isolated authenticated advanced API
 
@@ -53,3 +53,38 @@ The exact Prompt 16/17 target commands remain `not_run` in this implementation s
 ## Handoff
 
 Prompt 17 mechanics and honest-gate contracts are implemented on top of Prompt 16. No default route or quality promotion is authorized by the synthetic fixture report.
+
+## Prompt 18 - CTIConnect corpus adapter and external retrieval experiment
+
+Prompt 18 adds a benchmark-only adapter for the external `peng-gao-lab/CTIConnect` checkout pinned at `554797d69a51147f1f98fad7198cb2d2b183d0e9`.
+
+- the pinned release is the 1,859-item v1.0.0 dataset (RCM 290, WIM 308, ATD 261, ESD 280, ATA 160, VCA 219, CSC 111, TAP 135, MLA 95); later upstream 1,860-item/VCA-220 state is treated as dataset drift and is not silently accepted;
+- `benchmark/cticonnect/adapter.py` verifies the exact Git revision, required MIT/CC-BY-4.0 license declarations, official task counts and SHA-256 values, structured KB file counts/hashes and the 321-report corpus before evaluation;
+- the external checkout is referenced only through `CTICONNECT_PATH`; benchmark data are not vendored into this repository;
+- structured records parse nested JSON in `contents` and derive identity from `cve_id`, `CWE-` + `cwe_id`, `CAPEC-` + `capec_id` or `mitre_id`. Repeated outer numeric `id` values remain provenance only;
+- report records use the supplied `preprocessed`, `link` and `publish_date` fields with exact `BLOG-<id>` mapping. No report URL is fetched;
+- query records contain only the question plus non-answer task/category/eval-type metadata. Official answers, target IDs, alternate target IDs, reference answers, construction provenance and source clusters stay in the scoring side;
+- official identifier scoring is compatibility-pinned to the upstream behavior, including the all-valid alternate-target shortcut and the mixed valid/invalid fallback to canonical-gold P/R/F1;
+- target-object qrels and source-document proxy qrels are separate. Source proxies are explicitly nonexhaustive and are never represented as evidence/path truth;
+- `cskg/` lineage is recorded separately as extracted. The graph is not converted into ground-truth edges and `cskg/bm25_index.pkl` is never unpickled; the retrieval experiment rebuilds BM25 from corpus text;
+- the generic advanced retrieval runner lazily dispatches to CTIConnect only for corpus ID `cticonnect-v1.0.0`, preserving the Prompt 17 fixture path unchanged;
+- real embedding/reranker/generator/judge variants remain `not_run` unless an exact permitted model configuration exists; lexical external retrieval alone does not authorize quality promotion.
+
+### Prompt 18 validation
+
+Target commands:
+
+```text
+python -m pytest tests/unit/benchmark/test_cticonnect_adapter.py -q
+python -m pytest tests/integration/test_cticonnect_corpus.py -m integration -q
+python -m benchmark.advanced.run_retrieval_eval --config benchmark/advanced/configs/cticonnect.yaml --output saves/eval/cticonnect
+python scripts/validate_advanced_04_18.py
+```
+
+The chained validator first executes `scripts/validate_advanced_04_17.py`, then Prompt 18 unit tests, the pinned-corpus integration and external retrieval report when `CTICONNECT_PATH` is present, followed by compileall, `git diff --check`, full collection, status and HEAD. Missing `CTICONNECT_PATH` is reported as an explicit optional `NOT_RUN`, not a pass.
+
+The exact Python 3.11 chain and external-checkout commands remain target-environment gates in this implementation environment; no new pass count is inferred from publication.
+
+## Prompt 18 handoff
+
+Prompt 19 may build from this branch only after treating the unresolved P04-P18 Python 3.11 chain as a correctness prerequisite. CTIConnect remains an evaluation dependency, not an application runtime dependency.
