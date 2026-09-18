@@ -66,3 +66,226 @@ def test_expired_visibility_stops_egress_before_provider_call(tmp_path: Path):
             )
         # The provider is intentionally after the freshness gate.
         assert calls["provider"] == 0
+
+
+
+def test_orchestrator_rechecks_freshness_before_reranker_provider():
+    from dataclasses import dataclass
+
+    from packages.evidence.ids import canonical_hash
+    from packages.evidence.policy import Principal
+    from packages.evidence.schema import (
+        AuthorizedEvidenceView,
+        ChannelScore,
+        EvidencePolicyMetadata,
+        ObjectCandidate,
+        RetrievalRequest,
+        SnapshotRef,
+    )
+    from packages.retrieval.candidate import ChannelResult
+    from packages.retrieval.orchestrator import AdvancedRetrievalOrchestrator
+    from packages.retrieval.planner import DeterministicQueryPlanner
+
+    class Adapter:
+        domain = "cti"
+        def parse_identifiers(self, query): return []
+        def allowed_graph_patterns(self, hint): return []
+        def infer_task_hint(self, query, identifiers): return "general"
+        def requested_target_types(self, query, identifiers, task): return ()
+
+    class FreshnessPolicy:
+        def __init__(self):
+            self.checks = 0
+        def resolve_scope(self, principal, corpus):
+            return ResolvedScope(
+                principal_id=principal.principal_id,
+                corpus_id=corpus,
+                domain="cti",
+                scope_id="scope",
+                policy_version="v1",
+                source_allowlist=frozenset({"opencti"}),
+                allowed_destinations=frozenset({"caller", "reranker_provider"}),
+            )
+        def assert_scope_current(self, scope):
+            self.checks += 1
+            if self.checks >= 2:
+                raise VisibilityExpired("corpus-access-denied")
+
+    @dataclass
+    class Handle:
+        snapshot: SnapshotRef
+        manifest: object = None
+        def __enter__(self): return self
+        def __exit__(self, *args): return False
+
+    class Snapshots:
+        def pin_active(self, scope):
+            return Handle(SnapshotRef(
+                domain="cti", scope_id="scope", snapshot_id="g",
+                manifest_sha256="1" * 64,
+            ))
+
+    snapshot = Snapshots().pin_active(None).snapshot
+    candidate = ObjectCandidate(
+        candidate_id=canonical_hash(["candidate"]),
+        domain="cti",
+        scope_id="scope",
+        snapshot=snapshot,
+        target_object_uid="o",
+        authorized_view=AuthorizedEvidenceView(
+            evidence_uid="r",
+            domain="cti",
+            scope_id="scope",
+            source_instances=("opencti",),
+            policy=EvidencePolicyMetadata(),
+        ),
+        channel_scores=(
+            ChannelScore(
+                channel="lexical",
+                rank=1,
+                raw_score=1.0,
+                score_kind="test",
+            ),
+        ),
+        object_uid="o",
+    )
+
+    class Channel:
+        name = "lexical"
+        def search(self, plan, scope, snapshot, deadline):
+            return ChannelResult(
+                channel="lexical", status="ok", candidates=(candidate,)
+            )
+
+    class Reranker:
+        def __init__(self): self.calls = 0
+        def rerank(self, *args, **kwargs):
+            self.calls += 1
+            raise AssertionError("provider must not be called after freshness loss")
+
+    reranker = Reranker()
+    orchestrator = AdvancedRetrievalOrchestrator(
+        policy=FreshnessPolicy(),
+        snapshot_manager=Snapshots(),
+        planner=DeterministicQueryPlanner(Adapter()),
+        channels={"lexical": Channel()},
+        reranker=reranker,
+    )
+    try:
+        with pytest.raises(VisibilityExpired):
+            orchestrator.retrieve(
+                RetrievalRequest(query="general", corpus_id="opencti"),
+                Principal(principal_id="u", source="trusted_local_cli"),
+            )
+    finally:
+        orchestrator.close()
+    assert reranker.calls == 0
+
+
+def test_final_freshness_failure_prevents_response_serialization():
+    from dataclasses import dataclass
+
+    from packages.evidence.ids import canonical_hash
+    from packages.evidence.policy import Principal
+    from packages.evidence.schema import (
+        AuthorizedEvidenceView,
+        ChannelScore,
+        EvidencePolicyMetadata,
+        ObjectCandidate,
+        RetrievalRequest,
+        SnapshotRef,
+    )
+    from packages.retrieval.candidate import ChannelResult
+    from packages.retrieval.orchestrator import AdvancedRetrievalOrchestrator
+    from packages.retrieval.planner import DeterministicQueryPlanner
+
+    class Adapter:
+        domain = "cti"
+        def parse_identifiers(self, query): return []
+        def allowed_graph_patterns(self, hint): return []
+        def infer_task_hint(self, query, identifiers): return "general"
+        def requested_target_types(self, query, identifiers, task): return ()
+
+    class FreshnessPolicy:
+        def __init__(self): self.checks = 0
+        def resolve_scope(self, principal, corpus):
+            return ResolvedScope(
+                principal_id=principal.principal_id,
+                corpus_id=corpus,
+                domain="cti", scope_id="scope", policy_version="v1",
+                source_allowlist=frozenset({"opencti"}),
+                allowed_destinations=frozenset({"caller"}),
+            )
+        def assert_scope_current(self, scope):
+            self.checks += 1
+            if self.checks >= 3:
+                raise VisibilityExpired("corpus-access-denied")
+
+    @dataclass
+    class Handle:
+        snapshot: SnapshotRef
+        manifest: object = None
+        def __enter__(self): return self
+        def __exit__(self, *args): return False
+
+    class Snapshots:
+        def pin_active(self, scope):
+            return Handle(SnapshotRef(
+                domain="cti", scope_id="scope", snapshot_id="g",
+                manifest_sha256="1" * 64,
+            ))
+
+    snapshot = Snapshots().pin_active(None).snapshot
+    candidate = ObjectCandidate(
+        candidate_id=canonical_hash(["candidate-final"]),
+        domain="cti", scope_id="scope", snapshot=snapshot,
+        target_object_uid="o",
+        authorized_view=AuthorizedEvidenceView(
+            evidence_uid="r", domain="cti", scope_id="scope",
+            source_instances=("opencti",), policy=EvidencePolicyMetadata(),
+        ),
+        channel_scores=(
+            ChannelScore(
+                channel="lexical", rank=1, raw_score=1.0, score_kind="test"
+            ),
+        ),
+        object_uid="o",
+    )
+
+    class Channel:
+        name = "lexical"
+        def search(self, plan, scope, snapshot, deadline):
+            return ChannelResult(
+                channel="lexical", status="ok", candidates=(candidate,)
+            )
+
+    class Packed:
+        answer_context = "must-not-escape"
+        packed_evidence = ("r",)
+        tokens_used = 1
+        omissions = ()
+        def citation_records(self): return ()
+
+    class Packer:
+        def __init__(self): self.calls = 0
+        def pack(self, *args, **kwargs):
+            self.calls += 1
+            return Packed()
+
+    packer = Packer()
+    orchestrator = AdvancedRetrievalOrchestrator(
+        policy=FreshnessPolicy(),
+        snapshot_manager=Snapshots(),
+        planner=DeterministicQueryPlanner(Adapter()),
+        channels={"lexical": Channel()},
+        context_packer=packer,
+    )
+    try:
+        with pytest.raises(VisibilityExpired):
+            orchestrator.retrieve(
+                RetrievalRequest(query="general", corpus_id="opencti"),
+                Principal(principal_id="u", source="trusted_local_cli"),
+            )
+    finally:
+        orchestrator.close()
+    assert packer.calls == 1

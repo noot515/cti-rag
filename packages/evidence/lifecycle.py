@@ -156,38 +156,64 @@ class LifecycleAuthority:
         domain: str,
         scope_id: str,
         source_instance: str,
+        supported_type: str,
     ) -> tuple[tuple[str, str, str, str], ...]:
         rows: list[tuple[str, str, str, str]] = []
+        if supported_type == "relationship":
+            source_rows = self.db.execute(
+                """
+                SELECT s.source_object_id,
+                       r.relation_uid AS evidence_uid,r.revision_uid
+                FROM relation_revision_sources s
+                JOIN relation_revisions r
+                  ON r.domain=s.domain AND r.scope_id=s.scope_id
+                 AND r.revision_uid=s.revision_uid
+                WHERE s.domain=? AND s.scope_id=? AND s.source_instance=?
+                """,
+                (domain, scope_id, source_instance),
+            )
+            return tuple(
+                (
+                    "relation",
+                    str(row["source_object_id"]),
+                    str(row["evidence_uid"]),
+                    str(row["revision_uid"]),
+                )
+                for row in source_rows
+            )
+
+        expected_object_types = {
+            "vulnerability": {"vulnerability"},
+            "report": {"report"},
+            "attack_pattern": {"attack-pattern", "technique"},
+        }.get(supported_type)
+        if expected_object_types is None:
+            raise InventoryReconciliationError(
+                f"unsupported inventory type: {supported_type}"
+            )
         for row in self.db.execute(
             """
-            SELECT 'object' AS evidence_kind,s.source_object_id,
-                   r.object_uid AS evidence_uid,r.revision_uid
+            SELECT s.source_object_id,r.object_uid AS evidence_uid,
+                   r.revision_uid,r.payload_json
             FROM object_revision_sources s
             JOIN object_revisions r
               ON r.domain=s.domain AND r.scope_id=s.scope_id
              AND r.revision_uid=s.revision_uid
             WHERE s.domain=? AND s.scope_id=? AND s.source_instance=?
-            UNION ALL
-            SELECT 'relation' AS evidence_kind,s.source_object_id,
-                   r.relation_uid AS evidence_uid,r.revision_uid
-            FROM relation_revision_sources s
-            JOIN relation_revisions r
-              ON r.domain=s.domain AND r.scope_id=s.scope_id
-             AND r.revision_uid=s.revision_uid
-            WHERE s.domain=? AND s.scope_id=? AND s.source_instance=?
             """,
-            (
-                domain,
-                scope_id,
-                source_instance,
-                domain,
-                scope_id,
-                source_instance,
-            ),
+            (domain, scope_id, source_instance),
         ):
+            try:
+                payload = json.loads(row["payload_json"])
+            except json.JSONDecodeError as exc:
+                raise InventoryReconciliationError(
+                    "stored object revision payload is not valid JSON"
+                ) from exc
+            if payload.get("object_type") not in expected_object_types:
+                continue
             rows.append(
                 (
-                    str(row["evidence_kind"]),
+                    "object",
                     str(row["source_object_id"]),
                     str(row["evidence_uid"]),
                     str(row["revision_uid"]),
@@ -342,6 +368,7 @@ class LifecycleAuthority:
                         domain=domain,
                         scope_id=scope_id,
                         source_instance=source_instance,
+                        supported_type=supported_type,
                     )
                     seen_set = set(seen)
                     normalized_current = {

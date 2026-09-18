@@ -26,7 +26,7 @@ def _seed_revision(store, *, source_id: str, object_uid: str, revision_uid: str)
     )
     db.execute(
         "INSERT OR IGNORE INTO object_revisions(domain,scope_id,object_uid,revision_uid,payload_json,lifecycle_state,created_at) VALUES('cti','scope',?,?,?,'active',?)",
-        (object_uid, revision_uid, "{}", now),
+        (object_uid, revision_uid, '{"object_type":"vulnerability"}', now),
     )
     db.execute(
         "INSERT OR IGNORE INTO object_revision_sources(domain,scope_id,revision_uid,raw_sha256,source_instance,source_object_id) VALUES('cti','scope',?,?,?,?)",
@@ -166,3 +166,46 @@ def test_lease_expiry_fails_closed(tmp_path: Path):
                 _scope(),
                 now=datetime(2026, 9, 18, 0, 2, 0, tzinfo=timezone.utc),
             )
+
+
+
+def test_inventory_is_type_scoped_and_does_not_tombstone_other_types(tmp_path: Path):
+    with EvidenceStore(tmp_path / "catalog.db", tmp_path / "raw") as store:
+        _seed_revision(
+            store,
+            source_id="vuln",
+            object_uid="v",
+            revision_uid="rv",
+        )
+        digest = sha256(b"report").hexdigest()
+        store.raw_store.put(b"report", expected_sha256=digest)
+        store.connection.execute(
+            "INSERT INTO raw_payloads(domain,scope_id,sha256,byte_length,created_at) VALUES('cti','scope',?,?,?)",
+            (digest, 6, "2026-09-18T00:00:00Z"),
+        )
+        store.connection.execute(
+            "INSERT INTO objects(domain,scope_id,object_uid) VALUES('cti','scope','report-o')"
+        )
+        store.connection.execute(
+            "INSERT INTO object_revisions(domain,scope_id,object_uid,revision_uid,payload_json,lifecycle_state,created_at) "
+            "VALUES('cti','scope','report-o','report-r','{\"object_type\":\"report\"}','active','2026-09-18T00:00:00Z')"
+        )
+        store.connection.execute(
+            "INSERT INTO object_revision_sources(domain,scope_id,revision_uid,raw_sha256,source_instance,source_object_id) "
+            "VALUES('cti','scope','report-r',?,'opencti','report')",
+            (digest,),
+        )
+        authority = LifecycleAuthority(store)
+        authority.record_inventory(
+            domain="cti", scope_id="scope", source_instance="opencti",
+            supported_type="vulnerability", type_fingerprint="type-v1",
+            filter_fingerprint="filter-v1", seen_source_ids=("vuln",),
+            current_revisions={"vuln": {("object", "v", "rv")}},
+            explicit_status={}, complete=True, authorized=True, page_count=1,
+            capture_started_at="2026-09-18T00:00:00Z",
+            capture_completed_at="2026-09-18T00:00:01Z",
+            max_staleness_seconds=3600,
+        )
+        assert store.connection.execute(
+            "SELECT COUNT(*) FROM tombstones WHERE evidence_uid='report-o'"
+        ).fetchone()[0] == 0
