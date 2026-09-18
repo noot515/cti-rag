@@ -229,6 +229,7 @@ class LifecycleAuthority:
         source_instance: str,
         supported_type: str,
         filter_fingerprint: str,
+        exclude_run_id: str,
     ) -> set[str]:
         """IDs whose absence may be interpreted under this exact namespace."""
         previous = self.db.execute(
@@ -236,7 +237,7 @@ class LifecycleAuthority:
             SELECT run_id FROM inventory_runs
             WHERE domain=? AND scope_id=? AND source_instance=?
               AND supported_type=? AND filter_fingerprint=?
-              AND status='complete'
+              AND status='complete' AND run_id<>?
             ORDER BY capture_completed_at DESC,created_at DESC
             LIMIT 1
             """,
@@ -246,6 +247,7 @@ class LifecycleAuthority:
                 source_instance,
                 supported_type,
                 filter_fingerprint,
+                exclude_run_id,
             ),
         ).fetchone()
         if previous is not None:
@@ -443,6 +445,7 @@ class LifecycleAuthority:
                         source_instance=source_instance,
                         supported_type=supported_type,
                         filter_fingerprint=filter_fingerprint,
+                        exclude_run_id=run_id,
                     )
                     prior = self._source_rows(
                         domain=domain,
