@@ -372,14 +372,17 @@ def normalize_complete_capture(
 ) -> NormalizedOpenCTICapture:
     if not capture.complete:
         raise ValueError("partial OpenCTI capture cannot be normalized for publication")
+    # Capture interval belongs in the replay/inventory ledger, not semantic
+    # source identity. Unchanged complete scans therefore replay idempotently.
     source_snapshot_id = canonical_hash(
         [
-            "opencti-complete-scan-v1",
+            "opencti-content-snapshot-v2",
             capture.source_instance,
             capture.platform_version,
-            capture.capture_started_at,
-            capture.capture_completed_at,
-            sorted(record.raw_payload.sha256 for record in capture.records),
+            sorted(
+                (record.kind, record.source_object_id, record.raw_payload.sha256)
+                for record in capture.records
+            ),
         ]
     )
     adapter = CtiDomainAdapter()

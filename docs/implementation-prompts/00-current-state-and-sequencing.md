@@ -51,3 +51,28 @@ Prompt 19 reconciliation notes:
 9. Publication reuses the durable catalog and atomic generation path with exact, lexical and catalog-graph projections. There is no query-time upstream fallback and no streaming/incremental completeness claim.
 10. `scripts/validate_advanced_04_19.py` chains `validate_advanced_04_18.py` before Prompt 19 gates, so unresolved Python 3.11 predecessor correctness remains visible rather than being replaced by later tests.
 11. The current sandbox has Python 3.13.5 and cannot resolve GitHub/package hosts from the container; Python 3.11, pinned pycti installation and live OpenCTI are therefore recorded as `not_run` rather than inferred successes.
+
+
+Prompt 20 reconciliation notes:
+
+1. The existing generic `checkpoints` table is retained for backward
+   compatibility; OpenCTI replay uses a new namespaced ledger because Prompt 20
+   requires type/filter identity plus independent ingestion/published cursors.
+2. The initial implementation intentionally performs a full fresh generation
+   rebuild after a completed capture. The page ledger is durability/replay
+   state, not a claim that opaque OpenCTI cursors prove global completeness.
+3. Raw page bytes are written content-addressed before the ledger transaction.
+   Orphan raw blobs after a crash are safe; the ingestion cursor advances only
+   with the page receipt/job transaction.
+4. Prompt 06 projection jobs remain the authoritative per-backend
+   acknowledgement ledger. Prompt 20 links an ingestion run to the generation
+   and reconciles the activation-before-checkpoint crash window.
+5. Capture timestamps were removed from semantic source snapshot identity.
+   They remain recorded as capture/replay metadata; unchanged complete scans
+   therefore replay with stable revision/source identity and zero catalog
+   logical changes.
+6. Duplicate source ordering is STIX `modified` first and OpenCTI
+   `updated_at` only as a tiebreak. Equal versions with different content are
+   ambiguous and fail closed.
+7. `scripts/validate_advanced_04_20.py` chains every unresolved predecessor
+   correctness gate before Prompt 20 tests.

@@ -47,6 +47,20 @@ class OpenCTIPartialScan(OpenCTIReadError):
     pass
 
 
+class OpenCTIAmbiguousOrdering(OpenCTIReadError):
+    pass
+
+
+def _record_version(payload: Mapping[str, Any]) -> tuple[str, str]:
+    """Semantic version first; OpenCTI maintenance timestamp only breaks ties."""
+    modified = payload.get("modified")
+    updated = payload.get("updated_at")
+    return (
+        "" if modified is None else str(modified),
+        "" if updated is None else str(updated),
+    )
+
+
 @dataclass(frozen=True)
 class RawPayloadRef:
     sha256: str
@@ -212,6 +226,7 @@ class OpenCTIReader:
         kind: str,
         *,
         filters: Mapping[str, Any] | None = None,
+        page_callback: Callable[[CapturePage], None] | None = None,
     ) -> tuple[CapturePage, ...]:
         if kind not in CAPTURE_KINDS:
             raise ValueError(f"unsupported capture kind: {kind}")
@@ -254,21 +269,22 @@ class OpenCTIReader:
                     )
                 )
             global_count = pagination.get("globalCount")
-            pages.append(
-                CapturePage(
-                    kind=kind,
-                    source_instance=self.source_instance,
-                    filters=dict(filters or {}),
-                    page_index=page_index,
-                    cursor_before=after,
-                    cursor_after=end_cursor,
-                    has_next_page=has_next,
-                    global_count=int(global_count) if global_count is not None else None,
-                    capture_started_at=_iso(started),
-                    capture_completed_at=_iso(completed),
-                    records=tuple(captured),
-                )
+            page = CapturePage(
+                kind=kind,
+                source_instance=self.source_instance,
+                filters=dict(filters or {}),
+                page_index=page_index,
+                cursor_before=after,
+                cursor_after=end_cursor,
+                has_next_page=has_next,
+                global_count=int(global_count) if global_count is not None else None,
+                capture_started_at=_iso(started),
+                capture_completed_at=_iso(completed),
+                records=tuple(captured),
             )
+            pages.append(page)
+            if page_callback is not None:
+                page_callback(page)
             if not has_next:
                 stable_counts = {
                     page.global_count
@@ -297,12 +313,17 @@ class OpenCTIReader:
         *,
         filters_by_kind: Mapping[str, Mapping[str, Any]] | None = None,
         kinds: Sequence[str] = CAPTURE_KINDS,
+        page_callback: Callable[[CapturePage], None] | None = None,
     ) -> CompleteCapture:
         started = _now()
         pages: list[CapturePage] = []
         for kind in kinds:
             pages.extend(
-                self.scan_kind(kind, filters=(filters_by_kind or {}).get(kind))
+                self.scan_kind(
+                    kind,
+                    filters=(filters_by_kind or {}).get(kind),
+                    page_callback=page_callback,
+                )
             )
 
         latest: dict[tuple[str, str], CapturedRecord] = {}
@@ -312,13 +333,28 @@ class OpenCTIReader:
             for record in page.records:
                 key = (record.kind, record.source_object_id)
                 previous = latest.get(key)
-                if previous is not None:
-                    duplicates += 1
-                    if previous.raw_payload.sha256 != record.raw_payload.sha256:
-                        warnings.append(
-                            f"entity changed during scan: {record.kind}:{record.source_object_id}"
-                        )
-                latest[key] = record
+                if previous is None:
+                    latest[key] = record
+                    continue
+                duplicates += 1
+                if previous.raw_payload.sha256 == record.raw_payload.sha256:
+                    continue
+                previous_version = _record_version(previous.payload)
+                current_version = _record_version(record.payload)
+                if previous_version == current_version:
+                    raise OpenCTIAmbiguousOrdering(
+                        "same source version has conflicting payloads: "
+                        f"{record.kind}:{record.source_object_id}"
+                    )
+                if current_version > previous_version:
+                    latest[key] = record
+                    warnings.append(
+                        f"newer duplicate selected: {record.kind}:{record.source_object_id}"
+                    )
+                else:
+                    warnings.append(
+                        f"older duplicate ignored: {record.kind}:{record.source_object_id}"
+                    )
         completed = _now()
         return CompleteCapture(
             schema_version="opencti-complete-capture-v1",
@@ -348,7 +384,7 @@ def raw_payload_bytes(record: CapturedRecord) -> bytes:
 
 __all__ = [
     "CAPTURE_KINDS", "CapturePage", "CapturedRecord", "CompleteCapture",
-    "OpenCTICursorError", "OpenCTIPageTransport", "OpenCTIPartialScan",
+    "OpenCTIAmbiguousOrdering", "OpenCTICursorError", "OpenCTIPageTransport", "OpenCTIPartialScan",
     "OpenCTIReader", "RawPayloadRef", "RecordedOpenCTITransport",
     "raw_payload_bytes",
 ]

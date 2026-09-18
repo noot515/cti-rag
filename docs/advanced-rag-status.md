@@ -122,3 +122,49 @@ This implementation sandbox still has Python 3.13.5, no Python 3.11, no Docker a
 ## Prompt 19 handoff
 
 Prompt 19 is implemented for offline recorded-capture correctness and a version-pinned read-only live boundary. Service deployment, restricted maintained serving and freshness promotion are not authorized by this phase.
+
+
+## Prompt 20 - durable replay and recoverable publication
+
+Prompt 20 adds a separate durable OpenCTI replay ledger in the existing evidence
+catalog. Checkpoint identity is source instance + domain + scope + supported
+type + filter fingerprint. Ingestion and published cursors are distinct.
+
+Page raw bytes are content-addressed before SQLite state. Page receipt, raw
+catalog linkage, ingestion job state and ingestion cursor advancement are then
+committed together. An interrupted run never advances a published cursor and is
+replayed by a bounded full rescan rather than claiming cursor completeness.
+
+Publication still uses the Prompt 06 durable per-backend receipts. The replay
+ledger binds the full fresh generation before projection, and advances the
+published cursor only after that generation is active. A crash after activation
+but before checkpoint acknowledgement is repaired by
+`reconcile_activated()` on restart.
+
+Repeated unchanged complete captures now derive source snapshot identity from
+semantic content rather than capture timestamps. The full evidence rebuild is
+therefore idempotent and reports zero evidence-catalog logical changes on an
+unchanged replay. Capture intervals stay in the replay ledger/report.
+
+Duplicate OpenCTI records use STIX `modified` as the primary source-version
+ordering and `updated_at` only as a maintenance tiebreak. Older records cannot
+replace a newer semantic revision. Equal source versions with different raw
+payloads fail as ambiguous instead of guessing an order.
+
+The implementation deliberately remains at-least-once and rebuilds a complete
+fresh generation. It does not claim exactly-once delivery or incremental
+Milvus/graph reuse; rebuild duration is reported for measurement.
+
+### Prompt 20 validation
+
+Target commands:
+
+```text
+python -m pytest tests/unit/opencti/test_incremental_replay.py tests/e2e/test_sync_recovery.py -q
+python -m packages.integrations.opencti.cli sync --config benchmark/advanced/configs/opencti.yaml --once
+python scripts/validate_advanced_04_20.py
+```
+
+The chained validator executes the full Prompt 04-19 validator first, followed
+by replay/recovery tests, offline fixture sync, compileall, whitespace, full
+collection, status and HEAD.
