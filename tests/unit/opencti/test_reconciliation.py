@@ -301,3 +301,82 @@ def test_missing_required_type_lease_denies_scope(tmp_path: Path):
                 _scope(),
                 now=datetime(2026, 9, 18, 0, 0, 30, tzinfo=timezone.utc),
             )
+
+
+
+def test_lost_permission_records_failure_without_tombstone_or_lease_advance(tmp_path: Path):
+    with EvidenceStore(tmp_path / "catalog.db", tmp_path / "raw") as store:
+        _seed_revision(store, source_id="visible", object_uid="o", revision_uid="r")
+        authority = LifecycleAuthority(store)
+        failure = authority.record_inventory_failure(
+            domain="cti", scope_id="scope", source_instance="opencti",
+            supported_type="vulnerability", type_fingerprint="type-v1",
+            filter_fingerprint="filter-v1", failure_reason="access-denied",
+            capture_started_at="2026-09-18T00:00:00Z",
+            capture_completed_at="2026-09-18T00:00:01Z",
+            max_staleness_seconds=3600,
+            authorized=False,
+        )
+        assert failure.authorized is False
+        assert failure.lease_expires_at is None
+        assert store.connection.execute(
+            "SELECT status FROM inventory_runs"
+        ).fetchone()["status"] == "unauthorized"
+        assert store.connection.execute(
+            "SELECT COUNT(*) FROM tombstones"
+        ).fetchone()[0] == 0
+        assert store.connection.execute(
+            "SELECT COUNT(*) FROM visibility_leases"
+        ).fetchone()[0] == 0
+
+
+def test_complete_relationship_inventory_can_retire_missing_edge(tmp_path: Path):
+    with EvidenceStore(tmp_path / "catalog.db", tmp_path / "raw") as store:
+        _seed_revision(store, source_id="a", object_uid="a", revision_uid="ra")
+        _seed_revision(store, source_id="b", object_uid="b", revision_uid="rb")
+        digest = sha256(b"edge").hexdigest()
+        store.raw_store.put(b"edge", expected_sha256=digest)
+        store.connection.execute(
+            "INSERT INTO raw_payloads(domain,scope_id,sha256,byte_length,created_at) VALUES('cti','scope',?,?,?)",
+            (digest, 4, "2026-09-18T00:00:00Z"),
+        )
+        store.connection.execute(
+            "INSERT INTO relations(domain,scope_id,relation_uid,source_object_uid,target_object_uid) VALUES('cti','scope','edge','a','b')"
+        )
+        store.connection.execute(
+            "INSERT INTO relation_revisions(domain,scope_id,relation_uid,revision_uid,payload_json,assertion_kind,lifecycle_state,created_at) "
+            "VALUES('cti','scope','edge','edge-r','{}','explicit','active','2026-09-18T00:00:00Z')"
+        )
+        store.connection.execute(
+            "INSERT INTO relation_revision_sources(domain,scope_id,revision_uid,raw_sha256,source_instance,source_object_id) "
+            "VALUES('cti','scope','edge-r',?,'opencti','edge-source')",
+            (digest,),
+        )
+        authority = LifecycleAuthority(store)
+        authority.record_inventory(
+            domain="cti", scope_id="scope", source_instance="opencti",
+            supported_type="relationship", type_fingerprint="rel-v1",
+            filter_fingerprint="filter-v1", seen_source_ids=("edge-source",),
+            current_revisions={
+                "edge-source": {("relation", "edge", "edge-r")}
+            },
+            explicit_status={}, complete=True, authorized=True, page_count=1,
+            capture_started_at="2026-09-18T00:00:00Z",
+            capture_completed_at="2026-09-18T00:00:01Z",
+            max_staleness_seconds=3600,
+        )
+        authority.record_inventory(
+            domain="cti", scope_id="scope", source_instance="opencti",
+            supported_type="relationship", type_fingerprint="rel-v1",
+            filter_fingerprint="filter-v1", seen_source_ids=(),
+            current_revisions={}, explicit_status={}, complete=True,
+            authorized=True, page_count=1,
+            capture_started_at="2026-09-18T00:01:00Z",
+            capture_completed_at="2026-09-18T00:01:01Z",
+            max_staleness_seconds=3600,
+        )
+        row = store.connection.execute(
+            "SELECT reason FROM tombstones WHERE evidence_kind='relation' "
+            "AND evidence_uid='edge'"
+        ).fetchone()
+        assert row["reason"] == "no_longer_visible"
