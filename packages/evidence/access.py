@@ -350,10 +350,20 @@ class CorpusGrantPolicy:
         self,
         store: CorpusAccessStore,
         principal: TrustedPrincipal,
+        freshness_authority: object | None = None,
     ) -> None:
         self.store = store
         self.principal = principal
-        self.policy_version = "server-corpus-grants-v1"
+        self.freshness_authority = freshness_authority
+        self.policy_version = "server-corpus-grants-v2"
+
+    def assert_scope_current(self, scope: ResolvedScope) -> None:
+        self.store.assert_scope_current(self.principal, scope)
+        if self.freshness_authority is not None:
+            try:
+                self.freshness_authority.assert_scope_current(scope)
+            except PermissionError as exc:
+                raise CorpusAccessDenied("corpus-access-denied") from exc
 
     def resolve_scope(
         self,
@@ -370,7 +380,9 @@ class CorpusGrantPolicy:
             self.principal.source,
         ):
             raise CorpusAccessDenied("corpus-access-denied")
-        return self.store.resolve_scope(principal, corpus)
+        scope = self.store.resolve_scope(principal, corpus)
+        self.assert_scope_current(scope)
+        return scope
 
     def authorize_evidence(
         self,
@@ -379,7 +391,7 @@ class CorpusGrantPolicy:
         destination: str,
     ) -> PolicyDecision:
         try:
-            self.store.assert_scope_current(self.principal, scope)
+            self.assert_scope_current(scope)
         except CorpusAccessDenied:
             return PolicyDecision(
                 allowed=False,

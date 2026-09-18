@@ -8,6 +8,7 @@ from uuid import uuid4
 
 from packages.domains.cti import CtiChunk, CtiDomainAdapter
 from packages.evidence.config import load_advanced_rag_config
+from packages.evidence.lifecycle import LifecycleAuthority
 from packages.evidence.store import EvidenceStore, InjectedPersistenceFailure
 from packages.indexing.chunker import ChunkingConfig, DeterministicTokenizer, chunk_objects
 from packages.indexing.graph_indexer import CatalogGraphProjectionWriter
@@ -22,6 +23,7 @@ from .checkpoint import CheckpointKey, OpenCTICheckpointLedger
 from .client import create_live_transport
 from .normalizer import NORMALIZER_VERSION, normalize_complete_capture
 from .reader import CAPTURE_KINDS, OpenCTIReader, RecordedOpenCTITransport
+from .reconcile import record_failed_reconciliation, reconcile_complete_capture
 
 
 class OpenCTISyncError(RuntimeError):
@@ -101,6 +103,7 @@ def sync_once(
     environ: Mapping[str, str] | None = None,
     state_dir_override: Path | None = None,
     crash_at: str | None = None,
+    reconcile: bool = False,
 ) -> dict[str, Any]:
     """Capture once, rebuild a full generation, and advance publication checkpoints.
 
@@ -111,9 +114,13 @@ def sync_once(
     config = load_advanced_rag_config(config_path, environ=environ)
     if config.profile != "opencti" or not config.opencti.enabled:
         raise OpenCTISyncError("OpenCTI sync requires the explicit opencti profile")
-    if config.opencti.live_serving_enabled:
+    if config.opencti.live_serving_enabled and not reconcile:
         raise OpenCTISyncError(
-            "maintained OpenCTI serving is disabled until visibility reconciliation"
+            "maintained OpenCTI serving requires an explicit reconciliation run"
+        )
+    if reconcile and config.opencti.max_staleness_seconds is None:
+        raise OpenCTISyncError(
+            "visibility reconciliation requires an explicit max_staleness_seconds"
         )
 
     repo_root = Path(__file__).resolve().parents[3]
@@ -154,6 +161,7 @@ def sync_once(
 
     with EvidenceStore(catalog_path, raw_root) as store:
         ledger = OpenCTICheckpointLedger(store)
+        lifecycle = LifecycleAuthority(store) if reconcile else None
         recovered_publications = ledger.reconcile_activated(
             corpus_id=config.source.corpus_id
         )
@@ -185,6 +193,15 @@ def sync_once(
                 run_id=run_id,
                 error_code=type(exc).__name__,
             )
+            if lifecycle is not None:
+                record_failed_reconciliation(
+                    lifecycle,
+                    checkpoint_keys=keys,
+                    source_instance=config.opencti.source_instance,
+                    reason=type(exc).__name__,
+                    max_staleness_seconds=int(config.opencti.max_staleness_seconds),
+                    authorized=type(exc).__name__ != "OpenCTIAccessError",
+                )
             raise
 
         if not capture.complete:
@@ -234,6 +251,17 @@ def sync_once(
         if crash_at == "after_catalog":
             ledger.fail_run(keys, run_id=run_id, error_code="after_catalog")
             raise InjectedSyncCrash("after_catalog")
+
+        reconciliation = None
+        if lifecycle is not None:
+            reconciliation = reconcile_complete_capture(
+                lifecycle,
+                capture=capture,
+                batch=batch,
+                checkpoint_keys=keys,
+                max_staleness_seconds=int(config.opencti.max_staleness_seconds),
+                authorized=True,
+            )
 
         exact_writer = ExactProjectionWriter(store, index_root)
         lexical_writer = LexicalProjectionWriter(store, index_root, tokenizer=tokenizer)
@@ -327,7 +355,11 @@ def sync_once(
         "manifest_sha256": generation.manifest_sha256,
         "required_projections": ["exact", "lexical", "graph"],
         "network_used": config.opencti.mode == "live",
-        "live_maintained_serving": False,
+        "live_maintained_serving": bool(
+            config.opencti.live_serving_enabled
+            and reconciliation is not None
+            and reconciliation.complete
+        ),
         "raw_sensitive_payloads_logged": False,
         "recovered_publication_checkpoints": recovered_publications,
         "checkpoint_states": {
@@ -335,6 +367,17 @@ def sync_once(
             for kind, state in checkpoints.items()
         },
         "ingestion_cursors_distinct_from_published": True,
+        "reconciliation": (
+            None
+            if reconciliation is None
+            else {
+                "complete": reconciliation.complete,
+                "inventory_run_ids": list(reconciliation.inventory_run_ids),
+                "tombstones_written": reconciliation.tombstones_written,
+                "lease_expires_at": list(reconciliation.lease_expires_at),
+                "missing_classification": reconciliation.missing_classification,
+            }
+        ),
     }
 
 

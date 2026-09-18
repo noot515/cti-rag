@@ -177,3 +177,36 @@ The exact Python 3.11 chained validator is still `not_run` in this execution
 environment because the container cannot resolve github.com and no Python 3.11
 runtime is available. No predecessor or Prompt 20 correctness result is inferred
 from commit publication.
+
+
+## Prompt 21 - visibility reconciliation and freshness leases
+
+Prompt 21 adds complete-inventory reconciliation, revision tombstones, explicit
+merge mappings and scoped freshness leases. Missing records are suppressed only
+after a complete authorized inventory and default to `no_longer_visible`;
+explicit source evidence is required for `revoked` or `upstream_deleted`.
+
+Incomplete inventories and access failures record failure without advancing a
+lease or mass-tombstoning a corpus. Retained raw bytes/history are preserved.
+Superseded revisions and explicit merge sources are retired through the live
+overlay rather than physically deleted.
+
+Grant-aware policy can attach the lifecycle authority, and the retrieval
+orchestrator rechecks scope currency before reranker egress, before packing and
+before final serialization. Snapshot withdrawal now consults revision-level
+tombstones, so a pinned old generation does not retain authority after
+withdrawal.
+
+The OpenCTI CLI now accepts `--reconcile`. The checked-in sanitized profile
+sets a 24-hour mechanics lease and 5-minute overlap; maintained live serving
+requires an explicit staleness budget and a reconciled run.
+
+Target validation:
+
+```text
+python -m pytest tests/unit/opencti/test_reconciliation.py tests/e2e/test_revocation_egress.py -q
+python -m packages.integrations.opencti.cli sync --config benchmark/advanced/configs/opencti.yaml --once --reconcile
+python scripts/validate_advanced_04_21.py
+```
+
+The strict validator executes the entire Prompt 04-20 chain first.

@@ -14,6 +14,11 @@ def _parser() -> argparse.ArgumentParser:
     sync = sub.add_parser("sync", help="capture a finite complete scan and publish it")
     sync.add_argument("--config", required=True, type=Path)
     sync.add_argument("--once", action="store_true", help="required finite one-shot mode")
+    sync.add_argument(
+        "--reconcile",
+        action="store_true",
+        help="record a complete visibility inventory and renew its lease",
+    )
     return parser
 
 
@@ -23,7 +28,7 @@ def main(argv: list[str] | None = None) -> int:
         raise AssertionError(args.command)
     if not args.once:
         raise SystemExit("Prompt 19 supports only explicit --once finite scans")
-    report = sync_once(config_path=args.config)
+    report = sync_once(config_path=args.config, reconcile=args.reconcile)
     print(json.dumps(report, sort_keys=True))
     return 0
 

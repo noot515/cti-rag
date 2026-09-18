@@ -1,6 +1,6 @@
 # Current state and sequencing handoff
 
-Prompt 20 begins from Prompt 19 final head `0e83c3a94a6a864877a0d4443c7316e1bc36a60c` and is stacked on `feat/advanced-20-incremental-replay-and-recovery`. Prompt 20 implementation/test head before handoff documentation is `2964f833fff7af2304ff85f989f66b96fe7d554f`.
+Prompt 21 begins from Prompt 20 final head `71c4cc0d88101e70b01592d4c4119834ba9f019a` and is stacked on `feat/advanced-21-visibility-reconciliation`.
 
 
 Reconciliation notes:
@@ -76,3 +76,23 @@ Prompt 20 reconciliation notes:
    ambiguous and fail closed.
 7. `scripts/validate_advanced_04_20.py` chains every unresolved predecessor
    correctness gate before Prompt 20 tests.
+
+
+Prompt 21 reconciliation notes:
+
+1. Immutable generations remain content history; live authorization is a
+   separate lease/tombstone overlay.
+2. Complete authorized inventories are the only source of absence-based
+   suppression. Timeouts, partial pagination, filter namespace changes and
+   access failures cannot mass-delete evidence.
+3. Missing records default to `no_longer_visible`; `revoked` and
+   `upstream_deleted` require explicit upstream state.
+4. Superseded revisions are revision-level tombstones. Reappearance can clear
+   weak visibility-loss tombstones but never explicit revocation/deletion.
+5. Explicit merge mappings retain provenance and retire the source view without
+   automatic cross-source identity collapse.
+6. Freshness is rechecked through grant-aware policy and immediately before
+   reranker, packing and final result emission. Lease expiry denies serving from
+   retained snapshots.
+7. `scripts/validate_advanced_04_21.py` chains the complete Prompt 04-20
+   correctness handoff before Prompt 21 tests and reconcile CLI execution.

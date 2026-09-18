@@ -355,7 +355,7 @@ class EvidenceStore:
                             ),
                         )
                         changes += max(cur.rowcount, 0)
-                    if obj.lifecycle_state.value == "deleted":
+                    if obj.lifecycle_state.value in {"deleted", "revoked"}:
                         cur = self.connection.execute(
                             "INSERT OR IGNORE INTO tombstones(domain,scope_id,evidence_kind,evidence_uid,revision_uid,reason,tombstoned_at) VALUES (?,?,?,?,?,?,?)",
                             (
@@ -364,7 +364,11 @@ class EvidenceStore:
                                 "object",
                                 obj.uid,
                                 obj.revision_uid,
-                                "lifecycle-deleted",
+                                (
+                                    "upstream_deleted"
+                                    if obj.lifecycle_state.value == "deleted"
+                                    else "revoked"
+                                ),
                                 now,
                             ),
                         )
@@ -429,6 +433,24 @@ class EvidenceStore:
                                 now,
                             ),
                         )
+                    if relation.lifecycle_state.value in {"deleted", "revoked"}:
+                        cur = self.connection.execute(
+                            "INSERT OR IGNORE INTO tombstones(domain,scope_id,evidence_kind,evidence_uid,revision_uid,reason,tombstoned_at) VALUES (?,?,?,?,?,?,?)",
+                            (
+                                batch.domain,
+                                batch.scope_id,
+                                "relation",
+                                relation.uid,
+                                relation.revision_uid,
+                                (
+                                    "upstream_deleted"
+                                    if relation.lifecycle_state.value == "deleted"
+                                    else "revoked"
+                                ),
+                                now,
+                            ),
+                        )
+                        changes += max(cur.rowcount, 0)
                     if relation.assertion_kind == "cross_source_equivalence":
                         cur = self.connection.execute(
                             "INSERT OR IGNORE INTO evidence_equivalences(domain,scope_id,relation_revision_uid,source_object_uid,target_object_uid,created_at) VALUES (?,?,?,?,?,?)",

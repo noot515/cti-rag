@@ -33,4 +33,7 @@ opencti:
   timeout_seconds: 30.0
   max_retries: 2
   max_pages_per_kind: 10000
+  poll_overlap_seconds: 300
+  full_inventory_seconds: 86400
+  max_staleness_seconds: 86400
   live_serving_enabled: false

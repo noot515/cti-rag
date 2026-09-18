@@ -164,6 +164,9 @@ class OpenCTIServiceConfig(_StrictModel):
     timeout_seconds: StrictFloat = Field(default=30.0, gt=0, le=300)
     max_retries: StrictInt = Field(default=2, ge=0, le=5)
     max_pages_per_kind: StrictInt = Field(default=10000, ge=1)
+    poll_overlap_seconds: StrictInt = Field(default=300, ge=0)
+    full_inventory_seconds: StrictInt = Field(default=86400, ge=60)
+    max_staleness_seconds: StrictInt | None = Field(default=None, ge=60)
     live_serving_enabled: StrictBool = False
 
     @model_validator(mode="after")
@@ -174,7 +177,12 @@ class OpenCTIServiceConfig(_StrictModel):
         if not self.token_env.strip():
             raise ValueError("OpenCTI token_env must name an environment variable")
         if self.live_serving_enabled:
-            raise ValueError("live OpenCTI maintained serving remains disabled until Prompt 21")
+            if self.mode != "live":
+                raise ValueError("maintained OpenCTI serving requires live mode")
+            if self.max_staleness_seconds is None:
+                raise ValueError(
+                    "maintained OpenCTI serving requires an explicit max_staleness_seconds"
+                )
         return self
 
 
@@ -274,6 +282,7 @@ _ENV_OVERRIDES: dict[str, tuple[tuple[str, ...], Callable[[str], Any]]] = {
     "ADVANCED_RAG_OPENCTI_TOKEN_ENV": (("opencti", "token_env"), str),
     "ADVANCED_RAG_OPENCTI_SOURCE_INSTANCE": (("opencti", "source_instance"), str),
     "ADVANCED_RAG_OPENCTI_PAGE_SIZE": (("opencti", "page_size"), lambda value: _parse_int("ADVANCED_RAG_OPENCTI_PAGE_SIZE", value)),
+    "ADVANCED_RAG_OPENCTI_MAX_STALENESS_SECONDS": (("opencti", "max_staleness_seconds"), lambda value: _parse_int("ADVANCED_RAG_OPENCTI_MAX_STALENESS_SECONDS", value)),
 }
 
 

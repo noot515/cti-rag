@@ -105,10 +105,30 @@ class SnapshotCatalog:
                 self.activate(m); self.acknowledge(m)
         return self.active_generation(domain,scope_id,corpus_id)
     def member(self,m,kind,euid,ruid): return self.db.execute('SELECT 1 FROM snapshot_membership WHERE domain=? AND scope_id=? AND snapshot_id=? AND evidence_kind=? AND evidence_uid=? AND revision_uid=?',(m.domain,m.scope_id,m.generation_id,kind,euid,ruid)).fetchone() is not None
-    def withdrawn(self,m,kind,euid):
-        if kind=='object': return self.db.execute("SELECT 1 FROM object_revisions WHERE domain=? AND scope_id=? AND object_uid=? AND lifecycle_state IN('revoked','deleted') LIMIT 1",(m.domain,m.scope_id,euid)).fetchone() is not None
-        if kind=='relation': return self.db.execute("SELECT 1 FROM relation_revisions WHERE domain=? AND scope_id=? AND relation_uid=? AND lifecycle_state IN('revoked','deleted') LIMIT 1",(m.domain,m.scope_id,euid)).fetchone() is not None
-        row=self.db.execute('SELECT object_uid FROM chunks WHERE domain=? AND scope_id=? AND chunk_uid=?',(m.domain,m.scope_id,euid)).fetchone(); return False if not row else self.withdrawn(m,'object',row['object_uid'])
+    def withdrawn(self,m,kind,euid,ruid=None):
+        if kind=='chunk':
+            row=self.db.execute(
+                'SELECT object_uid,object_revision_uid FROM chunks WHERE domain=? AND scope_id=? AND chunk_uid=?',
+                (m.domain,m.scope_id,euid),
+            ).fetchone()
+            return False if not row else self.withdrawn(
+                m,'object',row['object_uid'],row['object_revision_uid']
+            )
+        id_column='object_uid' if kind=='object' else 'relation_uid'
+        table='object_revisions' if kind=='object' else 'relation_revisions'
+        params=(m.domain,m.scope_id,euid)
+        sql=f"SELECT 1 FROM {table} WHERE domain=? AND scope_id=? AND {id_column}=? AND lifecycle_state IN('revoked','deleted')"
+        if ruid is not None:
+            sql += " AND revision_uid=?"
+            params=params+(ruid,)
+        if self.db.execute(sql+" LIMIT 1",params).fetchone() is not None:
+            return True
+        tomb_sql="SELECT 1 FROM tombstones WHERE domain=? AND scope_id=? AND evidence_kind=? AND evidence_uid=?"
+        tomb_params=(m.domain,m.scope_id,kind,euid)
+        if ruid is not None:
+            tomb_sql += " AND revision_uid=?"
+            tomb_params=tomb_params+(ruid,)
+        return self.db.execute(tomb_sql+" LIMIT 1",tomb_params).fetchone() is not None
 
 @dataclass
 class SnapshotHandle:
@@ -124,7 +144,7 @@ class SnapshotHandle:
     def get_revision(self,revision_uid):
         self._live(); r=self.manager.store.get_revision(self.manifest.domain,self.manifest.scope_id,revision_uid)
         if not r or not self.manager.catalog.member(self.manifest,r['kind'],r['evidence_uid'],revision_uid): return None
-        if self.manager.catalog.withdrawn(self.manifest,r['kind'],r['evidence_uid']): raise EvidenceWithdrawn('evidence is withdrawn by live policy/lifecycle overlay')
+        if self.manager.catalog.withdrawn(self.manifest,r['kind'],r['evidence_uid'],revision_uid): raise EvidenceWithdrawn('evidence is withdrawn by live policy/lifecycle overlay')
         return r
 
 class SnapshotManager:

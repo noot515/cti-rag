@@ -275,6 +275,11 @@ class AdvancedRetrievalOrchestrator:
             return True
         return result.status == "not_run" and result.reason == "not-configured"
 
+    def _assert_scope_current(self, scope: ResolvedScope) -> None:
+        checker = getattr(self.policy, "assert_scope_current", None)
+        if checker is not None:
+            checker(scope)
+
     def _initial_plan(self, request: RetrievalRequest) -> QueryPlan:
         return self.planner.plan(
             request.query,
@@ -290,6 +295,7 @@ class AdvancedRetrievalOrchestrator:
         trusted_principal: Principal,
     ) -> RetrievalExecution:
         scope = self.policy.resolve_scope(trusted_principal, request.corpus_id)
+        self._assert_scope_current(scope)
         total_started = self.clock()
         total_deadline = total_started + self.total_timeout_seconds
         with self.snapshot_manager.pin_active(scope) as handle:
@@ -449,6 +455,7 @@ class AdvancedRetrievalOrchestrator:
         if self.reranker is None:
             trace.append("reranker=status=not_configured")
         elif candidates:
+            self._assert_scope_current(execution.scope)
             started = self.clock()
             outcome = self.reranker.rerank(
                 request.query,
@@ -480,6 +487,7 @@ class AdvancedRetrievalOrchestrator:
         if self.context_packer is None:
             trace.append("packer=status=not_configured")
         elif selected:
+            self._assert_scope_current(execution.scope)
             started = self.clock()
             packed = self.context_packer.pack(
                 request.query,
@@ -506,6 +514,7 @@ class AdvancedRetrievalOrchestrator:
             (self.clock() - execution.started_at) * 1000.0,
         )
         output_truncated = execution.truncated or len(candidates) > len(selected)
+        self._assert_scope_current(execution.scope)
         run_id = canonical_hash([
             "advanced-retrieval-run-v1",
             execution.snapshot.snapshot_id,
