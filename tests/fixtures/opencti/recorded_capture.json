@@ -1,0 +1,181 @@
+{
+  "schema_version": "opencti-recorded-capture-v1",
+  "platform_version": "7.260914.0",
+  "pages": {
+    "attack_pattern": [
+      {
+        "after": null,
+        "entities": [
+          {
+            "id": "ap-internal-1",
+            "standard_id": "attack-pattern--11111111-1111-4111-8111-111111111111",
+            "entity_type": "Attack-Pattern",
+            "created_at": "2026-09-01T00:00:00Z",
+            "updated_at": "2026-09-10T00:00:00Z",
+            "created": "2026-09-01T00:00:00Z",
+            "modified": "2026-09-09T00:00:00Z",
+            "name": "Synthetic PowerShell Technique",
+            "description": "Sanitized OpenCTI fixture technique.",
+            "x_mitre_id": "T1059.001",
+            "revoked": false,
+            "confidence": 90,
+            "objectMarking": [
+              {
+                "id": "marking-1",
+                "standard_id": "marking-definition--aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+                "definition_type": "TLP",
+                "definition": "TLP:CLEAR"
+              }
+            ],
+            "externalReferences": [
+              {
+                "external_id": "T1059.001",
+                "source_name": "MITRE ATT&CK"
+              }
+            ]
+          }
+        ],
+        "pagination": {
+          "startCursor": "ap-start",
+          "endCursor": "ap-end",
+          "hasNextPage": false,
+          "hasPreviousPage": false,
+          "globalCount": 1
+        }
+      }
+    ],
+    "vulnerability": [
+      {
+        "after": null,
+        "entities": [
+          {
+            "id": "vuln-internal-1",
+            "standard_id": "vulnerability--22222222-2222-4222-8222-222222222222",
+            "entity_type": "Vulnerability",
+            "created_at": "2026-09-02T00:00:00Z",
+            "updated_at": "2026-09-11T00:00:00Z",
+            "created": "2026-09-02T00:00:00Z",
+            "modified": "2026-09-10T00:00:00Z",
+            "name": "CVE-2026-12345",
+            "description": "Sanitized vulnerability used for offline capture tests.",
+            "x_opencti_cwe": [
+              "CWE-79"
+            ],
+            "revoked": false,
+            "confidence": 85,
+            "objectMarking": [
+              {
+                "id": "marking-1",
+                "standard_id": "marking-definition--aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+                "definition_type": "TLP",
+                "definition": "TLP:CLEAR"
+              }
+            ],
+            "externalReferences": [
+              {
+                "external_id": "CVE-2026-12345",
+                "source_name": "NVD"
+              }
+            ]
+          }
+        ],
+        "pagination": {
+          "startCursor": "v-start",
+          "endCursor": "v-end",
+          "hasNextPage": false,
+          "hasPreviousPage": false,
+          "globalCount": 1
+        }
+      }
+    ],
+    "report": [
+      {
+        "after": null,
+        "entities": [
+          {
+            "id": "report-internal-1",
+            "standard_id": "report--33333333-3333-4333-8333-333333333333",
+            "entity_type": "Report",
+            "created_at": "2026-09-03T00:00:00Z",
+            "updated_at": "2026-09-12T00:00:00Z",
+            "created": "2026-09-03T00:00:00Z",
+            "modified": "2026-09-11T00:00:00Z",
+            "published": "2026-09-03T00:00:00Z",
+            "name": "Sanitized Threat Report",
+            "description": "Recorded fixture report.",
+            "content": "The report references a synthetic attack technique.",
+            "revoked": false,
+            "confidence": 80,
+            "objectMarking": [
+              {
+                "id": "marking-1",
+                "standard_id": "marking-definition--aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+                "definition_type": "TLP",
+                "definition": "TLP:CLEAR"
+              }
+            ],
+            "objects": [
+              {
+                "id": "ap-internal-1",
+                "standard_id": "attack-pattern--11111111-1111-4111-8111-111111111111",
+                "entity_type": "Attack-Pattern"
+              }
+            ]
+          }
+        ],
+        "pagination": {
+          "startCursor": "r-start",
+          "endCursor": "r-end",
+          "hasNextPage": false,
+          "hasPreviousPage": false,
+          "globalCount": 1
+        }
+      }
+    ],
+    "relationship": [
+      {
+        "after": null,
+        "entities": [
+          {
+            "id": "rel-internal-1",
+            "standard_id": "relationship--44444444-4444-4444-8444-444444444444",
+            "entity_type": "Stix-Core-Relationship",
+            "created_at": "2026-09-03T00:00:00Z",
+            "updated_at": "2026-09-12T00:00:00Z",
+            "created": "2026-09-03T00:00:00Z",
+            "modified": "2026-09-11T00:00:00Z",
+            "relationship_type": "uses",
+            "description": "Sanitized explicit relationship.",
+            "revoked": false,
+            "confidence": 80,
+            "objectMarking": [
+              {
+                "id": "marking-1",
+                "standard_id": "marking-definition--aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+                "definition_type": "TLP",
+                "definition": "TLP:CLEAR"
+              }
+            ],
+            "from": {
+              "id": "report-internal-1",
+              "standard_id": "report--33333333-3333-4333-8333-333333333333",
+              "entity_type": "Report"
+            },
+            "to": {
+              "id": "ap-internal-1",
+              "standard_id": "attack-pattern--11111111-1111-4111-8111-111111111111",
+              "entity_type": "Attack-Pattern"
+            }
+          }
+        ],
+        "pagination": {
+          "startCursor": "x-start",
+          "endCursor": "x-end",
+          "hasNextPage": false,
+          "hasPreviousPage": false,
+          "globalCount": 1
+        }
+      }
+    ]
+  }
+}
