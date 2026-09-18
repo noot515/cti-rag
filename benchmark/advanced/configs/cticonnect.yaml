@@ -1,0 +1,35 @@
+schema_version: advanced-rag-config-v1
+enabled: true
+profile: fixture
+state_dir: saves/advanced-cticonnect
+source:
+  corpus_id: cticonnect-v1.0.0
+  scope_id: cticonnect-public
+  source_allowlist:
+    - cticonnect-cc-by-4.0
+channels:
+  exact_enabled: false
+  lexical_enabled: true
+  dense_enabled: false
+  graph_enabled: false
+  exact_top_k: 10
+  lexical_top_k: 40
+  dense_top_k: 40
+  graph_top_k: 40
+providers:
+  embedding:
+    provider: fixture
+    model: deterministic-hash-embedding
+    revision: v1
+    dimension: 64
+    metric: cosine
+    normalization: l2
+    document_instruction: unused-cticonnect-offline
+    query_instruction: unused-cticonnect-offline
+    tokenizer: utf8-bytes-sha256-v1
+    artifact_sha256: 3fc40254c00d381abc6f2fc6d23fd0e833725ae5a47bd19e0fe4f743755e17e9
+    remote: false
+network:
+  allow_outbound: false
+  allow_downloads: false
+  web_search: false
