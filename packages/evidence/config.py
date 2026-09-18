@@ -263,6 +263,7 @@ _ENV_OVERRIDES: dict[str, tuple[tuple[str, ...], Callable[[str], Any]]] = {
     "ADVANCED_RAG_GRAPH_MAX_HOPS": (("graph", "max_hops"), lambda value: _parse_int("ADVANCED_RAG_GRAPH_MAX_HOPS", value)),
     "ADVANCED_RAG_REQUEST_TIMEOUT_SECONDS": (("timeouts", "request_seconds"), lambda value: _parse_float("ADVANCED_RAG_REQUEST_TIMEOUT_SECONDS", value)),
     "ADVANCED_RAG_CHANNEL_TIMEOUT_SECONDS": (("timeouts", "channel_seconds"), lambda value: _parse_float("ADVANCED_RAG_CHANNEL_TIMEOUT_SECONDS", value)),
+    "ADVANCED_RAG_ALLOW_OUTBOUND": (("network", "allow_outbound"), lambda value: _parse_bool("ADVANCED_RAG_ALLOW_OUTBOUND", value)),
     "ADVANCED_RAG_MILVUS_ENABLED": (("milvus", "enabled"), lambda value: _parse_bool("ADVANCED_RAG_MILVUS_ENABLED", value)),
     "ADVANCED_RAG_MILVUS_URI": (("milvus", "uri"), str),
     "ADVANCED_RAG_MILVUS_DEPLOYMENT_ID": (("milvus", "deployment_id"), str),
