@@ -1,7 +1,6 @@
 """Complete-scan OpenCTI ingestion through the shared evidence publication path."""
 from __future__ import annotations
 
-from dataclasses import asdict
 from pathlib import Path
 from typing import Any, Mapping
 
@@ -95,7 +94,7 @@ def sync_once(
             raise OpenCTISyncError(
                 "recorded OpenCTI fixture platform version differs from pinned matrix"
             )
-        source_uri = f"recorded://{fixture_path.as_posix()}"
+        source_uri = f"recorded://{Path(config.opencti.recorded_fixture).as_posix()}"
         sanitized = True
     else:
         transport = create_live_transport(config.opencti, environ=environ)
