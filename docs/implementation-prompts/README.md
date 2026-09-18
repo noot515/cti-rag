@@ -27,3 +27,7 @@ This directory tracks implementation-state handoffs, not the full external promp
 - Prompt 20: implemented on `feat/advanced-20-incremental-replay-and-recovery`; durable type/filter-scoped ingestion and published cursors, page/job replay ledger, full-rebuild idempotency, source-version ordering and activation/checkpoint recovery are present. Exact Python 3.11 chained validation remains the target-environment gate.
 
 - Prompt 21: implemented on `feat/advanced-21-visibility-reconciliation`; complete-inventory gating, visibility leases, revision tombstones, explicit merge provenance, request-time freshness rechecks and `--reconcile` are present. Exact Python 3.11 chained validation remains the target-environment exit gate.
+
+  Prompt 21 implementation/test head before final docs: `9b90a0375cbd126bbf864134f9c58584ff9663f8`.
+  Final exact Python 3.11 `scripts/validate_advanced_04_21.py` remains `not_run`
+  in the current sandbox; no service/deployment promotion is authorized.

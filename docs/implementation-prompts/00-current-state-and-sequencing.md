@@ -1,6 +1,6 @@
 # Current state and sequencing handoff
 
-Prompt 21 begins from Prompt 20 final head `71c4cc0d88101e70b01592d4c4119834ba9f019a` and is stacked on `feat/advanced-21-visibility-reconciliation`.
+Prompt 21 begins from Prompt 20 final head `71c4cc0d88101e70b01592d4c4119834ba9f019a` and is stacked on `feat/advanced-21-visibility-reconciliation`. Prompt 21 implementation/test head before final handoff documentation is `9b90a0375cbd126bbf864134f9c58584ff9663f8`.
 
 
 Reconciliation notes:
@@ -96,3 +96,17 @@ Prompt 21 reconciliation notes:
    retained snapshots.
 7. `scripts/validate_advanced_04_21.py` chains the complete Prompt 04-20
    correctness handoff before Prompt 21 tests and reconcile CLI execution.
+
+
+8. Absence comparison is scoped to the exact source/type/filter namespace.
+   A changed filter has no inherited absence baseline and therefore cannot
+   mass-tombstone records from the prior filter.
+9. The first visibility inventory may bootstrap absence only from an already
+   published Prompt 20 checkpoint for the exact same namespace. Subsequent
+   inventories compare against the prior successful inventory's seen IDs.
+10. A record that is still seen upstream but cannot produce a current
+    normalized/authorized revision suppresses its prior revision as `unknown`
+    rather than continuing to serve stale evidence.
+11. Scope freshness requires a valid lease for every source/type that has
+    participated in the inventory history; a failed inventory for a previously
+    required type cannot be masked by a fresh sibling type.
