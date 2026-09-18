@@ -184,3 +184,57 @@ print('ok')
     )
     assert result.returncode == 0, result.stderr
     assert result.stdout.strip() == "ok"
+
+
+def test_only_client_module_can_construct_pycti_client(monkeypatch):
+    from types import SimpleNamespace
+    from packages.integrations.opencti import client as client_module
+    from packages.evidence.config import OpenCTIServiceConfig
+
+    captured = {}
+
+    class FakeApi:
+        def __init__(self, url, token, **kwargs):
+            captured["url"] = url
+            captured["token"] = token
+            captured.update(kwargs)
+            self.attack_pattern = object()
+            self.vulnerability = object()
+            self.report = object()
+            self.stix_core_relationship = object()
+
+        def query(self, query):
+            captured["query"] = query
+            return {"data": {"about": {"version": "7.260914.0"}}}
+
+    fake_pycti = SimpleNamespace(__version__="7.260914.0", OpenCTIApiClient=FakeApi)
+    monkeypatch.setattr(client_module.importlib, "import_module", lambda name: fake_pycti)
+
+    config = OpenCTIServiceConfig(
+        enabled=True,
+        mode="live",
+        api_url="https://opencti.example",
+        token_env="OPENCTI_API_TOKEN",
+        expected_platform_version="7.260914.0",
+        expected_client_version="7.260914.0",
+        source_instance="unit-test",
+        timeout_seconds=12.0,
+    )
+    transport = client_module.create_live_transport(
+        config,
+        environ={"OPENCTI_API_TOKEN": "sentinel-token"},
+    )
+    assert transport.platform_version == "7.260914.0"
+    assert captured["ssl_verify"] is True
+    assert captured["perform_health_check"] is False
+    assert captured["bundle_send_to_queue"] is False
+    assert captured["requests_timeout"] == 12
+    assert captured["provider"] == "ctirag/1.0"
+
+    integration_dir = ROOT / "packages" / "integrations" / "opencti"
+    for path in integration_dir.glob("*.py"):
+        if path.name == "client.py":
+            continue
+        text = path.read_text(encoding="utf-8")
+        assert "OpenCTIApiClient(" not in text
+        assert "import pycti" not in text
