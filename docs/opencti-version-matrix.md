@@ -40,12 +40,14 @@ Live mode requires an explicit configuration/environment change:
 POSIX:
 
     export ADVANCED_RAG_OPENCTI_MODE=live
+    export ADVANCED_RAG_ALLOW_OUTBOUND=true
     export ADVANCED_RAG_OPENCTI_API_URL=https://opencti.example
     export OPENCTI_API_TOKEN=<read-only-token>
 
 PowerShell:
 
     $env:ADVANCED_RAG_OPENCTI_MODE = "live"
+    $env:ADVANCED_RAG_ALLOW_OUTBOUND = "true"
     $env:ADVANCED_RAG_OPENCTI_API_URL = "https://opencti.example"
     $env:OPENCTI_API_TOKEN = "<read-only-token>"
 
