@@ -151,6 +151,33 @@ class MilvusServiceConfig(_StrictModel):
         return self
 
 
+class OpenCTIServiceConfig(_StrictModel):
+    enabled: StrictBool = False
+    mode: Literal["fixture", "live"] = "fixture"
+    api_url: str = Field(default="http://127.0.0.1:4000", min_length=1)
+    token_env: str = Field(default="OPENCTI_API_TOKEN", min_length=1)
+    expected_platform_version: str = Field(default="7.260914.0", min_length=1)
+    expected_client_version: str = Field(default="7.260914.0", min_length=1)
+    source_instance: str = Field(default="opencti-readonly", min_length=1)
+    recorded_fixture: str = Field(default="tests/fixtures/opencti/recorded_capture.json", min_length=1)
+    page_size: StrictInt = Field(default=100, ge=1, le=200)
+    timeout_seconds: StrictFloat = Field(default=30.0, gt=0, le=300)
+    max_retries: StrictInt = Field(default=2, ge=0, le=5)
+    max_pages_per_kind: StrictInt = Field(default=10000, ge=1)
+    live_serving_enabled: StrictBool = False
+
+    @model_validator(mode="after")
+    def validate_endpoint_and_safety(self) -> "OpenCTIServiceConfig":
+        parsed = urlparse(self.api_url)
+        if parsed.scheme not in {"http", "https"} or not parsed.hostname:
+            raise ValueError("OpenCTI api_url must be an explicit http/https endpoint")
+        if not self.token_env.strip():
+            raise ValueError("OpenCTI token_env must name an environment variable")
+        if self.live_serving_enabled:
+            raise ValueError("live OpenCTI maintained serving remains disabled until Prompt 21")
+        return self
+
+
 class NetworkConfig(_StrictModel):
     allow_outbound: StrictBool = False
     allow_downloads: StrictBool = False
@@ -172,6 +199,7 @@ class AdvancedRagConfig(_StrictModel):
     timeouts: TimeoutConfig = Field(default_factory=TimeoutConfig)
     network: NetworkConfig = Field(default_factory=NetworkConfig)
     milvus: MilvusServiceConfig = Field(default_factory=MilvusServiceConfig)
+    opencti: OpenCTIServiceConfig = Field(default_factory=OpenCTIServiceConfig)
 
     @model_validator(mode="after")
     def enforce_profile_invariants(self) -> "AdvancedRagConfig":
@@ -186,6 +214,17 @@ class AdvancedRagConfig(_StrictModel):
                 raise ValueError("fixture profile cannot select a remote reranker")
             if self.milvus.enabled:
                 raise ValueError("fixture profile cannot connect to the Milvus services backend")
+        if self.profile == "opencti":
+            if not self.opencti.enabled:
+                raise ValueError("opencti profile requires opencti.enabled=true")
+            if self.network.allow_downloads or self.network.web_search:
+                raise ValueError("opencti profile forbids downloads and web search")
+            if self.opencti.mode == "fixture" and self.network.allow_outbound:
+                raise ValueError("sanitized OpenCTI fixture mode must remain offline")
+            if self.opencti.mode == "live" and not self.network.allow_outbound:
+                raise ValueError("live OpenCTI mode requires explicit network.allow_outbound=true")
+            if self.milvus.enabled:
+                raise ValueError("Prompt 19 OpenCTI capture does not require service Milvus")
         return self
 
     def serializable_snapshot(self) -> dict[str, Any]:
@@ -229,6 +268,11 @@ _ENV_OVERRIDES: dict[str, tuple[tuple[str, ...], Callable[[str], Any]]] = {
     "ADVANCED_RAG_MILVUS_DEPLOYMENT_ID": (("milvus", "deployment_id"), str),
     "ADVANCED_RAG_MILVUS_COLLECTION_PREFIX": (("milvus", "collection_prefix"), str),
     "ADVANCED_RAG_MILVUS_TOKEN_ENV": (("milvus", "token_env"), str),
+    "ADVANCED_RAG_OPENCTI_MODE": (("opencti", "mode"), str),
+    "ADVANCED_RAG_OPENCTI_API_URL": (("opencti", "api_url"), str),
+    "ADVANCED_RAG_OPENCTI_TOKEN_ENV": (("opencti", "token_env"), str),
+    "ADVANCED_RAG_OPENCTI_SOURCE_INSTANCE": (("opencti", "source_instance"), str),
+    "ADVANCED_RAG_OPENCTI_PAGE_SIZE": (("opencti", "page_size"), lambda value: _parse_int("ADVANCED_RAG_OPENCTI_PAGE_SIZE", value)),
 }
 
 
@@ -351,6 +395,7 @@ __all__ = [
     "GraphConfig",
     "MilvusServiceConfig",
     "NetworkConfig",
+    "OpenCTIServiceConfig",
     "PolicyConfig",
     "ProviderConfig",
     "ProviderFingerprint",
