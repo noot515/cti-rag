@@ -1,0 +1,36 @@
+schema_version: advanced-rag-config-v1
+enabled: true
+profile: opencti
+state_dir: saves/advanced-opencti-fixture
+source:
+  corpus_id: opencti-readonly
+  scope_id: opencti-sanitized
+  source_allowlist:
+    - opencti-readonly
+channels:
+  exact_enabled: true
+  lexical_enabled: true
+  dense_enabled: false
+  graph_enabled: true
+  exact_top_k: 10
+  lexical_top_k: 40
+  dense_top_k: 40
+  graph_top_k: 40
+network:
+  allow_outbound: false
+  allow_downloads: false
+  web_search: false
+opencti:
+  enabled: true
+  mode: fixture
+  api_url: http://127.0.0.1:4000
+  token_env: OPENCTI_API_TOKEN
+  expected_platform_version: 7.260914.0
+  expected_client_version: 7.260914.0
+  source_instance: opencti-sanitized-fixture
+  recorded_fixture: tests/fixtures/opencti/recorded_capture.json
+  page_size: 100
+  timeout_seconds: 30.0
+  max_retries: 2
+  max_pages_per_kind: 10000
+  live_serving_enabled: false
