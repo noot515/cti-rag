@@ -102,6 +102,22 @@ def test_nonadvancing_cursor_fails_closed():
         reader.scan_kind("vulnerability")
 
 
+def test_stable_global_count_shortfall_is_partial_scan():
+    transport = ScriptTransport({
+        ("vulnerability", None): page(
+            [entity("vulnerability--11111111-1111-4111-8111-111111111111", "a")],
+            end="done",
+            next_page=False,
+            count=2,
+        ),
+    })
+    reader = OpenCTIReader(transport, source_instance="test", sleep=lambda _x: None)
+    from packages.integrations.opencti.reader import OpenCTIPartialScan
+
+    with pytest.raises(OpenCTIPartialScan, match="globalCount=2"):
+        reader.scan_kind("vulnerability")
+
+
 def test_transient_read_retries_but_access_failure_does_not():
     attempts = {"count": 0}
 
