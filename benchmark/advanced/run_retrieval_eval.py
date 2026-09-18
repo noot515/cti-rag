@@ -750,6 +750,18 @@ def run_retrieval_evaluation(
     *, config_path: Path, output: Path
 ) -> dict[str, Any]:
     config = load_advanced_rag_config(config_path)
+
+    # Prompt 18 keeps CTIConnect outside application runtime dependencies. The
+    # generic runner dispatches lazily only for the audited external corpus ID;
+    # all prior fixture behavior remains byte-for-byte on its original path.
+    if config.source.corpus_id == "cticonnect-v1.0.0":
+        from benchmark.cticonnect.adapter import run_cticonnect_retrieval_experiment
+
+        return run_cticonnect_retrieval_experiment(
+            config=config,
+            output=output,
+        )
+
     if config.profile != "fixture":
         raise RuntimeError(
             "offline native evaluation currently requires the deterministic fixture profile"
