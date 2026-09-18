@@ -1,6 +1,7 @@
 # Current state and sequencing handoff
 
-Prompt 17 begins from Prompt 16 documented head `1b0e03fc3a54367cb0930318db6477a2667b8e02` on `feat/advanced-16-authenticated-advanced-api` and is stacked on `feat/advanced-17-native-evaluation-and-ablations`. Prompt 17 implementation/test head before final documentation is `9fd83dc85c4575f3ef6518940449a0d93af494e5`.
+Prompt 18 begins from Prompt 17 final head `1a39055dba7938f96b2462d1392e0f617242597b` and is stacked on `feat/advanced-18-cticonnect-adapter`. Prompt 18 implementation/test head before handoff documentation is `545a9efc73c0204f9a07b4c75bec2bf5df9f01d7`.
+
 
 Reconciliation notes:
 
@@ -22,3 +23,16 @@ Reconciliation notes:
 16. `scripts/validate_advanced_04_17.py` is the strict target handoff: predecessor P04-15 chain -> P16 API/import safety -> P17 metrics/report tests -> both fixture report commands -> compile/diff/full collection/status/HEAD.
 17. Prompt 16's advanced fixture app remains an injected-runtime application boundary; Prompt 17 directly exercises the concrete local exact/lexical/dense/catalog-graph fixture indexes. The Prompt 16 ASGI exit gate must still demonstrate the final injected runtime wiring before deployment promotion.
 18. The implementation sandbox still has Python 3.13.5, no Python 3.11, no Docker and no direct GitHub/package DNS. Exact target tests/report commands remain `not_run` here rather than inferred from implementation.
+
+
+Prompt 18 reconciliation notes:
+
+1. The external CTIConnect source is pinned to commit `554797d69a51147f1f98fad7198cb2d2b183d0e9`, whose audited manifest contains 1,859 QA pairs and VCA=219. The later upstream 1,860/VCA=220 state is not accepted by this phase without a new audit.
+2. CTIConnect stays outside application runtime dependencies and is located by `CTICONNECT_PATH`. No data files are vendored.
+3. Query-only records exclude answers, ground truth, target IDs, source clusters and construction provenance. Source provenance may be used only for frozen split grouping/scoring metadata, never as retrieval query content.
+4. Structured record identity is based on source identifiers, not the globally repeated outer numeric IDs. Nested `contents` JSON is validated before indexing.
+5. Reports use only supplied executive-summary data and validated `BLOG-<id>` mapping; there is no automatic full-text download.
+6. Official answer metrics and custom retrieval metrics remain distinct. Source-document qrels are nonexhaustive proxies, not evidence/path labels.
+7. Extracted `cskg` assets are lineage metadata only in this phase. The serialized BM25 pickle is never loaded; BM25 is rebuilt from text.
+8. Missing CTIConnect checkout or real model configuration is an explicit `not_run` operational/quality gate and does not block purely offline code continuation, but it cannot authorize benchmark promotion.
+9. `scripts/validate_advanced_04_18.py` chains the complete Prompt 04-17 validator before any Prompt 18 gates and finishes with compile/diff/full-collection/status/HEAD checks.
