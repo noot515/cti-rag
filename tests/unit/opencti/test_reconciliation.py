@@ -66,6 +66,17 @@ def test_complete_inventory_tombstones_missing_but_incomplete_inventory_does_not
         assert store.connection.execute("SELECT COUNT(*) FROM tombstones").fetchone()[0] == 0
         assert store.connection.execute("SELECT COUNT(*) FROM visibility_leases").fetchone()[0] == 0
 
+        authority.record_inventory(
+            domain="cti", scope_id="scope", source_instance="opencti",
+            supported_type="vulnerability", type_fingerprint="type-v1",
+            filter_fingerprint="filter-v1", seen_source_ids=("visible-a",),
+            current_revisions={"visible-a": {("object", "a", "ra")}},
+            explicit_status={}, complete=True, authorized=True, page_count=1,
+            capture_started_at="2026-09-18T00:00:30Z",
+            capture_completed_at="2026-09-18T00:00:31Z",
+            max_staleness_seconds=3600,
+        )
+
         complete = authority.record_inventory(
             domain="cti", scope_id="scope", source_instance="opencti",
             supported_type="vulnerability", type_fingerprint="type-v1",
@@ -209,3 +220,84 @@ def test_inventory_is_type_scoped_and_does_not_tombstone_other_types(tmp_path: P
         assert store.connection.execute(
             "SELECT COUNT(*) FROM tombstones WHERE evidence_uid='report-o'"
         ).fetchone()[0] == 0
+
+
+
+def test_changed_filter_has_no_absence_baseline_and_cannot_mass_tombstone(tmp_path: Path):
+    with EvidenceStore(tmp_path / "catalog.db", tmp_path / "raw") as store:
+        _seed_revision(store, source_id="a", object_uid="a", revision_uid="ra")
+        _seed_revision(store, source_id="b", object_uid="b", revision_uid="rb")
+        authority = LifecycleAuthority(store)
+        authority.record_inventory(
+            domain="cti", scope_id="scope", source_instance="opencti",
+            supported_type="vulnerability", type_fingerprint="type-v1",
+            filter_fingerprint="old-filter", seen_source_ids=("a", "b"),
+            current_revisions={
+                "a": {("object", "a", "ra")},
+                "b": {("object", "b", "rb")},
+            },
+            explicit_status={}, complete=True, authorized=True, page_count=1,
+            capture_started_at="2026-09-18T00:00:00Z",
+            capture_completed_at="2026-09-18T00:00:01Z",
+            max_staleness_seconds=3600,
+        )
+        authority.record_inventory(
+            domain="cti", scope_id="scope", source_instance="opencti",
+            supported_type="vulnerability", type_fingerprint="type-v1",
+            filter_fingerprint="new-filter", seen_source_ids=("a",),
+            current_revisions={"a": {("object", "a", "ra")}},
+            explicit_status={}, complete=True, authorized=True, page_count=1,
+            capture_started_at="2026-09-18T00:01:00Z",
+            capture_completed_at="2026-09-18T00:01:01Z",
+            max_staleness_seconds=3600,
+        )
+        assert store.connection.execute(
+            "SELECT COUNT(*) FROM tombstones WHERE evidence_uid='b'"
+        ).fetchone()[0] == 0
+
+
+def test_seen_but_unusable_current_revision_tombstones_old_as_unknown(tmp_path: Path):
+    with EvidenceStore(tmp_path / "catalog.db", tmp_path / "raw") as store:
+        _seed_revision(store, source_id="same", object_uid="o", revision_uid="old")
+        authority = LifecycleAuthority(store)
+        authority.record_inventory(
+            domain="cti", scope_id="scope", source_instance="opencti",
+            supported_type="vulnerability", type_fingerprint="type-v1",
+            filter_fingerprint="filter-v1", seen_source_ids=("same",),
+            current_revisions={}, explicit_status={}, complete=True,
+            authorized=True, page_count=1,
+            capture_started_at="2026-09-18T00:00:00Z",
+            capture_completed_at="2026-09-18T00:00:01Z",
+            max_staleness_seconds=3600,
+        )
+        assert store.connection.execute(
+            "SELECT reason FROM tombstones WHERE revision_uid='old'"
+        ).fetchone()["reason"] == "unknown"
+
+
+def test_missing_required_type_lease_denies_scope(tmp_path: Path):
+    with EvidenceStore(tmp_path / "catalog.db", tmp_path / "raw") as store:
+        authority = LifecycleAuthority(store)
+        authority.record_inventory(
+            domain="cti", scope_id="scope", source_instance="opencti",
+            supported_type="vulnerability", type_fingerprint="type-v1",
+            filter_fingerprint="filter-v1", seen_source_ids=(),
+            current_revisions={}, explicit_status={}, complete=True,
+            authorized=True, page_count=1,
+            capture_started_at="2026-09-18T00:00:00Z",
+            capture_completed_at="2026-09-18T00:00:01Z",
+            max_staleness_seconds=3600,
+        )
+        authority.record_inventory_failure(
+            domain="cti", scope_id="scope", source_instance="opencti",
+            supported_type="report", type_fingerprint="report-v1",
+            filter_fingerprint="filter-v1", failure_reason="timeout",
+            capture_started_at="2026-09-18T00:00:02Z",
+            capture_completed_at="2026-09-18T00:00:03Z",
+            max_staleness_seconds=3600,
+        )
+        with pytest.raises(VisibilityExpired):
+            authority.assert_scope_current(
+                _scope(),
+                now=datetime(2026, 9, 18, 0, 0, 30, tzinfo=timezone.utc),
+            )

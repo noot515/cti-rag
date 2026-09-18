@@ -221,6 +221,79 @@ class LifecycleAuthority:
             )
         return tuple(rows)
 
+    def _absence_baseline_ids(
+        self,
+        *,
+        domain: str,
+        scope_id: str,
+        source_instance: str,
+        supported_type: str,
+        filter_fingerprint: str,
+    ) -> set[str]:
+        """IDs whose absence may be interpreted under this exact namespace."""
+        previous = self.db.execute(
+            """
+            SELECT run_id FROM inventory_runs
+            WHERE domain=? AND scope_id=? AND source_instance=?
+              AND supported_type=? AND filter_fingerprint=?
+              AND status='complete'
+            ORDER BY capture_completed_at DESC,created_at DESC
+            LIMIT 1
+            """,
+            (
+                domain,
+                scope_id,
+                source_instance,
+                supported_type,
+                filter_fingerprint,
+            ),
+        ).fetchone()
+        if previous is not None:
+            return {
+                str(row["source_object_id"])
+                for row in self.db.execute(
+                    "SELECT source_object_id FROM inventory_seen WHERE run_id=?",
+                    (previous["run_id"],),
+                )
+            }
+
+        checkpoint_table = self.db.execute(
+            "SELECT 1 FROM sqlite_master WHERE type='table' "
+            "AND name='opencti_checkpoints'"
+        ).fetchone()
+        if checkpoint_table is None:
+            return set()
+        published = self.db.execute(
+            """
+            SELECT 1 FROM opencti_checkpoints
+            WHERE source_instance=? AND domain=? AND scope_id=?
+              AND supported_type=? AND filter_fingerprint=?
+              AND published_cursor_json IS NOT NULL
+            LIMIT 1
+            """,
+            (
+                source_instance,
+                domain,
+                scope_id,
+                supported_type,
+                filter_fingerprint,
+            ),
+        ).fetchone()
+        if published is None:
+            return set()
+        # A published replay checkpoint proves this exact namespace previously
+        # served the type. Bootstrap the first visibility inventory from those
+        # catalog rows; a different filter fingerprint cannot reach this path.
+        return {
+            source_id
+            for _kind, source_id, _uid, _revision in self._source_rows(
+                domain=domain,
+                scope_id=scope_id,
+                source_instance=source_instance,
+                supported_type=supported_type,
+            )
+        }
+
     def _tombstone(
         self,
         *,
@@ -364,6 +437,13 @@ class LifecycleAuthority:
                     )
 
                 if status == "complete":
+                    absence_baseline = self._absence_baseline_ids(
+                        domain=domain,
+                        scope_id=scope_id,
+                        source_instance=source_instance,
+                        supported_type=supported_type,
+                        filter_fingerprint=filter_fingerprint,
+                    )
                     prior = self._source_rows(
                         domain=domain,
                         scope_id=scope_id,
@@ -378,12 +458,18 @@ class LifecycleAuthority:
                     for kind, source_id, evidence_uid, revision_uid in prior:
                         reason: str | None = None
                         if source_id not in seen_set:
-                            reason = "no_longer_visible"
+                            if source_id in absence_baseline:
+                                reason = "no_longer_visible"
                         elif source_id in explicit_status:
                             reason = explicit_status[source_id]
                         else:
                             current = normalized_current.get(source_id, set())
-                            if current and (kind, evidence_uid, revision_uid) not in current:
+                            if not current:
+                                # The source item was seen, but the current
+                                # revision could not be normalized/authorized.
+                                # Do not continue serving an older view.
+                                reason = "unknown"
+                            elif (kind, evidence_uid, revision_uid) not in current:
                                 reason = "no_longer_visible"
                             elif (kind, evidence_uid, revision_uid) in current:
                                 # A reappearing current revision may recover from
@@ -520,6 +606,19 @@ class LifecycleAuthority:
         for row in rows:
             key = (str(row["source_instance"]), str(row["supported_type"]))
             latest.setdefault(key, row)
+        expected = {
+            (str(row["source_instance"]), str(row["supported_type"]))
+            for row in self.db.execute(
+                """
+                SELECT DISTINCT source_instance,supported_type
+                FROM inventory_runs
+                WHERE domain=? AND scope_id=?
+                """,
+                (scope.domain, scope.scope_id),
+            )
+        }
+        if expected and not expected.issubset(set(latest)):
+            raise VisibilityExpired("corpus-access-denied")
         moment = (now or _now_dt()).astimezone(timezone.utc)
         if any(_parse_iso(str(row["expires_at"])) <= moment for row in latest.values()):
             raise VisibilityExpired("corpus-access-denied")
