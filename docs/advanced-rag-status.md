@@ -1,6 +1,6 @@
 # Advanced RAG V3 implementation status
 
-Updated: 2026-09-18. Prompt 17 final predecessor: `1a39055dba7938f96b2462d1392e0f617242597b`. Prompt 18 implementation/test head before handoff documentation: `545a9efc73c0204f9a07b4c75bec2bf5df9f01d7`. Current stacked branch: `feat/advanced-18-cticonnect-adapter`. Legacy retrieval/benchmark behavior remains available and unchanged.
+Updated: 2026-09-18. Prompt 18 final predecessor: `d61d475735a9f1cc931fe91f709732aa2c7dd5e8`. Prompt 19 implementation/test head before handoff documentation: `8866b019c7c7757c6b6983f987c954dc59ddd293`. Current stacked branch: `feat/advanced-19-opencti-read-adapter`. Legacy retrieval/benchmark behavior remains available and unchanged.
 
 ## Prompt 16 - isolated authenticated advanced API
 
@@ -88,3 +88,37 @@ The exact Python 3.11 chain and external-checkout commands remain target-environ
 ## Prompt 18 handoff
 
 Prompt 19 may build from this branch only after treating the unresolved P04-P18 Python 3.11 chain as a correctness prerequisite. CTIConnect remains an evaluation dependency, not an application runtime dependency.
+
+
+## Prompt 19 - read-only OpenCTI capture and complete-snapshot ingestion
+
+Prompt 19 adds a read-only OpenCTI integration on top of the Prompt 18 handoff without changing the legacy worker, queues, session behavior or legacy retrieval path.
+
+- the supported compatibility target is OpenCTI `7.260914.0` with pycti `7.260914.0`; live mode rejects a different installed client or platform version rather than guessing compatibility;
+- only `packages/integrations/opencti/client.py` imports/constructs `OpenCTIApiClient`; higher layers receive a read-only transport exposing bounded list operations only;
+- the reader captures Attack Pattern, Vulnerability, Report and explicit STIX core relationships with bounded `first`, opaque `after/endCursor` pagination, capped retries for transient reads, page/time limits, repeated/nonadvancing-cursor rejection, and capture interval metadata;
+- scans order by OpenCTI `updated_at` for traversal while preserving STIX `modified` separately for semantic revision identity. A completed finite scan is not claimed to be an upstream point-in-time snapshot;
+- overlapping pages are deduplicated by kind/source identity. Changed duplicates are retained as consistency warnings. A partial scan or count/cursor inconsistency cannot publish;
+- normalization reuses the existing CTI evidence contracts, preserves raw/custom fields and source provenance, extracts demonstrated CVE/CWE/CAPEC/ATT&CK identifiers, quarantines unsupported mappings, and never promotes unmarked live records to public policy;
+- complete captures persist through the Prompt 05 evidence store and Prompt 06 publication path, then build required exact, lexical and catalog-graph projections. Query-time OpenCTI access is not introduced;
+- the checked-in `opencti.yaml` defaults to a sanitized recorded fixture and no networking. Live mode requires explicit outbound enablement plus `OPENCTI_API_TOKEN`; the token is not serialized into reports;
+- live maintained serving remains disabled until the later freshness/policy phase. No mutation/import/seeding API, connector registration, queue, streaming sync or worker dependency was added.
+
+### Prompt 19 validation
+
+Target commands:
+
+```text
+python -m pytest tests/unit/opencti -q
+python -m packages.integrations.opencti.cli sync --config benchmark/advanced/configs/opencti.yaml --once
+python -m pytest tests/integration/test_opencti_read.py -m opencti -q
+python scripts/validate_advanced_04_19.py
+```
+
+`scripts/validate_advanced_04_19.py` first executes the complete Prompt 04-18 correctness chain, then the Prompt 19 unit contracts and sanitized fixture sync, followed by compileall, `git diff --check`, full collection, status and HEAD. The live OpenCTI integration runs only when `OPENCTI_TEST_LIVE=1` and explicit read-only endpoint credentials are supplied; otherwise it is printed as `NOT_RUN`.
+
+This implementation sandbox still has Python 3.13.5, no Python 3.11, no Docker and no direct GitHub/package DNS. Therefore the exact Python 3.11 P04-P19 chain, pinned pycti installation and live OpenCTI roundtrip remain `not_run` here; no pass result is inferred from code publication.
+
+## Prompt 19 handoff
+
+Prompt 19 is implemented for offline recorded-capture correctness and a version-pinned read-only live boundary. Service deployment, restricted maintained serving and freshness promotion are not authorized by this phase.
