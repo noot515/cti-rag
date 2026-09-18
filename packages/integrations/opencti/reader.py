@@ -270,6 +270,22 @@ class OpenCTIReader:
                 )
             )
             if not has_next:
+                stable_counts = {
+                    page.global_count
+                    for page in pages
+                    if page.global_count is not None
+                }
+                unique_ids = {
+                    record.source_object_id
+                    for page in pages
+                    for record in page.records
+                }
+                if len(stable_counts) == 1:
+                    expected_count = next(iter(stable_counts))
+                    if expected_count is not None and len(unique_ids) < expected_count:
+                        raise OpenCTIPartialScan(
+                            f"{kind} ended with {len(unique_ids)} unique records but globalCount={expected_count}"
+                        )
                 return tuple(pages)
             after = end_cursor
         raise OpenCTIPartialScan(
