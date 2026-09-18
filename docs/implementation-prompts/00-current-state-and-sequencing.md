@@ -1,6 +1,6 @@
 # Current state and sequencing handoff
 
-Prompt 18 begins from Prompt 17 final head `1a39055dba7938f96b2462d1392e0f617242597b` and is stacked on `feat/advanced-18-cticonnect-adapter`. Prompt 18 implementation/test head before handoff documentation is `545a9efc73c0204f9a07b4c75bec2bf5df9f01d7`.
+Prompt 19 begins from Prompt 18 final head `d61d475735a9f1cc931fe91f709732aa2c7dd5e8` and is stacked on `feat/advanced-19-opencti-read-adapter`. Prompt 19 implementation/test head before handoff documentation is `8866b019c7c7757c6b6983f987c954dc59ddd293`.
 
 
 Reconciliation notes:
@@ -36,3 +36,18 @@ Prompt 18 reconciliation notes:
 7. Extracted `cskg` assets are lineage metadata only in this phase. The serialized BM25 pickle is never loaded; BM25 is rebuilt from text.
 8. Missing CTIConnect checkout or real model configuration is an explicit `not_run` operational/quality gate and does not block purely offline code continuation, but it cannot authorize benchmark promotion.
 9. `scripts/validate_advanced_04_18.py` chains the complete Prompt 04-17 validator before any Prompt 18 gates and finishes with compile/diff/full-collection/status/HEAD checks.
+
+
+Prompt 19 reconciliation notes:
+
+1. The live client/server compatibility target is intentionally narrow: OpenCTI `7.260914.0` and pycti `7.260914.0`. Newer pycti releases are not silently accepted without rerunning this phase's reader and live integration gates.
+2. Only `packages/integrations/opencti/client.py` constructs `OpenCTIApiClient`. Reader, normalizer, sync and CLI layers depend on the restricted page-transport surface and cannot call mutation APIs.
+3. Capture uses bounded `first` plus opaque `after/endCursor` pagination, ordered by OpenCTI `updated_at`. The STIX `modified` value remains semantic provenance and revision input; it is not replaced by platform maintenance metadata.
+4. A finite completed scan records start/end interval and consistency warnings. It does not claim upstream point-in-time snapshot semantics because OpenCTI can change during traversal.
+5. Repeated/nonadvancing cursors, exhausted limits, transient failure after retries, access denial, malformed pages or a final count deficit block complete publication.
+6. Sanitized recorded captures are the default test/CLI path and make no network calls. Live mode requires explicit network enablement and a token read only from the configured environment-variable name.
+7. Captured Attack Pattern, Vulnerability, Report and explicit STIX relationship shapes normalize through the existing CTI evidence contracts. CWE/CAPEC are emitted only from demonstrated identifiers/fields; unsupported relationships or malformed records are quarantined with counts.
+8. Unmarked live evidence remains unresolved/restricted rather than being promoted to public by a request flag. Sanitized fixture mode alone injects a TLP:CLEAR fixture marking.
+9. Publication reuses the durable catalog and atomic generation path with exact, lexical and catalog-graph projections. There is no query-time upstream fallback and no streaming/incremental completeness claim.
+10. `scripts/validate_advanced_04_19.py` chains `validate_advanced_04_18.py` before Prompt 19 gates, so unresolved Python 3.11 predecessor correctness remains visible rather than being replaced by later tests.
+11. The current sandbox has Python 3.13.5 and cannot resolve GitHub/package hosts from the container; Python 3.11, pinned pycti installation and live OpenCTI are therefore recorded as `not_run` rather than inferred successes.
