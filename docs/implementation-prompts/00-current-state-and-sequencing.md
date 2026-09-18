@@ -1,6 +1,6 @@
 # Current state and sequencing handoff
 
-Prompt 19 begins from Prompt 18 final head `d61d475735a9f1cc931fe91f709732aa2c7dd5e8` and is stacked on `feat/advanced-19-opencti-read-adapter`. Prompt 19 implementation/test head before handoff documentation is `8866b019c7c7757c6b6983f987c954dc59ddd293`.
+Prompt 20 begins from Prompt 19 final head `0e83c3a94a6a864877a0d4443c7316e1bc36a60c` and is stacked on `feat/advanced-20-incremental-replay-and-recovery`. Prompt 20 implementation/test head before handoff documentation is `2964f833fff7af2304ff85f989f66b96fe7d554f`.
 
 
 Reconciliation notes:

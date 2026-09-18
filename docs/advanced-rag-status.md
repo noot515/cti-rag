@@ -168,3 +168,12 @@ python scripts/validate_advanced_04_20.py
 The chained validator executes the full Prompt 04-19 validator first, followed
 by replay/recovery tests, offline fixture sync, compileall, whitespace, full
 collection, status and HEAD.
+
+
+### Prompt 20 handoff
+
+Implementation/test head before handoff documentation: `2964f833fff7af2304ff85f989f66b96fe7d554f`.
+The exact Python 3.11 chained validator is still `not_run` in this execution
+environment because the container cannot resolve github.com and no Python 3.11
+runtime is available. No predecessor or Prompt 20 correctness result is inferred
+from commit publication.
