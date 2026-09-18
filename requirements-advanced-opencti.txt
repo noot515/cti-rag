@@ -1,0 +1,2 @@
+-r requirements-advanced-dev.txt
+pycti==7.260914.0
