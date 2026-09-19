@@ -1,2 +1,11 @@
--r requirements-advanced-dev.txt
+# Live OpenCTI integration environment.
+#
+# Deliberately does not include requirements-advanced-api.txt or
+# requirements-advanced-dev.txt. The application API pins FastAPI 0.115.14,
+# while pycti 7.260914.0 requires a newer FastAPI line. Keep live OpenCTI SDK
+# validation isolated from the offline/application Prompt 04-22 environment.
+-r requirements-advanced.txt
+
+pytest==9.0.2
+pytest-asyncio==1.3.0
 pycti==7.260914.0

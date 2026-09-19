@@ -300,3 +300,22 @@ external/service/security/quality/deployment evidence. Prompt 22 code completion
 not authorize promotion. A successor may begin only if it treats the unresolved Python
 3.11 predecessor/Prompt 22 validation and every applicable real-service/security/quality
 gate as unresolved rather than passed.
+
+
+## Post-Prompt 22 dependency-profile repair
+
+The Python packaging boundary was corrected after target-host validation exposed an
+unsatisfiable combined environment: the application/API profile pins
+`fastapi==0.115.14`, while `pycti==7.260914.0` requires a newer FastAPI line.
+
+The repair adds `requirements-advanced-validation.txt` for offline Prompt 04-22
+correctness/service-client validation and narrows
+`requirements-advanced-opencti.txt` to the live OpenCTI SDK profile. The two profiles
+must resolve in separate Python 3.11 virtual environments; `--no-deps` is not an
+accepted workaround.
+
+`tests/unit/opencti/test_dependency_boundary.py` verifies that pycti remains lazy and
+optional for offline imports and that the requirement files preserve the split.
+`scripts/validate_advanced_dependency_profiles.sh` performs fresh-environment resolver
+tests and `pip check` for both profiles. Real OpenCTI execution remains optional and
+requires explicit endpoint/token authorization.

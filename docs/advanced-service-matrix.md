@@ -14,6 +14,29 @@ The advanced service stack is physically separated from the legacy Milvus and Ne
 | Fake/injected Milvus client | in-process | focused unit gate passed |
 | Catalog-backed graph reader/writer | in-process | focused graph mechanics gate passed |
 
+## Python dependency-profile isolation
+
+The application/offline validation profile and the live OpenCTI SDK profile are
+intentionally separate Python 3.11 environments.
+
+- `requirements-advanced-validation.txt` includes the application/API test stack and
+  Milvus/Neo4j clients. It keeps the Prompt 16 API pin `fastapi==0.115.14` and
+  deliberately does not install `pycti`.
+- `requirements-advanced-opencti.txt` is a live OpenCTI integration profile. It
+  includes the base evidence dependencies, pytest, and `pycti==7.260914.0`, but does
+  not include the application API/dev requirements.
+- This split is required because `pycti==7.260914.0` declares a FastAPI requirement
+  incompatible with the application's pinned FastAPI 0.115.14. Resolver bypasses such
+  as `--no-deps` are not supported.
+- Recorded OpenCTI fixture ingestion, normalization, replay, reconciliation,
+  publication, and retrieval remain SDK-independent. The SDK is loaded lazily only
+  when `create_live_transport()` is invoked.
+- `scripts/validate_advanced_dependency_profiles.sh` creates two clean temporary
+  Python 3.11 environments, installs each profile independently, runs `pip check`,
+  verifies the expected package boundary, and runs the lazy-SDK regression test.
+  Setting `OPENCTI_TEST_LIVE=1` additionally runs the real read-only integration in
+  the isolated live environment.
+
 ## Isolation contract
 
 - Advanced Milvus publishes only on loopback `${ADVANCED_MILVUS_PORT:-19531}` and uses `cti-rag-advanced-milvus-internal` plus `cti-rag-advanced-milvus-*` volumes.

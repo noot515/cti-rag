@@ -1,0 +1,8 @@
+# Offline Prompt 04-22 correctness-validation environment.
+#
+# Recorded OpenCTI fixture ingestion does not require the pycti SDK.
+# Live OpenCTI SDK validation uses requirements-advanced-opencti.txt in a
+# separate Python 3.11 virtual environment because the two profiles currently
+# require incompatible FastAPI versions.
+-r requirements-advanced-dev.txt
+-r requirements-advanced-services.txt
