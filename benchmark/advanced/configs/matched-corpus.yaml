@@ -67,6 +67,8 @@ enriched_experiment:
 release_evidence:
   rollback_mechanics: not_run
   predecessor_correctness: not_run
+  authorization_policy: not_run
+  publication_recovery: not_run
   real_opencti: not_run
   real_milvus: not_run
   real_neo4j: not_run

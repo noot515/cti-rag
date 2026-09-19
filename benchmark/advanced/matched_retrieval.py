@@ -58,7 +58,11 @@ def compare_retrieval(batch, tokenizer, store: EvidenceStore, state: Path, manif
             de=[direct_uid[u] for u in direct_exact.get((str(q.namespace),str(q.value)),()) if u in direct_uid]; ih=exact.lookup(ExternalIdentifier(namespace=str(q.namespace),value=str(q.value),domain="cti"),scope=scope,snapshot=snap,top_k=config.top_k); ie=[ingested_uid[str(h.metadata["object_uid"])] for h in ih if str(h.metadata["object_uid"]) in ingested_uid]
             if de!=ie: exact_bad+=1
         reports.append({"query_id":q.query_id,"lexical_direct":direct,"lexical_ingested":ingested,"rank_mismatches":bad,"max_score_delta":delta,"exact_direct":de,"exact_ingested":ie})
-    ok=rank_bad<=config.rank_mismatch_tolerance and max_delta<=config.score_abs_tolerance and exact_bad==0; ann=dict(config.ann_settings); ann["status"]="not_run" if not ann.get("enabled") else "configured"
+    ok=rank_bad<=config.rank_mismatch_tolerance and max_delta<=config.score_abs_tolerance and exact_bad==0
+    ann=dict(config.ann_settings)
+    ann["status"]="not_run"
+    if ann.get("enabled"):
+        ann["reason"]="ANN execution is a separate real-service gate and is not exercised by the deterministic matched-corpus comparator"
     return {"status":"pass" if ok else "fail","top_k":config.top_k,"pre_rerank_limit":config.pre_rerank_limit,"context_budget":config.context_budget,"query_split_sha256":canonical_hash(["matched-query-split-v1",[q.query_id for q in config.queries]]),"lexical":{"k1":config.lexical_k1,"b":config.lexical_b},"ann":ann,"models":config.models,"observed_rank_mismatches":rank_bad,"observed_max_abs_score_delta":max_delta,"exact_query_mismatches":exact_bad,"queries":reports}
 
 def _percentile(values, fraction):

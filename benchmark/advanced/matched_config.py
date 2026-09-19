@@ -9,7 +9,20 @@ import yaml
 
 SCHEMA_VERSION = "matched-corpus-config-v1"
 GATE_VALUES = frozenset({"pass", "fail", "not_run", "not_comparable", "inconclusive"})
-REQUIRED_RELEASE_GATES = frozenset({"rollback_mechanics", "predecessor_correctness", "real_opencti", "real_milvus", "real_neo4j", "backend_isolation", "secret_handling", "freshness_lifecycle", "judged_quality", "deployment_authorization"})
+REQUIRED_RELEASE_GATES = frozenset({
+    "rollback_mechanics",
+    "predecessor_correctness",
+    "authorization_policy",
+    "publication_recovery",
+    "real_opencti",
+    "real_milvus",
+    "real_neo4j",
+    "backend_isolation",
+    "secret_handling",
+    "freshness_lifecycle",
+    "judged_quality",
+    "deployment_authorization",
+})
 
 class MatchedCorpusError(RuntimeError): pass
 

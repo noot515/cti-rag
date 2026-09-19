@@ -64,12 +64,12 @@ def compare_content(batch, store: EvidenceStore, manifest):
     for key in sorted(set(db) | set(ib)):
         left, right = db.get(key), ib.get(key)
         if left is None or right is None: mismatches.append({"kind": "object-membership", "key": list(key)}); continue
-        duid[left["uid"]], iuid[right["uid"]] = key[1], key[1]; entries.append({"kind": "object", "source_object_id": key[1], "raw_sha256": key[2], "direct_uid": left["uid"], "ingested_uid": right["uid"], "basis": "source_object_id+raw_sha256"})
+        duid[left["uid"]], iuid[right["uid"]] = key[1], key[1]; entries.append({"kind": "object", "source_object_id": key[1], "raw_sha256": key[2], "direct_uid": left["uid"], "ingested_uid": right["uid"], "direct_source_instance": left["sources"][0]["source_instance"], "ingested_source_instance": right["sources"][0]["source_instance"], "basis": "source_object_id+raw_sha256"})
         if canonical_json(object_semantics(left["payload"])) != canonical_json(object_semantics(right["payload"])): mismatches.append({"kind": "object-semantic", "source_object_id": key[1]})
     for key in sorted(set(dr) | set(ir)):
         left, right = dr.get(key), ir.get(key)
         if left is None or right is None: mismatches.append({"kind": "relation-membership", "key": list(key)}); continue
-        entries.append({"kind": "relation", "source_object_id": key[1], "raw_sha256": key[2], "direct_uid": left["uid"], "ingested_uid": right["uid"], "basis": "source_object_id+raw_sha256"})
+        entries.append({"kind": "relation", "source_object_id": key[1], "raw_sha256": key[2], "direct_uid": left["uid"], "ingested_uid": right["uid"], "direct_source_instance": left["sources"][0]["source_instance"], "ingested_source_instance": right["sources"][0]["source_instance"], "basis": "source_object_id+raw_sha256"})
         if canonical_json(_relation_semantics(left["payload"], duid)) != canonical_json(_relation_semantics(right["payload"], iuid)): mismatches.append({"kind": "relation-semantic", "source_object_id": key[1]})
     dchunks = {(duid.get(c.object_uid), c.section_path, c.ordinal, c.content_hash): _normalize_policy(c.model_dump(mode="json", exclude={"uid", "object_uid", "object_revision_uid", "scope_id", "source_refs"})) for c in batch.chunks}; ichunks = {}
     for row in _store_rows(store, manifest, "chunk"):
@@ -77,6 +77,6 @@ def compare_content(batch, store: EvidenceStore, manifest):
     for key in sorted(set(dchunks) | set(ichunks)):
         if key not in dchunks or key not in ichunks or canonical_json(dchunks.get(key)) != canonical_json(ichunks.get(key)): mismatches.append({"kind": "chunk-semantic", "key": list(key)})
     mapping = {"schema_version": "matched-provenance-equivalence-v1", "mapping_rule": "kind + source_object_id + raw_sha256; never name matching", "entries": entries}; mapping["sha256"] = canonical_hash([mapping["schema_version"], entries])
-    return {"status": "pass" if not mismatches else "fail", "objects": [len(dobj), len(iobj)], "relations": [len(drel), len(irel)], "chunks": [len(dchunks), len(ichunks)], "mismatch_count": len(mismatches), "mismatches": mismatches, "transport_provenance_is_separate": True, "markings_are_semantic": True}, mapping
+    return {"status": "pass" if not mismatches else "fail", "objects": [len(dobj), len(iobj)], "relations": [len(drel), len(irel)], "chunks": [len(dchunks), len(ichunks)], "mismatch_count": len(mismatches), "mismatches": mismatches, "transport_provenance_is_separate": True, "transport_provenance_difference_fields": ["source_instance", "scope_id", "local_uid"], "markings_are_semantic": True}, mapping
 
 __all__ = ["active_manifest", "compare_content", "direct_batch", "object_semantics"]

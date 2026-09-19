@@ -49,8 +49,35 @@ def _decision(required: Mapping[str, str]) -> dict[str, Any]:
     return {"status": "ready_for_explicit_promotion" if ready else "hold", "blockers": [*(f"failed:{x}" for x in failed), *(f"unavailable:{x}" for x in missing)], "automatic_promotion": False}
 
 def compute_readiness(*, matched_content: str, retrieval_parity: str, rollback_mechanics: str, release_evidence: Mapping[str, str], quality_gate: str = "not_run", graph_gain_gate: str = "not_run") -> dict[str, Any]:
-    base = {"matched_content": gate(matched_content, "matched_content"), "retrieval_parity": gate(retrieval_parity, "retrieval_parity"), "rollback_mechanics": gate(rollback_mechanics, "rollback_mechanics"), "predecessor_correctness": gate(release_evidence["predecessor_correctness"], "predecessor_correctness"), "secret_handling": gate(release_evidence["secret_handling"], "secret_handling"), "freshness_lifecycle": gate(release_evidence["freshness_lifecycle"], "freshness_lifecycle")}
-    mvp_b = {**base, "real_opencti": gate(release_evidence["real_opencti"], "real_opencti"), "real_milvus": gate(release_evidence["real_milvus"], "real_milvus"), "real_neo4j": gate(release_evidence["real_neo4j"], "real_neo4j"), "backend_isolation": gate(release_evidence["backend_isolation"], "backend_isolation")}
+    base = {
+        "matched_content": gate(matched_content, "matched_content"),
+        "retrieval_parity": gate(retrieval_parity, "retrieval_parity"),
+        "rollback_mechanics": gate(rollback_mechanics, "rollback_mechanics"),
+        "predecessor_correctness": gate(
+            release_evidence["predecessor_correctness"], "predecessor_correctness"
+        ),
+        "authorization_policy": gate(
+            release_evidence["authorization_policy"], "authorization_policy"
+        ),
+        "publication_recovery": gate(
+            release_evidence["publication_recovery"], "publication_recovery"
+        ),
+        "backend_isolation": gate(
+            release_evidence["backend_isolation"], "backend_isolation"
+        ),
+        "secret_handling": gate(
+            release_evidence["secret_handling"], "secret_handling"
+        ),
+        "freshness_lifecycle": gate(
+            release_evidence["freshness_lifecycle"], "freshness_lifecycle"
+        ),
+    }
+    mvp_b = {
+        **base,
+        "real_opencti": gate(release_evidence["real_opencti"], "real_opencti"),
+        "real_milvus": gate(release_evidence["real_milvus"], "real_milvus"),
+        "real_neo4j": gate(release_evidence["real_neo4j"], "real_neo4j"),
+    }
     mvp_c = {**mvp_b, "judged_quality": gate(release_evidence["judged_quality"], "judged_quality"), "quality_noninferiority": gate(quality_gate, "quality_noninferiority"), "graph_gain": gate(graph_gain_gate, "graph_gain"), "deployment_authorization": gate(release_evidence["deployment_authorization"], "deployment_authorization")}
     return {"MVP-A": {**_decision(base), "required_gates": base}, "MVP-B": {**_decision(mvp_b), "required_gates": mvp_b}, "MVP-C": {**_decision(mvp_c), "required_gates": mvp_c}, "overall": _decision(mvp_c)["status"], "advanced_default": "opt-in"}
 
