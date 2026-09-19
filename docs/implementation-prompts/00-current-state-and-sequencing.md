@@ -219,3 +219,16 @@ Lexical-tokenizer punctuation reconciliation:
    equivalent; reindexing is required.
 4. The original E2E query `causality` remains unchanged so the regression verifies
    actual lexical behavior rather than weakening the test.
+
+
+Legacy compile-gate repair:
+
+1. Target-host Prompt 06/07 validation reached its repository-wide `compileall`
+   gate after all scoped Prompt 06/07 tests passed, then failed on the historical
+   `tests/test_ner.py` manual probe because it contained an incomplete
+   `payload =` assignment.
+2. The probe is now syntactically valid and import-safe. It performs no HTTP request
+   during pytest discovery or compile validation.
+3. Manual execution requires an explicit JSON payload path and supports an optional
+   endpoint URL/timeout. The change does not modify the NER endpoint, legacy API
+   behavior, advanced retrieval behavior, or validation scope.
