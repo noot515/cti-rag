@@ -3,6 +3,7 @@ from __future__ import annotations
 import pytest
 
 from packages.domains.cti import CtiDomainAdapter, CtiChunk
+from packages.domains.cti.markings import CtiMarking
 from packages.indexing.chunker import ChunkingConfig, DeterministicTokenizer, chunk_object
 
 from ._helpers import batch_and_raw
@@ -71,3 +72,26 @@ def test_invalid_overlap_or_budget_fails_closed():
         ChunkingConfig(target_tokens=0, overlap_tokens=0)
     with pytest.raises(ValueError, match="overlap_tokens"):
         ChunkingConfig(target_tokens=10, overlap_tokens=10)
+
+
+def test_structured_marking_sequence_serializes_to_json_text():
+    batch, _ = batch_and_raw()
+    obj = batch.objects[0].model_copy(
+        update={
+            "markings": (
+                CtiMarking(
+                    marking_ref="marking--test",
+                    definition_type="tlp",
+                    definition="AMBER",
+                ),
+            )
+        }
+    )
+    chunks = chunk_object(
+        obj,
+        serialization_hints={"markings": "policy-metadata"},
+        chunk_class=CtiChunk,
+    )
+    assert len(chunks) == 1
+    assert "marking--test" in chunks[0].text
+    assert "AMBER" in chunks[0].text

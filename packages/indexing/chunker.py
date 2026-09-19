@@ -59,6 +59,17 @@ class ChunkingConfig:
 _DEFAULT_ORDER = ("name", "external_ids", "aliases", "description", "family_data")
 
 
+def _jsonable_field_value(value: Any) -> Any:
+    """Recursively convert typed evidence fields to JSON-mode primitives."""
+    if hasattr(value, "model_dump"):
+        return value.model_dump(mode="json")
+    if isinstance(value, (tuple, list)):
+        return [_jsonable_field_value(item) for item in value]
+    if isinstance(value, dict):
+        return {key: _jsonable_field_value(item) for key, item in value.items()}
+    return value
+
+
 def _field_text(obj: EvidenceObject, field_name: str) -> str:
     value = getattr(obj, field_name, None)
     if value is None:
@@ -70,10 +81,8 @@ def _field_text(obj: EvidenceObject, field_name: str) -> str:
         )
     if field_name == "aliases":
         return "\n".join(str(item) for item in value)
-    if hasattr(value, "model_dump"):
-        return canonical_json(value.model_dump(mode="json"))
-    if isinstance(value, (tuple, list, dict)):
-        return canonical_json(value)
+    if hasattr(value, "model_dump") or isinstance(value, (tuple, list, dict)):
+        return canonical_json(_jsonable_field_value(value))
     return str(value)
 
 

@@ -131,9 +131,9 @@ def test_orchestrator_rechecks_freshness_before_reranker_provider():
         domain="cti",
         scope_id="scope",
         snapshot=snapshot,
-        target_object_uid="o",
+        target_object_uid=canonical_hash(["object-reranker"]),
         authorized_view=AuthorizedEvidenceView(
-            evidence_uid="r",
+            evidence_uid=canonical_hash(["revision-reranker"]),
             domain="cti",
             scope_id="scope",
             source_instances=("opencti",),
@@ -147,7 +147,7 @@ def test_orchestrator_rechecks_freshness_before_reranker_provider():
                 score_kind="test",
             ),
         ),
-        object_uid="o",
+        object_uid=canonical_hash(["object-reranker"]),
     )
 
     class Channel:
@@ -239,9 +239,9 @@ def test_final_freshness_failure_prevents_response_serialization():
     candidate = ObjectCandidate(
         candidate_id=canonical_hash(["candidate-final"]),
         domain="cti", scope_id="scope", snapshot=snapshot,
-        target_object_uid="o",
+        target_object_uid=canonical_hash(["object-final"]),
         authorized_view=AuthorizedEvidenceView(
-            evidence_uid="r", domain="cti", scope_id="scope",
+            evidence_uid=canonical_hash(["revision-final"]), domain="cti", scope_id="scope",
             source_instances=("opencti",), policy=EvidencePolicyMetadata(),
         ),
         channel_scores=(
@@ -249,7 +249,7 @@ def test_final_freshness_failure_prevents_response_serialization():
                 channel="lexical", rank=1, raw_score=1.0, score_kind="test"
             ),
         ),
-        object_uid="o",
+        object_uid=canonical_hash(["object-final"]),
     )
 
     class Channel:

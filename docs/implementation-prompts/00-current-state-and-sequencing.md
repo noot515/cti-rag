@@ -170,3 +170,23 @@ Post-Prompt 22 predecessor-test reconciliation:
    unchanged.
 4. These are compatibility-test reconciliations only; no retrieval, policy, graph
    traversal, or evaluation runtime behavior was changed.
+
+
+Target-host full-suite reconciliation after Prompt 22:
+
+1. The Python 3.11 focused Prompt 04/05 gate passed 48/48 after the predecessor
+   assertion reconciliation.
+2. Full offline execution exposed a real chunking bug: domain serialization hints can
+   include tuples of typed Pydantic values such as CTI markings. The chunker now
+   recursively converts typed/nested field values through JSON-mode primitives before
+   canonical JSON encoding; it does not weaken the evidence-store JSON-safety boundary.
+3. The historical `TrustedPrincipal is Principal` assertion was stale after the
+   authenticated advanced API introduced a canonical principal namespace. The test now
+   verifies that `TrustedPrincipal` extends `Principal` and carries that namespace.
+4. The old publication revocation test now exercises the Prompt 21
+   `LifecycleAuthority` explicit-revocation tombstone path before asserting that a
+   retained pinned generation is withdrawn. Persisting a newer revision alone is not
+   treated as lifecycle authority.
+5. Two Prompt 21 E2E freshness fixtures now use valid deterministic SHA-256 evidence
+   and object identifiers, matching the hardened evidence schema instead of bypassing
+   it with one-character placeholders.

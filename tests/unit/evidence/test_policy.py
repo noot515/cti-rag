@@ -20,8 +20,15 @@ def _view(scope: str = "public-fixture", **policy_overrides) -> AuthorizedEviden
                                   source_instances=("fixture-public",), policy=policy)
 
 
-def test_backward_compatible_trusted_principal_alias():
-    assert TrustedPrincipal is Principal
+def test_trusted_principal_extends_principal_with_canonical_namespace():
+    trusted = TrustedPrincipal(
+        principal_id="test-principal",
+        principal_namespace="user.id",
+        source="trusted_local_cli",
+    )
+    assert TrustedPrincipal is not Principal
+    assert isinstance(trusted, Principal)
+    assert trusted.principal_namespace == "user.id"
 
 
 def test_deny_by_default_has_no_implicit_scope():

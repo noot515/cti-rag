@@ -4,6 +4,7 @@ from pathlib import Path
 
 import pytest
 
+from packages.evidence.lifecycle import LifecycleAuthority
 from packages.evidence.policy import Principal, PublicFixturePolicy
 from packages.evidence.snapshot import EvidenceWithdrawn, ReceiptMismatch, SnapshotCatalog, SnapshotManager
 from packages.evidence.store import EvidenceStore
@@ -134,6 +135,30 @@ def test_revocation_is_live_overlay_even_for_older_pinned_handle(tmp_path: Path)
         assert revoked_batch.objects[0].uid == old_batch.objects[0].uid
         revoked_manifest = generation_manifest(revoked_batch)
         _persist(store, revoked_batch, revoked_raw, revoked_manifest)
+
+        revoked_object = revoked_batch.objects[0]
+        source_ref = revoked_object.source_refs[0]
+        LifecycleAuthority(store).record_inventory(
+            domain=revoked_object.domain,
+            scope_id=revoked_object.scope_id,
+            source_instance=source_ref.source_instance,
+            supported_type=revoked_object.object_type,
+            type_fingerprint="publication-test-type-v1",
+            filter_fingerprint="publication-test-filter-v1",
+            seen_source_ids=(source_ref.source_object_id,),
+            current_revisions={
+                source_ref.source_object_id: {
+                    ("object", revoked_object.uid, revoked_object.revision_uid)
+                }
+            },
+            explicit_status={source_ref.source_object_id: "revoked"},
+            complete=True,
+            authorized=True,
+            page_count=1,
+            capture_started_at="2026-09-19T00:00:00Z",
+            capture_completed_at="2026-09-19T00:00:01Z",
+            max_staleness_seconds=3600,
+        )
         with pytest.raises(EvidenceWithdrawn):
             handle.get_revision(old_revision)
         handle.release()
