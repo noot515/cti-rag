@@ -1,6 +1,6 @@
 # Advanced RAG V3 implementation status
 
-Updated: 2026-09-18. Prompt 18 final predecessor: `d61d475735a9f1cc931fe91f709732aa2c7dd5e8`. Prompt 19 implementation/test head before handoff documentation: `8866b019c7c7757c6b6983f987c954dc59ddd293`. Current stacked branch: `feat/advanced-19-opencti-read-adapter`. Legacy retrieval/benchmark behavior remains available and unchanged.
+Updated: 2026-09-19. Prompt 22 branch: `feat/advanced-22-release-readiness`. Prompt 21 frozen predecessor handoff: `5a9d1e6807bf9261c3d42e088234061e3b046c91`. Prompt 22 implementation/test head before final handoff documentation: `25a68f1f5c2308289065eafaded36d14740c7c97`. Legacy retrieval/benchmark behavior remains available and unchanged.
 
 ## Prompt 16 - isolated authenticated advanced API
 
@@ -226,3 +226,77 @@ GitHub reports no status checks or workflow runs for the implementation head.
 No correctness, live-service, or quality gate is inferred from publication.
 The branch contains the validator needed to run every unresolved predecessor
 correctness gate before Prompt 20/21 exits.
+
+
+## Prompt 22 - matched-corpus release readiness
+
+Prompt 22 implements the source-equal I1 comparison between direct normalization/chunking
+and the same sanitized recorded OpenCTI capture ingested through the Prompt 19-21
+publication path.
+
+- canonical content parity uses explicit kind + source_object_id + raw_sha256
+  equivalence. Local UID, scope and source-instance differences are transport
+  provenance; names are never identity keys. Semantic content, relation direction and
+  assertion kind, evidence payloads and markings must still match;
+- retrieval parity uses fixed exact/lexical settings, frozen queries/budgets and explicit
+  tolerances. ANN/model execution remains a separate not_run service/model gate in the
+  deterministic fixture comparator rather than a configured-is-executed shortcut;
+- comparison reports include cold/warm retrieval p50/p95, errors, concurrency,
+  ingestion/update lag, rebuild time, state/storage bytes, checkpoint/reconciliation
+  state, query-split/config hashes and explicit no-throughput-claim metadata;
+- judged quality remains separate from fixture mechanics. Prompt 17's 2,000-resample
+  paired-cluster bootstrap, Recall@10 noninferiority lower bound >= -0.01 and graph
+  mapping-gain lower bound > 0 are preserved. Missing comparable labels remain
+  not_run/not_comparable/inconclusive;
+- readiness is fail-closed for MVP-A/B/C. Authorization policy, publication recovery,
+  backend isolation, secret handling, freshness/lifecycle, predecessor correctness,
+  rollback mechanics, matched content and retrieval parity are explicit blockers even
+  when retrieval scores are high. Real OpenCTI/Milvus/Neo4j evidence is additionally
+  required for MVP-B; judged confidence gates and explicit deployment authorization are
+  additionally required for MVP-C;
+- retained-generation rollback changes only the active generation pointer in the current
+  catalog. It does not restore an old database, so current revocation/tombstone and
+  freshness overlays remain authoritative. A focused unit test covers rollback with a
+  current revocation overlay;
+- enriched OpenCTI is reported as a separate coverage experiment and cannot be merged
+  into the matched platform-attribution result;
+- advanced retrieval stays opt-in, automatic promotion is disabled, RuntimePolicy
+  remains an injectable external authorization boundary, and the legacy retrieval/API
+  baseline is not switched or removed;
+- generic extraction is deferred until CTI reaches MVP-C, a materially different second
+  domain (preferably networking) is implemented end-to-end, and a review demonstrates
+  real duplication in at least two shared contract layers.
+
+### Prompt 22 validation status
+
+The required target commands are:
+
+```text
+python -m pytest tests/unit/benchmark/test_matched_corpus.py -q
+python -m benchmark.advanced.compare_ingestion --config benchmark/advanced/configs/matched-corpus.yaml --output saves/eval/matched-corpus
+python -m pytest tests/unit tests/e2e -m "not integration and not live_model and not opencti and not gpu and not legacy_service" -q
+git diff --check
+git status --short --branch
+git rev-parse HEAD
+```
+
+They are recorded as `not_run` in this implementation environment. The available
+container exposes Python 3.13.5 rather than the required Python 3.11 advanced
+environment, and the private repository cannot be materialized into that container
+through the authenticated GitHub connector for local execution. No pytest, matched
+comparison, full offline suite, whitespace, working-tree or local HEAD result is
+fabricated from publication.
+
+Connector-side inspection confirms the branch contains the expected Prompt 21
+predecessor ancestry and the Prompt 22 implementation files. No real OpenCTI, Milvus,
+Neo4j, model, judged-quality, production rollback or deployment-authorization gate is
+inferred from source publication.
+
+### Prompt 22 handoff
+
+The implementation is committed on `feat/advanced-22-release-readiness`. Release
+decision remains **HOLD** because the checked-in profile is deliberately all-not_run for
+external/service/security/quality/deployment evidence. Prompt 22 code completion does
+not authorize promotion. A successor may begin only if it treats the unresolved Python
+3.11 predecessor/Prompt 22 validation and every applicable real-service/security/quality
+gate as unresolved rather than passed.

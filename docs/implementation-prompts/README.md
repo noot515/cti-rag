@@ -31,3 +31,15 @@ This directory tracks implementation-state handoffs, not the full external promp
   Prompt 21 implementation/test head before final docs: `9b90a0375cbd126bbf864134f9c58584ff9663f8`.
   Final exact Python 3.11 `scripts/validate_advanced_04_21.py` remains `not_run`
   in the current sandbox; no service/deployment promotion is authorized.
+
+
+- Prompt 22: implemented on `feat/advanced-22-release-readiness` from Prompt 21
+  frozen handoff `5a9d1e6807bf9261c3d42e088234061e3b046c91`; implementation/test head before
+  final handoff docs is `25a68f1f5c2308289065eafaded36d14740c7c97`. It adds the matched C1-direct
+  versus I1-OpenCTI comparison, provenance-bearing equivalence map, fixed retrieval and
+  operational measurements, fail-closed MVP-A/B/C readiness, retained-generation
+  rollback procedure/test, explicit security/publication/isolation blockers, separate
+  enriched-corpus reporting, and a concrete defer-extraction trigger. Exact Python 3.11
+  Prompt 22 validation, real services, judged quality, production rollback and deployment
+  authorization remain `not_run`; no automatic promotion or legacy-default change is
+  authorized.

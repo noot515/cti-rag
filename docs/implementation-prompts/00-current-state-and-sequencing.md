@@ -1,6 +1,9 @@
 # Current state and sequencing handoff
 
-Prompt 21 begins from Prompt 20 final head `71c4cc0d88101e70b01592d4c4119834ba9f019a` and is stacked on `feat/advanced-21-visibility-reconciliation`. Prompt 21 implementation/test head before final handoff documentation is `9b90a0375cbd126bbf864134f9c58584ff9663f8`.
+Prompt 22 is stacked on the Prompt 21 frozen handoff
+`5a9d1e6807bf9261c3d42e088234061e3b046c91` on
+`feat/advanced-22-release-readiness`. Prompt 22 implementation/test head before final
+handoff documentation is `25a68f1f5c2308289065eafaded36d14740c7c97`.
 
 
 Reconciliation notes:
@@ -110,3 +113,44 @@ Prompt 21 reconciliation notes:
 11. Scope freshness requires a valid lease for every source/type that has
     participated in the inventory history; a failed inventory for a previously
     required type cannot be masked by a fresh sibling type.
+
+
+Prompt 22 reconciliation notes:
+
+1. The implementation-plan language that calls OpenCTI the canonical CTI data plane is
+   not treated as evidence that OpenCTI improves retrieval. Prompt 22 measures the
+   source-equal C1-direct versus I1-OpenCTI path first; enriched OpenCTI remains a
+   separate coverage experiment.
+2. Stable local UIDs, local scope IDs and source_instance may differ across the direct
+   and ingested paths. Matched identity therefore uses kind + upstream source_object_id
+   + raw payload SHA-256. Names are never equivalence keys; transport differences are
+   emitted separately.
+3. Marking/policy content is semantic and may not be normalized away. Unexpected
+   marking or other semantic normalization drift fails canonical parity and disables
+   platform attribution.
+4. The matched recorded fixture exercises deterministic exact/lexical mechanics only.
+   ANN, real embedding/reranking/generation, live OpenCTI, real Milvus/Neo4j and judged
+   quality remain separate not_run gates.
+5. Prompt 17 thresholds remain unchanged: 2,000 paired cluster-bootstrap resamples,
+   R6-vs-R5 Recall@10 noninferiority lower 95% bound >= -0.01, and graph mapping-subset
+   gain lower 95% bound > 0. Missing comparable labels cannot be turned into a number.
+6. Authorization policy, publication recovery and backend isolation are explicit
+   release blockers in addition to predecessor correctness, secret handling,
+   freshness/lifecycle, matched parity and rollback. High retrieval scores cannot
+   override these gates.
+7. Rollback restores a retained verified generation by changing the active pointer in
+   the current catalog. Current tombstones/revocations remain live; restoring an old
+   catalog/database backup is intentionally not the normal rollback mechanism.
+8. Readiness statuses are evidence inputs, not self-authorizing test results.
+   `ready_for_explicit_promotion` still has automatic_promotion=false and the advanced
+   default remains opt-in until the implementation session separately authorizes a
+   switch.
+9. No cross-repository RuntimePolicy implementation is added. Retrieved evidence and
+   graph/retrieval scores cannot grant authority or execute tools.
+10. Generic extraction remains deferred until CTI reaches MVP-C, a materially different
+    second domain (preferably networking) exists end-to-end, and duplicated shared
+    contract implementation is demonstrated in at least two layers.
+11. Prompt 22 required Python 3.11 commands are still not_run in this execution
+    environment because only Python 3.13.5 is available and the private checkout cannot
+    be materialized into the container through the authenticated connector. This is an
+    execution limitation, not a pass.
