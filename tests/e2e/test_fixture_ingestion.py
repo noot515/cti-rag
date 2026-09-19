@@ -17,7 +17,7 @@ from packages.indexing.graph_indexer import CatalogGraphProjectionWriter, recons
 from packages.indexing.lexical_indexer import ExactProjectionWriter, LexicalProjectionWriter
 from packages.indexing.manifests import GenerationManifest, ProjectionReceipt
 from packages.indexing.orchestrator import PublicationOrchestrator
-from packages.retrieval.dense import DenseProjectionWriter
+from packages.retrieval.dense import DenseIndex, DenseProjectionWriter
 from packages.retrieval.exact import ExactIndex
 from packages.retrieval.lexical import LexicalIndex
 from packages.retrieval.providers import DeterministicFixtureEmbeddingProvider
@@ -142,6 +142,21 @@ def test_fixture_ingest_publishes_all_local_projections_and_no_change_reingest_i
             except PolicyDenied:
                 denied += 1
         assert denied >= 1
+
+        provider = DeterministicFixtureEmbeddingProvider()
+        dense = DenseIndex.open(
+            store,
+            path=DenseIndex.path_for(
+                state / "indexes",
+                domain="cti",
+                scope_id="public-fixture",
+                generation_id=row["generation_id"],
+            ),
+            provider=provider,
+        )
+        assert dense.policy_excluded_chunk_uids
+        excluded = set(dense.policy_excluded_chunk_uids)
+        assert excluded.isdisjoint({entry["chunk_uid"] for entry in dense.entries})
 
         manifest_row = store.connection.execute(
             "SELECT manifest_json FROM generation_manifests "

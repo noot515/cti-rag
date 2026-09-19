@@ -126,6 +126,9 @@ class DenseIndex:
         self.embedding_fingerprint = payload["embedding_fingerprint"]
         self.embedding_fingerprint_digest = str(payload["embedding_fingerprint_digest"])
         self.entries = tuple(payload["entries"])
+        self.policy_excluded_chunk_uids = tuple(
+            str(item) for item in payload.get("policy_excluded_chunk_uids", ())
+        )
 
     @classmethod
     def path_for(cls, root: Path | str, *, domain: str, scope_id: str, generation_id: str) -> Path:
@@ -165,9 +168,22 @@ class DenseIndex:
         rows = _chunk_rows(store, manifest)
         inputs: list[EmbeddingInput] = []
         metadata: dict[str, dict[str, Any]] = {}
+        policy_excluded_chunk_uids: list[str] = []
         for row in rows:
-            require_authorized(policy.authorize_evidence(_view(row, domain=manifest.domain, scope_id=manifest.scope_id), scope, destination))
-            inputs.append(EmbeddingInput(item_id=row["chunk_uid"], text=str(row["payload"].get("text", ""))))
+            decision = policy.authorize_evidence(
+                _view(row, domain=manifest.domain, scope_id=manifest.scope_id),
+                scope,
+                destination,
+            )
+            if not decision.allowed:
+                policy_excluded_chunk_uids.append(str(row["chunk_uid"]))
+                continue
+            inputs.append(
+                EmbeddingInput(
+                    item_id=row["chunk_uid"],
+                    text=str(row["payload"].get("text", "")),
+                )
+            )
             metadata[row["chunk_uid"]] = {
                 "object_uid": row["object_uid"],
                 "object_revision_uid": row["object_revision_uid"],
@@ -203,6 +219,7 @@ class DenseIndex:
             "embedding_fingerprint": provider.fingerprint.model_dump(mode="json"),
             "embedding_fingerprint_digest": provider.fingerprint.digest,
             "entries": entries,
+            "policy_excluded_chunk_uids": sorted(policy_excluded_chunk_uids),
         }
         path = cls.path_for(root, domain=manifest.domain, scope_id=manifest.scope_id, generation_id=manifest.generation_id)
         _atomic_json(path, payload)
@@ -240,13 +257,30 @@ class DenseIndex:
         manifest = GenerationManifest.model_validate_json(generation["manifest_json"])
         if manifest.membership_sha256 != payload.get("membership_sha256"):
             raise DenseIndexError("generation membership hash does not match dense index")
-        expected = {row["chunk_uid"] for row in _chunk_rows(store, manifest)}
-        observed = {str(item.get("chunk_uid")) for item in payload.get("entries", [])}
-        if expected != observed or len(observed) != len(payload.get("entries", [])):
-            raise DenseIndexError("dense index chunk membership is stale or corrupt")
+        expected = {str(row["chunk_uid"]) for row in _chunk_rows(store, manifest)}
+        entry_rows = payload.get("entries", [])
+        if not isinstance(entry_rows, list):
+            raise DenseIndexError("dense index entries are malformed")
+        observed = {str(item.get("chunk_uid")) for item in entry_rows}
+        if len(observed) != len(entry_rows):
+            raise DenseIndexError("dense index contains duplicate embedded chunk IDs")
+
+        excluded_rows = payload.get("policy_excluded_chunk_uids", [])
+        if not isinstance(excluded_rows, list):
+            raise DenseIndexError("dense index policy exclusion list is malformed")
+        excluded = {str(item) for item in excluded_rows}
+        if len(excluded) != len(excluded_rows):
+            raise DenseIndexError("dense index contains duplicate policy exclusions")
+        if observed & excluded:
+            raise DenseIndexError("dense chunk cannot be both embedded and policy-excluded")
+        if observed | excluded != expected:
+            raise DenseIndexError(
+                "dense index chunk membership is not fully accounted for"
+            )
+
         validate_embedding_batch(
-            provider_batch(provider, payload.get("entries", [])),
-            expected_ids=sorted(expected),
+            provider_batch(provider, entry_rows),
+            expected_ids=sorted(observed),
             expected_fingerprint=provider.fingerprint,
         )
         return cls(store, path, payload)
@@ -440,7 +474,11 @@ class DenseProjectionWriter:
             fingerprint=self.fingerprint,
             artifact_sha256=index.artifact_sha256,
             visibility_verified=True,
-            sentinel=f"dense:{len(index.entries)}:{index.artifact_sha256[:16]}",
+            sentinel=(
+                f"dense:{len(index.entries)}:"
+                f"{len(index.policy_excluded_chunk_uids)}:"
+                f"{index.artifact_sha256[:16]}"
+            ),
         )
 
     def verify(self, manifest: GenerationManifest, receipt: ProjectionReceipt) -> bool:
@@ -462,7 +500,11 @@ class DenseProjectionWriter:
             and receipt.member_count == len(manifest.membership)
             and receipt.fingerprint == self.fingerprint
             and receipt.artifact_sha256 == index.artifact_sha256
-            and receipt.sentinel == f"dense:{len(index.entries)}:{index.artifact_sha256[:16]}"
+            and receipt.sentinel == (
+                f"dense:{len(index.entries)}:"
+                f"{len(index.policy_excluded_chunk_uids)}:"
+                f"{index.artifact_sha256[:16]}"
+            )
             and receipt.visibility_verified
         )
 

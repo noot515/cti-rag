@@ -190,3 +190,17 @@ Target-host full-suite reconciliation after Prompt 22:
 5. Two Prompt 21 E2E freshness fixtures now use valid deterministic SHA-256 evidence
    and object identifiers, matching the hardened evidence schema instead of bypassing
    it with one-character placeholders.
+
+
+Dense-policy exclusion reconciliation:
+
+1. The deterministic fixture intentionally includes an AMBER-marked restricted record
+   so authorization behavior is exercised alongside public evidence.
+2. Dense indexing no longer treats a policy-denied chunk as permission to send it to
+   the embedding provider, nor as a reason to abort an otherwise valid generation.
+   Denied chunks are omitted before the provider call.
+3. The dense artifact records sorted `policy_excluded_chunk_uids`. On reopen, every
+   generation chunk must be accounted for exactly once as embedded or policy-excluded;
+   overlap, duplicates, or an unaccounted chunk fail closed.
+4. Exact/lexical/catalog membership remains complete. Query-time dense candidates are
+   still reauthorized for caller egress, so this change does not weaken serving policy.

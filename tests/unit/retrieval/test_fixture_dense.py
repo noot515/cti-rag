@@ -184,3 +184,52 @@ def test_same_dimension_wrong_model_is_rejected_at_manifest_boundary(tmp_path: P
     writer = DenseProjectionWriter(store, tmp_path, provider=wrong, scope=scope(), policy=AllowPolicy())
     with pytest.raises(DenseFingerprintMismatch):
         writer.build(manifest)
+
+
+def test_dense_build_accounts_for_policy_excluded_chunks_without_provider_egress(tmp_path: Path):
+    store = FakeStore()
+
+    class RecordingProvider(DeterministicFixtureEmbeddingProvider):
+        def __init__(self):
+            super().__init__(dimensions=8)
+            self.document_item_ids = ()
+
+        def encode_documents(self, items, *, destination, deadline=None, cancelled=None):
+            self.document_item_ids = tuple(item.item_id for item in items)
+            return super().encode_documents(
+                items,
+                destination=destination,
+                deadline=deadline,
+                cancelled=cancelled,
+            )
+
+    class DenySecondPolicy:
+        def __init__(self, denied_uid: str):
+            self.denied_uid = denied_uid
+
+        def authorize_evidence(self, view, scope, destination):
+            allowed = view.evidence_uid != self.denied_uid
+            return PolicyDecision(
+                allowed=allowed,
+                reason="fixture" if allowed else "policy-excluded",
+            )
+
+    provider = RecordingProvider()
+    manifest, chunks = setup_generation(store, provider)
+    denied_uid = chunks[1][0]
+    index = DenseIndex.build(
+        store,
+        root=tmp_path,
+        manifest=manifest,
+        provider=provider,
+        scope=scope(),
+        policy=DenySecondPolicy(denied_uid),
+        destination="local_generator",
+    )
+
+    assert denied_uid not in provider.document_item_ids
+    assert {entry["chunk_uid"] for entry in index.entries} == {chunks[0][0]}
+    assert index.policy_excluded_chunk_uids == (denied_uid,)
+
+    reopened = DenseIndex.open(store, path=index.path, provider=provider)
+    assert reopened.policy_excluded_chunk_uids == (denied_uid,)
