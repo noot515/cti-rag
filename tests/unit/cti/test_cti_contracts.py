@@ -86,10 +86,19 @@ def test_domain_adapter_does_not_expose_authorization_method():
 
 def test_reviewed_graph_patterns_are_bounded_and_not_user_generated():
     adapter = CtiDomainAdapter()
+
     mapping = adapter.allowed_graph_patterns("mapping")
     assert len(mapping) == 1
-    assert mapping[0].max_hops == 3
+    assert mapping[0].pattern_id == "cti-catalog-mapping-2hop-v1"
+    assert mapping[0].max_hops == 2
     assert mapping[0].relation_sequence == ("maps_to",)
+
+    explicit_three_hop = adapter.allowed_graph_patterns("three_hop_mapping")
+    assert len(explicit_three_hop) == 1
+    assert explicit_three_hop[0].pattern_id == "cti-catalog-mapping-3hop-v1"
+    assert explicit_three_hop[0].max_hops == 3
+    assert explicit_three_hop[0].relation_sequence == ("maps_to",)
+
     general = adapter.allowed_graph_patterns("something-else")
     assert all(pattern.max_hops <= 2 for pattern in general)
 

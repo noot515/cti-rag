@@ -81,6 +81,7 @@ def test_metric_status_serialization_keeps_unavailable_value_null():
         "status": "not_comparable",
         "reason": "canonical mapping unavailable",
         "support_count": 0,
+        "annotation_coverage": None,
         "value": None,
     }
     with pytest.raises(ValidationError, match="value=null"):

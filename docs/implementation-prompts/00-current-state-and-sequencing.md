@@ -154,3 +154,19 @@ Prompt 22 reconciliation notes:
     environment because only Python 3.13.5 is available and the private checkout cannot
     be materialized into the container through the authenticated connector. This is an
     execution limitation, not a pass.
+
+
+Post-Prompt 22 predecessor-test reconciliation:
+
+1. Target-host Python 3.11 validation exposed two stale Prompt 04/05 assertions that
+   conflicted with later accepted contracts rather than with current implementation.
+2. The CTI graph-pattern assertion now reflects the Prompt 11 planner contract:
+   ordinary `mapping` uses the reviewed two-hop template, while three-hop traversal
+   requires the explicit `three_hop_mapping` template. The production graph-pattern
+   implementation was not widened or relaxed.
+3. The metric serialization assertion now includes
+   `annotation_coverage: null`, matching the Prompt 17 `MetricResult` schema. The
+   fail-closed rule that unavailable metrics serialize with `value: null` remains
+   unchanged.
+4. These are compatibility-test reconciliations only; no retrieval, policy, graph
+   traversal, or evaluation runtime behavior was changed.
