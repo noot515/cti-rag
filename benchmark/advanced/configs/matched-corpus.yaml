@@ -1,0 +1,84 @@
+schema_version: matched-corpus-config-v1
+comparison:
+  experiment: I1
+  direct_label: C1-direct
+  ingestion_label: I1-opencti
+  opencti_config: benchmark/advanced/configs/opencti.yaml
+  direct_source_instance: matched-c1-direct
+  direct_scope_id: matched-c1-direct
+  direct_corpus_id: matched-c1
+queries:
+  - id: cve-exact
+    text: CVE-2026-12345 vulnerability
+    exact:
+      namespace: cve
+      value: CVE-2026-12345
+  - id: attack-technique
+    text: synthetic PowerShell technique T1059.001
+    exact:
+      namespace: attack
+      value: T1059.001
+  - id: report-text
+    text: report references a synthetic attack technique
+retrieval:
+  top_k: 12
+  pre_rerank_limit: 60
+  context_budget: 8000
+  lexical:
+    k1: 1.5
+    b: 0.75
+  score_abs_tolerance: 1.0e-12
+  rank_mismatch_tolerance: 0
+  ann:
+    enabled: false
+    status: not_run
+    reason: recorded matched fixture has no real embedding or ANN service configured
+    metric: cosine
+    top_k: 12
+    index_parameters: not_run
+    search_parameters: not_run
+models:
+  embedding:
+    status: not_run
+    provider: null
+    model: null
+    reason: matched fixture compares deterministic exact/lexical mechanics only
+  reranker:
+    status: not_run
+    provider: null
+    model: null
+    reason: no permitted real reranker configured
+  generator:
+    status: not_run
+    provider: null
+    model: null
+    reason: no answer-generation claim in matched ingestion comparison
+operational:
+  cold_repeats: 2
+  warm_repeats: 5
+  concurrency: 1
+quality:
+  judged_labels: null
+  bootstrap_resamples: 2000
+  noninferiority_margin: -0.01
+  graph_gain_lower_bound: 0.0
+enriched_experiment:
+  report: null
+release_evidence:
+  rollback_mechanics: not_run
+  predecessor_correctness: not_run
+  real_opencti: not_run
+  real_milvus: not_run
+  real_neo4j: not_run
+  backend_isolation: not_run
+  secret_handling: not_run
+  freshness_lifecycle: not_run
+  judged_quality: not_run
+  deployment_authorization: not_run
+extraction:
+  second_domain: null
+  trigger: >-
+    Reconsider extraction only after CTI reaches MVP-C, a materially different
+    second domain (preferably networking) is implemented end-to-end, and a
+    documented review finds duplicated implementation in at least two shared
+    contract layers that cannot be removed by local composition.
