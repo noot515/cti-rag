@@ -24,17 +24,24 @@ class TokenSpan:
 
 
 class DeterministicTokenizer:
-    name = "regex-cti-unicode-v1"
+    name = "regex-cti-unicode-v2"
 
     @property
     def fingerprint(self) -> str:
-        return canonical_hash(["tokenizer-v1", self.name, _TOKEN_RE.pattern])
+        return canonical_hash(
+            ["tokenizer-v2", self.name, _TOKEN_RE.pattern, "trim-terminal-dot-colon"]
+        )
 
     def spans(self, text: str) -> tuple[TokenSpan, ...]:
-        return tuple(
-            TokenSpan(match.group(0).casefold(), match.start(), match.end())
-            for match in _TOKEN_RE.finditer(text)
-        )
+        spans: list[TokenSpan] = []
+        for match in _TOKEN_RE.finditer(text):
+            raw = match.group(0)
+            normalized = raw.casefold().rstrip(".:")
+            if not normalized:
+                continue
+            end = match.end() - (len(raw) - len(normalized))
+            spans.append(TokenSpan(normalized, match.start(), end))
+        return tuple(spans)
 
     def tokens(self, text: str) -> tuple[str, ...]:
         return tuple(item.token for item in self.spans(text))

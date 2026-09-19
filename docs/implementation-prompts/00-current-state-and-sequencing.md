@@ -204,3 +204,18 @@ Dense-policy exclusion reconciliation:
    overlap, duplicates, or an unaccounted chunk fail closed.
 4. Exact/lexical/catalog membership remains complete. Query-time dense candidates are
    still reauthorized for caller egress, so this change does not weaken serving policy.
+
+
+Lexical-tokenizer punctuation reconciliation:
+
+1. Target-host E2E validation showed that the generic tokenizer retained a trailing
+   period in prose tokens (for example `causality.`) because `.` is also allowed
+   internally for CTI identifiers, versions and domain-like values.
+2. The deterministic tokenizer is versioned to `regex-cti-unicode-v2` and now trims
+   terminal dot/colon punctuation while preserving internal separators such as
+   `T1059.001`, `4.2` and `restricted.example`.
+3. The tokenizer fingerprint was deliberately changed so persisted lexical/chunk
+   artifacts built under the prior token semantics cannot be reopened as if they were
+   equivalent; reindexing is required.
+4. The original E2E query `causality` remains unchanged so the regression verifies
+   actual lexical behavior rather than weakening the test.

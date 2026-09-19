@@ -95,3 +95,16 @@ def test_structured_marking_sequence_serializes_to_json_text():
     assert len(chunks) == 1
     assert "marking--test" in chunks[0].text
     assert "AMBER" in chunks[0].text
+
+
+def test_tokenizer_trims_terminal_punctuation_but_preserves_internal_dots():
+    tokenizer = DeterministicTokenizer()
+    tokens = tokenizer.tokens(
+        "causality. heading: T1059.001 4.2 restricted.example"
+    )
+    assert "causality" in tokens
+    assert "heading" in tokens
+    assert "T1059.001".casefold() in tokens
+    assert "4.2" in tokens
+    assert "restricted.example" in tokens
+    assert "causality." not in tokens
