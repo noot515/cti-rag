@@ -16,8 +16,19 @@ if [[ "$("$PYTHON_BIN" -c 'import sys; print(f"{sys.version_info.major}.{sys.ver
   exit 2
 fi
 
-TMP_ROOT="$(mktemp -d -t cti-rag-deps-XXXXXX)"
+VALIDATION_TMP_BASE="${ADVANCED_VALIDATION_TMPDIR:-${TMPDIR:-}}"
+if [[ -n "$VALIDATION_TMP_BASE" ]]; then
+  mkdir -p "$VALIDATION_TMP_BASE"
+  TMP_ROOT="$(mktemp -d "$VALIDATION_TMP_BASE/cti-rag-deps-XXXXXX")"
+else
+  TMP_ROOT="$(mktemp -d -t cti-rag-deps-XXXXXX)"
+fi
 trap 'rm -rf "$TMP_ROOT"' EXIT
+
+if [[ -n "${ADVANCED_VALIDATION_PIP_CACHE_DIR:-}" ]]; then
+  mkdir -p "$ADVANCED_VALIDATION_PIP_CACHE_DIR"
+  export PIP_CACHE_DIR="$ADVANCED_VALIDATION_PIP_CACHE_DIR"
+fi
 
 section() {
   printf '\n================================================================\n%s\n================================================================\n' "$1"
