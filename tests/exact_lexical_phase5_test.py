@@ -25,11 +25,19 @@ class Phase5ExactLexicalTests(unittest.TestCase):
             access_labels=(AccessLabel.PUBLIC,),processing_classes=(ProcessingClass.LOCAL_ONLY,),policy_epoch=1,
         )
         self.docs=[]; self.records=[]; self.revisions=[]
-        self.add("rev-old","obj-1","CVE-2026-0001","lexical sentinel plume appears only in the persistent corpus",datetime(2026,1,1,tzinfo=UTC))
+        self.add("rev-old","obj-1","CVE-2026-0001","lexical sentinel plume appears only in the persistent corpus",datetime(2026,1,1,tzinfo=UTC),valid_from=datetime(2025,1,1,tzinfo=UTC),valid_to=datetime(2027,1,1,tzinfo=UTC))
         self.add("rev-future","obj-1","CVE-2026-0001","chronofuture phrase must not leak",datetime(2099,1,1,tzinfo=UTC))
         self.add("rev-private","obj-private","CVE-2026-0002","secretvector private phrase",datetime(2026,1,2,tzinfo=UTC),access=AccessLabel.PRIVATE,tenant="tenant-a")
         self.add("rev-amb-a","obj-amb-a","CVE-2026-9999","ambiguity alpha",datetime(2026,1,3,tzinfo=UTC))
         self.add("rev-amb-b","obj-amb-b","CVE-2026-9999","ambiguity beta",datetime(2026,1,3,tzinfo=UTC))
+        report_payload=b'{"id":"REPORT-1","summary":"mentionreporttoken discusses CVE-2026-4242 but is not the canonical CVE record"}'
+        report_exact,report_docs=self.projector.project(
+            normalized_bytes=report_payload,artifact_uid="art-rev-report",revision_uid="rev-report",object_uid="obj-report",
+            namespace="report",object_type="report",canonical_id="REPORT-1",domain="cybersecurity",source_id="synthetic-report",
+            tenant_id="public",access_label=AccessLabel.PUBLIC,available_at=datetime(2026,1,2,tzinfo=UTC),
+            text_pointers=("/summary",),context_prefix="synthetic report",
+        )
+        self.records.append(report_exact); self.docs.extend(report_docs); self.revisions.append("rev-report")
         self.revisions=tuple(sorted(self.revisions))
         ereq=ProjectionBuildRequest("exact-g1","exact",self.revisions,("canonical-id/1",),("exact",),0)
         lreq=ProjectionBuildRequest("lex-g1","lexical",self.revisions,("unicode61/1",),("lexical",),0)
@@ -41,12 +49,12 @@ class Phase5ExactLexicalTests(unittest.TestCase):
         self.snapshot=self.pinned.manifest.to_ref()
     def tearDown(self): self.tmp.cleanup()
 
-    def add(self,revision_uid,object_uid,cve,summary,available,access=AccessLabel.PUBLIC,tenant="public"):
+    def add(self,revision_uid,object_uid,cve,summary,available,access=AccessLabel.PUBLIC,tenant="public",valid_from=None,valid_to=None):
         payload=("{"+f'"id":"{cve}","summary":"{summary}"'+"}").encode()
         exact,docs=self.projector.project(
             normalized_bytes=payload,artifact_uid=f"art-{revision_uid}",revision_uid=revision_uid,object_uid=object_uid,
             namespace="cve",object_type="cve",canonical_id=cve,domain="cybersecurity",source_id="synthetic-cyber",
-            tenant_id=tenant,access_label=access,available_at=available,text_pointers=("/summary",),context_prefix=f"{cve} synthetic advisory",
+            tenant_id=tenant,access_label=access,available_at=available,valid_from=valid_from,valid_to=valid_to,text_pointers=("/summary",),context_prefix=f"{cve} synthetic advisory",
         )
         self.records.append(exact); self.docs.extend(docs); self.revisions.append(revision_uid)
 
@@ -54,8 +62,8 @@ class Phase5ExactLexicalTests(unittest.TestCase):
         request=SearchRequest(query,SearchKind.LEXICAL,self.scope,temporal or TemporalRequest(TemporalMode.CURRENT),CandidateBudget(20,lexical=20),self.snapshot)
         return asyncio.run((backend or self.lexical).search(request))
 
-    def lookup(self,value,temporal=None,namespace=None):
-        return self.exact.lookup(ExactLookupRequest(value,self.scope,temporal or TemporalRequest(TemporalMode.CURRENT),self.snapshot,namespace=namespace))
+    def lookup(self,value,temporal=None,namespace=None,valid_at=None):
+        return self.exact.lookup(ExactLookupRequest(value,self.scope,temporal or TemporalRequest(TemporalMode.CURRENT),self.snapshot,namespace=namespace,valid_at=valid_at))
 
     def test_actual_sqlite_fts5_backend_finds_passage_absent_from_dense_candidates_and_survives_restart(self):
         dense_candidates=()
@@ -76,6 +84,19 @@ class Phase5ExactLexicalTests(unittest.TestCase):
         result=self.lookup("CVE-2026-0001")
         self.assertEqual(result.status,ExactLookupStatus.FOUND)
         self.assertEqual(result.records[0].revision_uid,"rev-old")
+
+    def test_reports_mentioning_identifier_are_not_treated_as_canonical_exact_records(self):
+        lexical=self.search("mentionreporttoken")
+        self.assertEqual(lexical.status.value,"ok")
+        self.assertEqual(lexical.items[0].revision_uid,"rev-report")
+        self.assertEqual(self.lookup("CVE-2026-4242").status,ExactLookupStatus.NOT_FOUND)
+
+    def test_exact_lookup_enforces_validity_interval(self):
+        inside=self.lookup("CVE-2026-0001",valid_at=datetime(2026,6,1,tzinfo=UTC))
+        outside=self.lookup("CVE-2026-0001",valid_at=datetime(2030,1,1,tzinfo=UTC))
+        self.assertEqual(inside.status,ExactLookupStatus.FOUND)
+        self.assertEqual(inside.records[0].revision_uid,"rev-old")
+        self.assertEqual(outside.status,ExactLookupStatus.NOT_FOUND)
 
     def test_private_and_future_records_do_not_leave_backend(self):
         self.assertEqual(self.search("secretvector").status.value,"empty")

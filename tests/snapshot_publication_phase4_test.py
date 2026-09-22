@@ -2,11 +2,15 @@ import tempfile,unittest
 from datetime import datetime,timedelta,timezone
 from pathlib import Path
 
-from cti_rag.contracts import CharacterSpanLocator,PassageHit,ProvenanceRef
+from cti_rag.application.guarded import authorized_search
+from cti_rag.contracts import CandidateBudget,CharacterSpanLocator,PassageHit,ProvenanceRef,TemporalMode,TemporalRequest
+from cti_rag.policy.local import PublicOnlyLocalPolicy
+from cti_rag.ports import AuthenticatedPrincipal,BackendCapabilities,ClientScopeRequest,ScoreDirection,SearchKind
 from cti_rag.snapshots import (
-    ProjectionGeneration,ProjectionPayload,PublicationError,SnapshotCatalogStore,
+    ProjectionGeneration,ProjectionPayload,PublicationError,RevocationAwareEvidenceStore,SnapshotCatalogStore,
     SnapshotPublisher,admit_candidates,
 )
+from cti_rag.testing import CountingSearchPort
 
 UTC=timezone.utc
 NOW=datetime(2026,1,1,tzinfo=UTC)
@@ -60,6 +64,41 @@ class Phase4SnapshotTests(unittest.TestCase):
         self.publisher.stage_generation(good); self.publisher.stage_generation(hidden)
         with self.assertRaisesRegex(PublicationError,"serving-visible"):
             self.publisher.publish(("exact-good","lex-hidden"),("exact","lexical"),created_at=NOW)
+
+    def test_incompatible_projection_revision_sets_cannot_publish(self):
+        exact=generation("exact","exact-mismatch",("rev-a",))
+        graph=generation("graph","graph-mismatch",("rev-b",))
+        self.publisher.stage_generation(exact); self.publisher.stage_generation(graph)
+        with self.assertRaisesRegex(PublicationError,"revision sets"):
+            self.publisher.publish(("exact-mismatch","graph-mismatch"),("exact","graph"),created_at=NOW)
+
+    def test_snapshot_required_backend_is_not_called_without_pinned_snapshot(self):
+        backend=CountingSearchPort(BackendCapabilities(
+            supported_filters=frozenset({"tenant","domain","access_label"}),
+            snapshot_support=True,requires_snapshot=True,score_direction=ScoreDirection.HIGHER_IS_BETTER,
+        ))
+        result=__import__("asyncio").run(authorized_search(
+            policy=PublicOnlyLocalPolicy.build("public-user"),
+            principal=AuthenticatedPrincipal("public-user","public"),
+            client_scope=ClientScopeRequest(("cybersecurity",)),
+            backend=backend,query="x",kind=SearchKind.LEXICAL,
+            temporal=TemporalRequest(TemporalMode.CURRENT),budget=CandidateBudget(5),snapshot=None,
+        ))
+        self.assertEqual(result.status.value,"rejected")
+        self.assertEqual(backend.calls,0)
+
+    def test_revocation_aware_hydration_denies_old_revision(self):
+        class Store:
+            def get_revision(self,uid): return {"revision_uid":uid}
+            def get_artifact(self,uid): return None
+            def get_passage(self,uid): return None
+            def resolve(self,ref): return b"payload"
+            def dependents(self,uid): return ()
+        wrapped=RevocationAwareEvidenceStore(Store(),self.catalog)
+        self.assertEqual(wrapped.get_revision("rev-a")["revision_uid"],"rev-a")
+        self.catalog.admit_revocation("rev-a","withdrawn")
+        self.assertIsNone(wrapped.get_revision("rev-a"))
+        self.assertIsNone(wrapped.resolve(ProvenanceRef("rev-a",CharacterSpanLocator(0,4))))
 
     def test_failed_publication_retry_is_idempotent(self):
         pair=self.stage_pair("retry")
