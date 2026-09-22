@@ -44,3 +44,24 @@ Canonical exact lookup is namespace- and object-type-aware and never uses fuzzy 
 
 ## D-0015 — MySQL FULLTEXT remains the production candidate; SQLite FTS5 is the validated local integration backend
 The MySQL 8 FULLTEXT adapter reuses the existing configured connection pool and implements the same generation/scope/snapshot contract, but the real MySQL service has not been executed in this environment. SQLite FTS5 provides a persistent actual-backend integration fixture for restart, filtering, publication, and tombstone behavior; it is not evidence that MySQL production readiness has passed.
+
+## D-0016 — Embedding compatibility is a first-class immutable identity
+Dense representations are compatible only when provider, model revision, tokenizer revision, vector dimension, pooling, normalization, distance metric, and deterministic context-prefix revision all match. The complete fingerprint participates in cache, representation, collection, and snapshot generation identity.
+
+## D-0017 — Embedding authorization happens before provider-visible text is assembled
+Uncached source or query text is authorized against the effective scope, processing labels, operation, and destination before the runtime builds a model request. Embedding caches are separated by security namespace and complete embedding fingerprint, and the queue/batch/concurrency/retry bounds are server-controlled.
+
+## D-0018 — Preserve legacy Milvus behavior; create compatible deterministic-ID collections beside it
+The historical `KnowledgeBase` path keeps its random INT64 keys and remains untouched. The new dense SearchPort uses full deterministic passage UIDs as VARCHAR primary keys and fingerprint-separated collection names. This avoids a risky in-place migration while making dense evidence joinable to canonical passages.
+
+## D-0019 — ANN output is a candidate set, not canonical evidence
+Dense backend rows must hydrate through the canonical EvidenceStore before they can become citable hits. A missing, mismatched-revision, or mismatched-locator passage fails closed rather than trusting stale index text. Current revocation is also applied before hydration.
+
+## D-0020 — Deterministic planning precedes optional semantic planning
+Identifier/date/unit parsing, task templates, authorized domain routing, evidence obligations, and budget validation execute before any optional model planner. Plans carry immutable effective scope and snapshot references; model output cannot grant domains, calls, candidates, or budget beyond server bounds.
+
+## D-0021 — Fusion is passage-only and resistant to rewrite vote multiplication
+Exact and structured obligations remain outside passage-ranking competition. Passage fusion uses equal-weight RRF with stable passage-ID tie-breaking; repeated identical query variants do not create extra votes, variants are normalized within a channel, channels are fused afterward, and final selection round-robins across subquestions to preserve coverage.
+
+## D-0022 — Deterministic fake embeddings prove mechanics, not semantic retrieval quality
+Offline deterministic embeddings are used only to validate cache isolation, identity, authorization, snapshot filtering, fusion, and lifecycle mechanics. Actual embedding-model quality and actual Milvus ANN behavior remain explicit blocked gates until executed on the pinned runtime.

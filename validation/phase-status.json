@@ -1,7 +1,7 @@
 {
   "schema_version": "phase-status/1",
   "baseline_commit": "15f4050a387bf41b8d77daf05e271ccfe9e522da",
-  "latest_code_checkpoint": "9c67c4012c4e8810ef4087d3eeb6b928f0b0165b",
+  "latest_code_checkpoint": "ef78b24217b7aa56a2085a6da820528dfc622701",
   "phases": {
     "0": {"implementation": "implemented", "acceptance": "blocked"},
     "1": {"implementation": "implemented", "own_gate": "passed", "acceptance": "blocked_by_phase_0_required_gates"},
@@ -9,7 +9,9 @@
     "3": {"implementation": "implemented", "own_gate": "passed", "acceptance": "blocked_by_phase_0_required_gates"},
     "4": {"implementation": "implemented", "own_gate": "passed", "acceptance": "blocked_by_phase_0_required_gates"},
     "5": {"implementation": "implemented", "own_gate": "passed", "actual_lexical_backend_integration": "passed_sqlite_fts5", "acceptance": "blocked_by_phase_0_and_mysql_service_gate"},
-    "6": {"implementation": "not_started", "acceptance": "not_run"}
+    "6": {"implementation": "implemented", "own_gate": "passed", "deterministic_dense_mechanics": "passed", "actual_embedding_model": "blocked", "real_milvus_lifecycle": "blocked", "acceptance": "blocked_by_external_required_gates"},
+    "7": {"implementation": "implemented", "own_gate": "passed", "query_dag_fusion_mechanics": "passed", "acceptance": "blocked_by_cumulative_required_gates"},
+    "8": {"implementation": "not_started", "acceptance": "not_run"}
   },
   "new_retrieval_enabled": false
 }
