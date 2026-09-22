@@ -32,3 +32,15 @@ Raw and normalized bytes are written immutably to bounded content-addressed stor
 
 ## D-0011 — Outbox delivery is at-least-once
 Projection events use deterministic idempotency keys, bounded retry counts, and dead-letter state. Consumers must make the idempotency key part of their side-effect boundary; replay after a crash is permitted and observable.
+
+## D-0012 — The catalog pointer is the cross-backend publication authority
+Projection writes are staged and immutable. A generation is not serving state until readiness includes serving visibility and referential integrity, all required projection generations agree on the evidence revision set, and one metadata catalog pointer is atomically advanced to the immutable manifest.
+
+## D-0013 — Current revocation overrides immutable snapshots
+Pinned snapshots remain immutable for reproducibility, but a separate current revocation overlay is checked by backend retrieval, canonical hydration, and response admission. Cache invalidation and projection cleanup can complete asynchronously after the deny overlay has made revoked evidence inaccessible.
+
+## D-0014 — Exact identity is not textual mention
+Canonical exact lookup is namespace- and object-type-aware and never uses fuzzy matching. Reports or passages that merely mention an identifier remain lexical evidence and do not become canonical exact records. Revision selection additionally respects scope, availability, validity interval, and current revocation.
+
+## D-0015 — MySQL FULLTEXT remains the production candidate; SQLite FTS5 is the validated local integration backend
+The MySQL 8 FULLTEXT adapter reuses the existing configured connection pool and implements the same generation/scope/snapshot contract, but the real MySQL service has not been executed in this environment. SQLite FTS5 provides a persistent actual-backend integration fixture for restart, filtering, publication, and tombstone behavior; it is not evidence that MySQL production readiness has passed.

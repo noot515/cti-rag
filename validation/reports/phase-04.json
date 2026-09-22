@@ -1,0 +1,18 @@
+{
+  "schema_version": "phase-report/1",
+  "phase": 4,
+  "status": "blocked",
+  "own_gate": "passed",
+  "baseline_commit": "15f4050a387bf41b8d77daf05e271ccfe9e522da",
+  "code_checkpoint": "9c67c4012c4e8810ef4087d3eeb6b928f0b0165b",
+  "parent_report_ids": ["phase-03"],
+  "fingerprints": {
+    "config_blob": "a90848b9f9884c344d3fe2cc10cd6ec8c13da591",
+    "baseline_corpus_blob": "5820fa64bed3db3147d52d632975a21101893bff",
+    "baseline_model_blob": "b06a0a7f5e5209553993045009c4e878b54a6435",
+    "phase_test_blob": "3389bc5ba947e10d8ad29f4383687df6f754123b"
+  },
+  "ci": {"run_id": 35740638328, "job_id": 106789187458, "python": "3.13.15", "cumulative_tests_passed": 55, "phase_gate_tests_passed": 10, "seconds": 1.037},
+  "blocked_by": ["phase0-legacy-fast-suite", "phase0-b0-offline-benchmark"],
+  "new_retrieval_enabled": false
+}

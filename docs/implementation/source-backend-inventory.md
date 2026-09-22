@@ -2,22 +2,23 @@
 
 Baseline: `15f4050a387bf41b8d77daf05e271ccfe9e522da`
 
-| Component | Baseline role | Phase 0 disposition |
+| Component | Baseline role | Current evidence-runtime disposition |
 | --- | --- | --- |
-| MySQL 8 | KB metadata/application persistence | Reuse; first independent lexical target is a dedicated FULLTEXT projection, not yet activated. |
-| Milvus 2.3.4 | Dense vector retrieval | Retain behind a future SearchPort; legacy random INT64 keys are not canonical evidence identity. |
-| Neo4j 5.15 Community | Knowledge graph | Retain only for graph tasks; legacy name-only entity identity is a migration target. |
-| Redis 7 | Runtime/session/cache | Derived runtime state only, never canonical evidence identity. |
-| RabbitMQ 3.13 | Background tasks | Reuse after idempotency/outbox contracts exist. |
-| MinIO | Milvus dependency | Canonical source/object-store semantics deferred to Phase 2. |
+| MySQL 8 | KB metadata/application persistence | Reused for the production-candidate exact and independent FULLTEXT projections through the existing configured engine/pool. Adapter implemented; real-service validation remains blocked and the route is not activated. |
+| SQLite FTS5 | Not a baseline service | Added as an isolated persistent local/CI lexical integration backend. Actual FTS5 restart, filtering, snapshot-generation, idempotency, locator, and tombstone tests pass; this does not substitute for MySQL service readiness. |
+| Milvus 2.3.4 | Dense vector retrieval | Retain behind a future SearchPort; legacy random INT64 keys are not canonical evidence identity. No Milvus BM25 production claim was inferred from documentation. |
+| Neo4j 5.15 Community | Knowledge graph | Retain only for graph tasks; legacy name-only entity identity is a migration target. Future graph generations must bind to the same manifest revision set as other enabled projections. |
+| Redis 7 | Runtime/session/cache | Derived runtime state only, never canonical evidence identity. Revocation now defines explicit cache-invalidation events. |
+| RabbitMQ 3.13 | Background tasks | Reuse after idempotency/outbox contracts exist; projection generation publication remains controlled by the metadata catalog, not queue acknowledgment. |
+| MinIO | Milvus dependency | Not used as canonical identity authority. Canonical object-storage semantics are implemented separately and remain explicit. |
 | Ollama | Local model serving | Optional ModelPort backend; no contract dependency. |
-| Remote model providers | Generation/embedding/reranking | Future explicit processing destinations under policy enforcement. |
-| Tavily/web | Optional live search | Not used for Phase 0/B0; future live overlay must remain separate from pinned snapshots. |
+| Remote model providers | Generation/embedding/reranking | Explicit processing destinations under policy enforcement. |
+| Tavily/web | Optional live search | Not used for baseline/B0 or Phase 04/05 acceptance; future live overlay must remain separate from pinned snapshots. |
 
-Existing repository data includes `benchmark/dataset.xlsx`, `config.yaml`, model material under `models/`, and runtime data roots under `./data`. Phase 0 did not download, rewrite, index, or delete any corpus and did not activate any external source connector.
+Existing repository data includes `benchmark/dataset.xlsx`, `config.yaml`, model material under `models/`, and runtime data roots under `./data`. Phases 00–05 did not activate the new retrieval route or mutate the live legacy corpus/indexes.
 
-**Initial lexical choice:** MySQL 8 FULLTEXT, because it is already required by deployment and yields the smallest operational increment toward corpus-wide lexical retrieval independent of dense candidates.
+**Production lexical choice remains MySQL 8 FULLTEXT.** The adapter now has generation IDs, snapshot selection, exact security/temporal filters, deterministic ordering, restart persistence by database design, and tombstone filtering in its query boundary. It is not production-ready until the actual MySQL service is exercised for analyzer behavior, filters, publication visibility, rebuild/rollback, delete handling, and representative performance.
 
-Before activation, verify multilingual/identifier tokenization, source/tenant/access/temporal/tombstone filtering at the backend boundary, deterministic snapshot/generation publication, stable passage/revision keys, rebuild/rollback behavior, and measured recall/latency against alternatives.
+**Actual integration evidence available today:** SQLite FTS5 executed in GitHub Actions with persistent on-disk state. A relevant passage absent from any supplied dense candidate set is retrieved lexically, survives adapter restart, is filtered by tenant/domain/access/time, and becomes inaccessible after tombstoning.
 
-Security note: the baseline compose file exposes several backend/admin ports and has weak development credential defaults. These are recorded as confirmed baseline risks but are not modified in Phases 0–1 to avoid unrelated runtime changes.
+Security note: baseline compose exposure and weak development credential defaults remain recorded baseline risks and were not modified as unrelated work.

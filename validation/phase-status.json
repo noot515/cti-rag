@@ -1,13 +1,15 @@
 {
   "schema_version": "phase-status/1",
   "baseline_commit": "15f4050a387bf41b8d77daf05e271ccfe9e522da",
-  "latest_code_checkpoint": "78ed1e532fd7be9d9c28ce3e10ad5a13afdcf9e3",
+  "latest_code_checkpoint": "9c67c4012c4e8810ef4087d3eeb6b928f0b0165b",
   "phases": {
     "0": {"implementation": "implemented", "acceptance": "blocked"},
-    "1": {"implementation": "implemented", "acceptance": "blocked_by_phase_0_required_gates"},
+    "1": {"implementation": "implemented", "own_gate": "passed", "acceptance": "blocked_by_phase_0_required_gates"},
     "2": {"implementation": "implemented", "own_gate": "passed", "acceptance": "blocked_by_phase_0_required_gates"},
     "3": {"implementation": "implemented", "own_gate": "passed", "acceptance": "blocked_by_phase_0_required_gates"},
-    "4": {"implementation": "not_started", "acceptance": "not_run"}
+    "4": {"implementation": "implemented", "own_gate": "passed", "acceptance": "blocked_by_phase_0_required_gates"},
+    "5": {"implementation": "implemented", "own_gate": "passed", "actual_lexical_backend_integration": "passed_sqlite_fts5", "acceptance": "blocked_by_phase_0_and_mysql_service_gate"},
+    "6": {"implementation": "not_started", "acceptance": "not_run"}
   },
   "new_retrieval_enabled": false
 }
