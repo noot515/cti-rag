@@ -1,10 +1,13 @@
 {
   "schema_version": "phase-status/1",
   "baseline_commit": "15f4050a387bf41b8d77daf05e271ccfe9e522da",
+  "latest_code_checkpoint": "78ed1e532fd7be9d9c28ce3e10ad5a13afdcf9e3",
   "phases": {
     "0": {"implementation": "implemented", "acceptance": "blocked"},
     "1": {"implementation": "implemented", "acceptance": "blocked_by_phase_0_required_gates"},
-    "2": {"implementation": "not_started", "acceptance": "not_run"}
+    "2": {"implementation": "implemented", "own_gate": "passed", "acceptance": "blocked_by_phase_0_required_gates"},
+    "3": {"implementation": "implemented", "own_gate": "passed", "acceptance": "blocked_by_phase_0_required_gates"},
+    "4": {"implementation": "not_started", "acceptance": "not_run"}
   },
   "new_retrieval_enabled": false
 }

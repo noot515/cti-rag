@@ -26,6 +26,18 @@
       "phase": 1,
       "required": true,
       "command": "python -m unittest tests.contracts_phase1_test -v"
+    },
+    {
+      "id": "phase2-ports-domain-policy-invariants",
+      "phase": 2,
+      "required": true,
+      "command": "python -m unittest tests.ports_policy_phase2_test -v"
+    },
+    {
+      "id": "phase3-canonical-ingestion-outbox-invariants",
+      "phase": 3,
+      "required": true,
+      "command": "python -m unittest tests.canonical_ingestion_phase3_test -v"
     }
   ]
 }
