@@ -1,0 +1,10 @@
+{
+  "schema_version": "phase-status/1",
+  "baseline_commit": "15f4050a387bf41b8d77daf05e271ccfe9e522da",
+  "phases": {
+    "0": {"implementation": "implemented", "acceptance": "blocked"},
+    "1": {"implementation": "implemented", "acceptance": "blocked_by_phase_0_required_gates"},
+    "2": {"implementation": "not_started", "acceptance": "not_run"}
+  },
+  "new_retrieval_enabled": false
+}

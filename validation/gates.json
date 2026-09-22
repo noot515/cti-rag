@@ -1,0 +1,31 @@
+{
+  "schema_version": "validation-registry/1",
+  "gates": [
+    {
+      "id": "phase0-runner-invariants",
+      "phase": 0,
+      "required": true,
+      "command": "python -m unittest tests.validation_runner_test -v"
+    },
+    {
+      "id": "phase0-legacy-fast-suite",
+      "phase": 0,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "Not executed in the connector environment: repository runtime dependencies/services are not available as an isolated checkout. This is not a pass."
+    },
+    {
+      "id": "phase0-b0-offline-benchmark",
+      "phase": 0,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "The legacy B0 benchmark calls the running API/model stack and no pinned local corpus/service stack is available in this execution environment. No remote search or model call was substituted."
+    },
+    {
+      "id": "phase1-contract-invariants",
+      "phase": 1,
+      "required": true,
+      "command": "python -m unittest tests.contracts_phase1_test -v"
+    }
+  ]
+}
