@@ -1,0 +1,6 @@
+from typing import Protocol
+from cti_rag.contracts import SnapshotManifestRef
+from .policy import EffectiveScope
+class SnapshotCatalog(Protocol):
+    def pin_current(self,scope:EffectiveScope)->SnapshotManifestRef: ...
+    def resolve(self,manifest_id:str,scope:EffectiveScope)->SnapshotManifestRef: ...
