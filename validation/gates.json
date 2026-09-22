@@ -1,62 +1,18 @@
 {
   "schema_version": "validation-registry/1",
   "gates": [
-    {
-      "id": "phase0-runner-invariants",
-      "phase": 0,
-      "required": true,
-      "command": "python -m unittest tests.validation_runner_test -v"
-    },
-    {
-      "id": "phase0-legacy-fast-suite",
-      "phase": 0,
-      "required": true,
-      "status_override": "blocked",
-      "reason": "Not executed in the connector/CI environment: the service-complete legacy runtime dependency stack is not available. This is not a pass."
-    },
-    {
-      "id": "phase0-b0-offline-benchmark",
-      "phase": 0,
-      "required": true,
-      "status_override": "blocked",
-      "reason": "The legacy B0 benchmark requires the running pinned API/model/corpus stack. No remote search, model call, or substitute service was used to manufacture a pass."
-    },
-    {
-      "id": "phase1-contract-invariants",
-      "phase": 1,
-      "required": true,
-      "command": "python -m unittest tests.contracts_phase1_test -v"
-    },
-    {
-      "id": "phase2-ports-domain-policy-invariants",
-      "phase": 2,
-      "required": true,
-      "command": "python -m unittest tests.ports_policy_phase2_test -v"
-    },
-    {
-      "id": "phase3-canonical-ingestion-outbox-invariants",
-      "phase": 3,
-      "required": true,
-      "command": "python -m unittest tests.canonical_ingestion_phase3_test -v"
-    },
-    {
-      "id": "phase4-snapshot-publication-invariants",
-      "phase": 4,
-      "required": true,
-      "command": "python -m unittest tests.snapshot_publication_phase4_test -v"
-    },
-    {
-      "id": "phase5-exact-independent-lexical-invariants",
-      "phase": 5,
-      "required": true,
-      "command": "python -m unittest tests.exact_lexical_phase5_test -v"
-    },
-    {
-      "id": "phase5-mysql-fulltext-real-service",
-      "phase": 5,
-      "required": true,
-      "status_override": "blocked",
-      "reason": "MySQL 8 FULLTEXT is the selected production-candidate lexical adapter, but no reachable service-complete MySQL environment was available for real analyzer/filter/publication/restart/delete/rollback/performance validation. SQLite FTS5 integration passed but is not a substitute."
-    }
+    {"id":"phase0-runner-invariants","phase":0,"required":true,"command":"python -m unittest tests.validation_runner_test -v"},
+    {"id":"phase0-legacy-fast-suite","phase":0,"required":true,"status_override":"blocked","reason":"Not executed in the connector/CI environment: the service-complete legacy runtime dependency stack is not available. This is not a pass."},
+    {"id":"phase0-b0-offline-benchmark","phase":0,"required":true,"status_override":"blocked","reason":"The legacy B0 benchmark requires the running pinned API/model/corpus stack. No remote search, model call, or substitute service was used to manufacture a pass."},
+    {"id":"phase1-contract-invariants","phase":1,"required":true,"command":"python -m unittest tests.contracts_phase1_test -v"},
+    {"id":"phase2-ports-domain-policy-invariants","phase":2,"required":true,"command":"python -m unittest tests.ports_policy_phase2_test -v"},
+    {"id":"phase3-canonical-ingestion-outbox-invariants","phase":3,"required":true,"command":"python -m unittest tests.canonical_ingestion_phase3_test -v"},
+    {"id":"phase4-snapshot-publication-invariants","phase":4,"required":true,"command":"python -m unittest tests.snapshot_publication_phase4_test -v"},
+    {"id":"phase5-exact-independent-lexical-invariants","phase":5,"required":true,"command":"python -m unittest tests.exact_lexical_phase5_test -v"},
+    {"id":"phase5-mysql-fulltext-real-service","phase":5,"required":true,"status_override":"blocked","reason":"MySQL 8 FULLTEXT is the production-candidate lexical adapter, but no service-complete MySQL environment was available for real analyzer/filter/publication/restart/delete/rollback/performance validation."},
+    {"id":"phase6-dense-representation-invariants","phase":6,"required":true,"command":"python -m unittest tests.dense_phase6_test -v"},
+    {"id":"phase6-actual-embedding-model","phase":6,"required":true,"status_override":"blocked","reason":"No pinned actual embedding model/runtime was available in offline CI. Deterministic fake embeddings validate mechanics only and are not semantic retrieval-quality evidence."},
+    {"id":"phase6-milvus-real-lifecycle","phase":6,"required":true,"status_override":"blocked","reason":"No reachable compatible Milvus service was available to execute real publication, filtered ANN, deletion, restart persistence, and ANN-vs-exhaustive recall validation."},
+    {"id":"phase7-query-dag-fusion-invariants","phase":7,"required":true,"command":"python -m unittest tests.query_dag_fusion_phase7_test -v"}
   ]
 }
