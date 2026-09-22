@@ -67,7 +67,7 @@ class QueryExecutor:
                 finished,_=await asyncio.wait((aggregate,watcher),return_when=asyncio.FIRST_COMPLETED)
                 if watcher in finished and cancellation_token.is_set():
                     for task in tasks:task.cancel()
-                    aggregate.cancel(); await asyncio.gather(*tasks,return_exceptions=True)
+                    aggregate.cancel(); await asyncio.gather(*tasks,return_exceptions=True); await asyncio.gather(aggregate,return_exceptions=True)
                     for n in ready:
                         result=ChannelResult(ChannelStatus.REJECTED,reason="request cancelled"); done[n.node_id]=result; ordered.append(NodeExecution(n,result)); remaining.pop(n.node_id,None)
                     break
