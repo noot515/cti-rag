@@ -56,6 +56,11 @@ class DeterministicQueryPlanner:
         elif relation:intent=QueryIntent.RELATION
         elif len(domains)>1:intent=QueryIntent.CROSS_DOMAIN
         else:intent=QueryIntent.EXPLANATION
+        if intent==QueryIntent.CROSS_DOMAIN:
+            subquestions=tuple(Subquestion(f"q{i}",normalized) for i,_domain in enumerate(domains))
+            text_routes=tuple((q.subquestion_id,(domain,)) for q,domain in zip(subquestions,domains))
+        else:
+            text_routes=(("q0",domains),)
         if features.identifiers:
             for i,(_namespace,_obj_type,canonical) in enumerate(features.identifiers):
                 obligations.append(EvidenceObligation(f"exact-{i}","exact",canonical,True,"q0"))
@@ -70,9 +75,11 @@ class DeterministicQueryPlanner:
         if relation:
             if PlanOperation.GRAPH in ops:nodes.append(PlanNode("graph-0",PlanOperation.GRAPH,normalized,"q0",20,domains))
             else:gaps.append(PlanGap("graph","graph capability unavailable"))
-        if PlanOperation.LEXICAL in ops:nodes.append(PlanNode("lexical-0",PlanOperation.LEXICAL,normalized,"q0",50,domains,variant_key="base"))
+        if PlanOperation.LEXICAL in ops:
+            for i,(subq,route_domains) in enumerate(text_routes):nodes.append(PlanNode(f"lexical-{i}",PlanOperation.LEXICAL,normalized,subq,50,route_domains,variant_key="base"))
         else:gaps.append(PlanGap("lexical","lexical capability unavailable"))
-        if PlanOperation.DENSE in ops:nodes.append(PlanNode("dense-0",PlanOperation.DENSE,normalized,"q0",50,domains,variant_key="base"))
+        if PlanOperation.DENSE in ops:
+            for i,(subq,route_domains) in enumerate(text_routes):nodes.append(PlanNode(f"dense-{i}",PlanOperation.DENSE,normalized,subq,50,route_domains,variant_key="base"))
         else:gaps.append(PlanGap("dense","dense capability unavailable"))
         if not nodes and self.semantic_planner is not None:self.semantic_calls+=1
         non_exact=[n for n in nodes if n.operation!=PlanOperation.EXACT]

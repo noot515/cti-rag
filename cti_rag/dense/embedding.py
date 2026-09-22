@@ -7,11 +7,13 @@ from cti_rag.ports.policy import ProcessingDestination
 from .models import EmbeddingFingerprint,EmbeddingInput
 
 class EmbeddingRuntime:
-    def __init__(self,policy,model,cache,max_batch_size=32,max_concurrency=2,max_retries=1):
-        if min(max_batch_size,max_concurrency) <= 0 or max_retries < 0: raise ValueError("invalid embedding runtime bounds")
-        self.policy=policy; self.model=model; self.cache=cache; self.max_batch_size=max_batch_size; self.max_concurrency=max_concurrency; self.max_retries=max_retries
+    def __init__(self,policy,model,cache,max_batch_size=32,max_concurrency=2,max_retries=1,max_queued_items=4096):
+        if min(max_batch_size,max_concurrency,max_queued_items) <= 0 or max_retries < 0: raise ValueError("invalid embedding runtime bounds")
+        self.policy=policy; self.model=model; self.cache=cache; self.max_batch_size=max_batch_size; self.max_concurrency=max_concurrency; self.max_retries=max_retries; self.max_queued_items=max_queued_items
     async def embed(self,items,scope,fingerprint:EmbeddingFingerprint,destination:ProcessingDestination):
-        items=tuple(items); out=[None]*len(items); missing=[]
+        items=tuple(items)
+        if len(items)>self.max_queued_items: raise RuntimeError("embedding queue bound exceeded")
+        out=[None]*len(items); missing=[]
         for i,item in enumerate(items):
             cached=self.cache.get(item,fingerprint)
             if cached is not None:

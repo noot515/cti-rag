@@ -17,8 +17,8 @@ class MilvusDenseSearchPort:
         temporal_modes=frozenset({TemporalMode.CURRENT,TemporalMode.HISTORICAL_PUBLIC,TemporalMode.HISTORICAL_SYSTEM_REPLAY}),
         snapshot_support=True,requires_snapshot=True,cancellation=False,max_batch_size=1000,score_direction=ScoreDirection.HIGHER_IS_BETTER,
     )
-    def __init__(self,client,catalog,query_embedder,fingerprint,collection_prefix="cti_dense"):
-        self.client=client; self.catalog=catalog; self.query_embedder=query_embedder; self.fingerprint=fingerprint; self.collection_prefix=_SAFE.sub("_",collection_prefix)
+    def __init__(self,client,catalog,query_embedder,fingerprint,collection_prefix="cti_dense",evidence_store=None):
+        self.client=client; self.catalog=catalog; self.query_embedder=query_embedder; self.fingerprint=fingerprint; self.collection_prefix=_SAFE.sub("_",collection_prefix); self.evidence_store=evidence_store
     def collection_name(self,generation_id):
         suffix=sha256_hex({"generation":generation_id,"fingerprint":self.fingerprint.fingerprint_id})[:20]
         return f"{self.collection_prefix}_{self.fingerprint.short_id}_{suffix}"
@@ -70,6 +70,7 @@ class MilvusDenseSearchPort:
         generation_id=self.catalog.generation_for_manifest(request.snapshot.manifest_id,"dense")
         if generation_id is None:return ChannelResult(ChannelStatus.REJECTED,reason="snapshot has no dense generation")
         if self.query_embedder.fingerprint.fingerprint_id!=self.fingerprint.fingerprint_id:return ChannelResult(ChannelStatus.REJECTED,reason="query embedding fingerprint incompatible with dense collection")
+        if self.evidence_store is None:return ChannelResult(ChannelStatus.UNAVAILABLE,reason="canonical evidence hydrator unavailable")
         if request.deadline is not None and datetime.now(timezone.utc)>=request.deadline:return ChannelResult(ChannelStatus.TIMEOUT,reason="dense deadline exceeded before embedding")
         vector=await self.query_embedder.embed_query(request.query,request.scope)
         if request.deadline is not None and datetime.now(timezone.utc)>=request.deadline:return ChannelResult(ChannelStatus.TIMEOUT,reason="dense deadline exceeded before Milvus search")
@@ -80,7 +81,10 @@ class MilvusDenseSearchPort:
         if not rows:return ChannelResult(ChannelStatus.EMPTY,reason="no authorized dense matches")
         hits=[]
         for rank,row in enumerate(rows,1):
-            entity=row.get("entity",row); passage_uid=str(entity["passage_uid"]); revision_uid=str(entity["revision_uid"]); locator=locator_from_dict(json.loads(entity["locator_json"])); score=float(row.get("distance",row.get("score",0.0)))
+            entity=row.get("entity",row); passage_uid=str(entity["passage_uid"]); revision_uid=str(entity["revision_uid"]); indexed_locator=locator_from_dict(json.loads(entity["locator_json"])); score=float(row.get("distance",row.get("score",0.0)))
+            passage=self.evidence_store.get_passage(passage_uid)
+            if passage is None or passage.revision_uid!=revision_uid or passage.provenance.locator!=indexed_locator: continue
             hit_id=namespaced_uid("hit","dense.search",{"manifest":request.snapshot.manifest_id,"passage_uid":passage_uid,"query":request.query,"fingerprint":self.fingerprint.fingerprint_id})
-            hits.append(PassageHit(hit_id,passage_uid,revision_uid,ProvenanceRef(revision_uid,locator),str(entity["original_text"]),(ScoreMetadata("dense",score,ScoreDirection.HIGHER_IS_BETTER,rank,f"milvus:{self.fingerprint.short_id}"),)))
+            hits.append(PassageHit(hit_id,passage_uid,revision_uid,passage.provenance,passage.text,(ScoreMetadata("dense",score,ScoreDirection.HIGHER_IS_BETTER,rank,f"milvus:{self.fingerprint.short_id}"),)))
+        if not hits:return ChannelResult(ChannelStatus.REJECTED,reason="dense candidates failed canonical hydration")
         return ChannelResult(ChannelStatus.OK,tuple(hits))

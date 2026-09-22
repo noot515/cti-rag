@@ -54,6 +54,16 @@ class Phase7PlanningFusionTests(unittest.TestCase):
         self.assertEqual(plan.intent,QueryIntent.EXACT); self.assertEqual(planner.semantic_calls,0)
         self.assertEqual(tuple(n.operation for n in plan.nodes),(PlanOperation.EXACT,))
 
+    def test_deterministic_feature_extraction_includes_identifiers_dates_and_units(self):
+        features=DeterministicQueryPlanner().extract_features("CVE-2026-0001 observed 2026-03-01 with 5 GB")
+        self.assertIn(("cve","cve","CVE-2026-0001"),features.identifiers); self.assertIn("2026-03-01",features.dates); self.assertIn("GB",features.units)
+
+    def test_cross_domain_plan_creates_domain_scoped_subquestions(self):
+        planner=DeterministicQueryPlanner(); s=scope(("privacy","networking"))
+        plan=planner.compile("privacy tracker network dns",s,snapshot(),TemporalRequest(TemporalMode.CURRENT),{PlanOperation.LEXICAL,PlanOperation.DENSE})
+        self.assertEqual(plan.intent,QueryIntent.CROSS_DOMAIN); self.assertEqual(len(plan.subquestions),2)
+        self.assertEqual({n.subquestion_id for n in plan.nodes},{"q0","q1"}); self.assertTrue(all(len(n.domains)==1 for n in plan.nodes))
+
     def test_cycle_and_overspending_plans_are_rejected(self):
         n1=PlanNode("a",PlanOperation.LEXICAL,"q","q0",10,("cybersecurity",),("b",))
         n2=PlanNode("b",PlanOperation.DENSE,"q","q0",10,("cybersecurity",),("a",))
@@ -111,6 +121,12 @@ class Phase7PlanningFusionTests(unittest.TestCase):
         dense=NodeExecution(PlanNode("dense",PlanOperation.DENSE,"q","q0",5,("cybersecurity",)),ChannelResult(ChannelStatus.OK,(hit("y",channel="dense",rank=1),hit("p",channel="dense",rank=2))))
         fused=grouped_rrf(QueryExecution("plan",(lex,dense),(),NOW,NOW),k=60,top_k=10); p=next(v for v in fused.passages if v.passage.passage_uid=="p")
         self.assertAlmostEqual(p.score,1/61+1/62); self.assertEqual(dict(p.channel_ranks),{"dense":2,"lexical":1})
+
+    def test_fusion_round_robins_across_subquestions_for_coverage(self):
+        q0=NodeExecution(PlanNode("q0-lex",PlanOperation.LEXICAL,"q","q0",5,("cybersecurity",)),ChannelResult(ChannelStatus.OK,(hit("a",channel="lexical",rank=1),hit("b",channel="lexical",rank=2),hit("c",channel="lexical",rank=3))))
+        q1=NodeExecution(PlanNode("q1-lex",PlanOperation.LEXICAL,"q","q1",5,("networking",)),ChannelResult(ChannelStatus.OK,(hit("z",channel="lexical",rank=1),)))
+        fused=grouped_rrf(QueryExecution("coverage",(q0,q1),(),NOW,NOW),top_k=2)
+        self.assertEqual(tuple(row.subquestion_id for row in fused.passages),("q0","q1"))
 
     def test_repeating_same_query_variant_does_not_create_extra_fusion_votes(self):
         node1=PlanNode("lex-a",PlanOperation.LEXICAL,"rewrite","q0",5,("cybersecurity",),variant_key="same-rewrite")
