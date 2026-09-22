@@ -8,3 +8,4 @@ from .graph import *
 from .structured import *
 from .snapshot_catalog import *
 from .models import *
+from .projection import *

@@ -13,6 +13,7 @@ class BackendCapabilities:
     supported_filters: frozenset[str] = frozenset()
     temporal_modes: frozenset[TemporalMode] = frozenset({TemporalMode.CURRENT})
     snapshot_support: bool = False
+    requires_snapshot: bool = False
     model_fingerprint: Optional[str] = None
     languages: Tuple[str,...] = ("und",)
     cancellation: bool = False
@@ -21,6 +22,7 @@ class BackendCapabilities:
     score_direction: ScoreDirection = ScoreDirection.UNORDERED
     def __post_init__(self):
         if self.max_batch_size <= 0: raise ValueError("max_batch_size must be positive")
+        if self.requires_snapshot and not self.snapshot_support: raise ValueError("requires_snapshot implies snapshot_support")
 
 @dataclass(frozen=True)
 class ChannelResult:
@@ -39,5 +41,5 @@ def missing_capabilities(cap: BackendCapabilities, required_filters=frozenset(),
     missing=[]
     for name in sorted(set(required_filters)-set(cap.supported_filters)): missing.append(f"filter:{name}")
     if temporal_mode not in cap.temporal_modes: missing.append(f"temporal:{temporal_mode.value}")
-    if require_snapshot and not cap.snapshot_support: missing.append("snapshot")
+    if (require_snapshot or cap.requires_snapshot) and not cap.snapshot_support: missing.append("snapshot")
     return tuple(missing)

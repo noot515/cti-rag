@@ -11,6 +11,8 @@ async def authorized_search(*,policy,principal:AuthenticatedPrincipal,client_sco
         scope=policy.authorize(principal,client_scope)
     except Exception as exc:
         return ChannelResult(ChannelStatus.REJECTED,reason=f"policy:{type(exc).__name__}")
+    if backend.capabilities.requires_snapshot and snapshot is None:
+        return ChannelResult(ChannelStatus.REJECTED,reason="backend requires a pinned snapshot")
     mandatory=set(required_filters)|{"tenant","domain","access_label"}
     if scope.source_ids: mandatory.add("source")
     if temporal.mode.value != "current": mandatory.add("temporal")
