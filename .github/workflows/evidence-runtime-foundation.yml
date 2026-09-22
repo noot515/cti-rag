@@ -1,0 +1,22 @@
+name: Evidence runtime foundation
+on:
+  push:
+    branches:
+      - feat/evidence-runtime-phase0-phase1-20260922
+  pull_request:
+    branches:
+      - main
+jobs:
+  deterministic-evidence-runtime:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Compile side-effect-free runtime
+        run: python -m compileall -q cti_rag scripts tests
+      - name: Run cumulative deterministic gates
+        run: |
+          python -m unittest             tests.contracts_phase1_test             tests.validation_runner_test             tests.ports_policy_phase2_test             tests.canonical_ingestion_phase3_test             tests.snapshot_publication_phase4_test             tests.exact_lexical_phase5_test             -v

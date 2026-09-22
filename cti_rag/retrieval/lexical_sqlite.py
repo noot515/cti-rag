@@ -119,6 +119,8 @@ class SQLiteFTS5LexicalIndex:
             if not request.temporal.cutoff_iso:return ChannelResult(ChannelStatus.REJECTED,reason="historical public search requires cutoff")
             cutoff=_iso(datetime.fromisoformat(request.temporal.cutoff_iso.replace("Z","+00:00")))
             clauses.append("available_at IS NOT NULL AND available_at<=?"); params.append(cutoff)
+        elif request.temporal.mode==TemporalMode.CURRENT:
+            clauses.append("(available_at IS NULL OR available_at<=?)"); params.append(_iso(datetime.now(timezone.utc)))
         revoked=tuple(self.catalog.revoked_uids())
         if revoked:
             marks=",".join("?" for _ in revoked)

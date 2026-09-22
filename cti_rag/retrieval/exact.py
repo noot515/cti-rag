@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import datetime,timezone
 import json,sqlite3
 from pathlib import Path
-from cti_rag.contracts import TemporalMode,sha256_hex
+from cti_rag.contracts import AccessLabel,TemporalMode,sha256_hex
 from cti_rag.identifiers import default_identifier_registry
 from cti_rag.ports import ProjectionBuildRequest
 from cti_rag.retrieval.models import ExactLookupResult,ExactLookupStatus,ExactRecord
@@ -32,15 +32,26 @@ class PersistentExactIndex:
                 representation_versions_json TEXT NOT NULL, capabilities_json TEXT NOT NULL, quarantined_count INTEGER NOT NULL,
                 record_count INTEGER NOT NULL, created_at VARCHAR(40) NOT NULL
             )""")
-            cur.execute("""CREATE TABLE IF NOT EXISTS exact_records (
-                generation_id VARCHAR(160) NOT NULL, revision_uid VARCHAR(160) NOT NULL, object_uid VARCHAR(160) NOT NULL,
-                namespace VARCHAR(64) NOT NULL, object_type VARCHAR(128) NOT NULL, canonical_id VARCHAR(255) NOT NULL,
-                domain VARCHAR(64) NOT NULL, source_id VARCHAR(160) NOT NULL, tenant_id VARCHAR(160) NOT NULL,
-                access_label VARCHAR(32) NOT NULL, available_at VARCHAR(40) NULL, valid_from VARCHAR(40) NULL, valid_to VARCHAR(40) NULL,
-                locator_json TEXT NOT NULL, original_text TEXT NOT NULL,
-                PRIMARY KEY (generation_id, revision_uid, namespace, canonical_id)
-            )""")
-            cur.execute("CREATE INDEX IF NOT EXISTS exact_lookup_idx ON exact_records (generation_id,namespace,canonical_id,object_type)")
+            if self.dialect=="sqlite":
+                cur.execute("""CREATE TABLE IF NOT EXISTS exact_records (
+                    generation_id VARCHAR(160) NOT NULL, revision_uid VARCHAR(160) NOT NULL, object_uid VARCHAR(160) NOT NULL,
+                    namespace VARCHAR(64) NOT NULL, object_type VARCHAR(128) NOT NULL, canonical_id VARCHAR(255) NOT NULL,
+                    domain VARCHAR(64) NOT NULL, source_id VARCHAR(160) NOT NULL, tenant_id VARCHAR(160) NOT NULL,
+                    access_label VARCHAR(32) NOT NULL, available_at VARCHAR(40) NULL, valid_from VARCHAR(40) NULL, valid_to VARCHAR(40) NULL,
+                    locator_json TEXT NOT NULL, original_text TEXT NOT NULL,
+                    PRIMARY KEY (generation_id, revision_uid, namespace, canonical_id)
+                )""")
+                cur.execute("CREATE INDEX IF NOT EXISTS exact_lookup_idx ON exact_records (generation_id,namespace,canonical_id,object_type)")
+            else:
+                cur.execute("""CREATE TABLE IF NOT EXISTS exact_records (
+                    generation_id VARCHAR(160) NOT NULL, revision_uid VARCHAR(160) NOT NULL, object_uid VARCHAR(160) NOT NULL,
+                    namespace VARCHAR(64) NOT NULL, object_type VARCHAR(128) NOT NULL, canonical_id VARCHAR(255) NOT NULL,
+                    domain VARCHAR(64) NOT NULL, source_id VARCHAR(160) NOT NULL, tenant_id VARCHAR(160) NOT NULL,
+                    access_label VARCHAR(32) NOT NULL, available_at VARCHAR(40) NULL, valid_from VARCHAR(40) NULL, valid_to VARCHAR(40) NULL,
+                    locator_json TEXT NOT NULL, original_text TEXT NOT NULL,
+                    PRIMARY KEY (generation_id, revision_uid, namespace, canonical_id),
+                    KEY exact_lookup_idx (generation_id,namespace,canonical_id,object_type)
+                ) ENGINE=InnoDB""")
             conn.commit()
         finally: cur.close(); conn.close()
     def _identity(self,r):
@@ -120,7 +131,7 @@ class PersistentExactIndex:
         try:cur.execute(self._sql(sql),tuple(params)); rows=cur.fetchall()
         finally:cur.close(); conn.close()
         if not rows:return ExactLookupResult(ExactLookupStatus.NOT_FOUND)
-        records=tuple(ExactRecord(r[0],r[1],r[2],r[3],r[4],r[5],r[6],r[7],__import__("cti_rag.contracts",fromlist=["AccessLabel"]).AccessLabel(r[8]),_dt(r[9]),_dt(r[10]),_dt(r[11]),r[12],r[13]) for r in rows)
+        records=tuple(ExactRecord(r[0],r[1],r[2],r[3],r[4],r[5],r[6],r[7],AccessLabel(r[8]),_dt(r[9]),_dt(r[10]),_dt(r[11]),r[12],r[13]) for r in rows)
         objects={r.object_uid for r in records}
         if len(objects)>1:return ExactLookupResult(ExactLookupStatus.AMBIGUOUS,records,reason="canonical identifier maps to multiple logical objects in authorized scope")
         eligible=sorted(records,key=lambda r:((_iso(r.available_at) or ""),r.revision_uid),reverse=True)
