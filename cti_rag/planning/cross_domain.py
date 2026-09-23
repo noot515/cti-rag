@@ -110,8 +110,19 @@ def _key_from_result(value):
 
 class TypedJoinPort:
     """In-memory reference join boundary for validated typed relationship records."""
-    def __init__(self,templates,records):
-        self.templates={x.template_id:x for x in templates};self.records=tuple(records)
+    def __init__(self,templates,records,catalog=None,evidence_store=None):
+        self.templates={x.template_id:x for x in templates};self.records=tuple(records);self.catalog=catalog;self.evidence_store=evidence_store
+    def _support_ok(self,record,snapshot):
+        if self.catalog is not None:
+            manifest=self.catalog.get_manifest(snapshot.manifest_id)
+            if manifest is None:return False
+            allowed=set(manifest.revision_uids)
+            for ref in record.support:
+                if ref.revision_uid not in allowed or self.catalog.is_revoked(ref.revision_uid):return False
+        if self.evidence_store is not None:
+            for ref in record.support:
+                if self.evidence_store.resolve(ref) is None:return False
+        return True
     @staticmethod
     def _policy(record,scope):
         return record.tenant_id in (scope.tenant_id,"public") and record.access_label in scope.access_labels and record.processing_class in scope.processing_classes and (not scope.source_ids or record.source_id in scope.source_ids) and set(record.domains).issubset(set(scope.domains))
@@ -138,7 +149,7 @@ class TypedJoinPort:
         constraints=dict(node.constraints);valid_at=_dt(constraints.get("valid_at")) if constraints.get("valid_at") else None
         if template.require_valid_at and valid_at is None:
             return TypedJoinResult(namespaced_uid("join","typed.join",{"node":node.node_id,"left":left.identity,"reason":"missing-valid-at"}),TypedJoinStatus.REJECTED,template.template_id,left,template.relation,reason="typed join requires explicit valid_at")
-        typed=[r for r in self.records if r.left==left and r.relation==template.relation and r.right.namespace==template.right_namespace and r.right.entity_type==template.right_type and self._policy(r,scope) and self._availability(r,temporal)]
+        typed=[r for r in self.records if r.left==left and r.relation==template.relation and r.right.namespace==template.right_namespace and r.right.entity_type==template.right_type and self._policy(r,scope) and self._availability(r,temporal) and self._support_ok(r,snapshot)]
         suggestions=tuple(sorted({r.right.identity:r.right for r in typed if r.evidence_kind==JoinEvidenceKind.GRAPH_SUGGESTION}.values(),key=lambda x:x.identity))
         confirmed=[r for r in typed if r.evidence_kind==JoinEvidenceKind.CONFIRMED_RELATION]
         time_eligible=[]
