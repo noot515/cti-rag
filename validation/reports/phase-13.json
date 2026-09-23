@@ -1,0 +1,49 @@
+{
+  "schema_version": "phase-report/1",
+  "phase": 13,
+  "status": "blocked",
+  "own_gate": "passed",
+  "baseline_commit": "15f4050a387bf41b8d77daf05e271ccfe9e522da",
+  "code_checkpoint": "50780dbc1b22a26591073d1fe9455208580e4552",
+  "parent_report_ids": [
+    "phase-12"
+  ],
+  "fingerprints": {
+    "quant_fixtures_blob": "7652a8d95336f71f530484638ce260619b824aaf",
+    "quant_sources_blob": "9bbf97907c99173d5bc3a339bbcdcbf4c236c11e",
+    "quant_structured_blob": "b41d38dd7351e2d9cc3282c15300696bc158f873",
+    "quant_projections_blob": "b9d7bf89fa81f73028885953de3c7183345496f2",
+    "ticker_resolver_blob": "0c61db78c49088ec203520c42a63628afe819030",
+    "calculation_engine_blob": "480bab02a07d0641e573093c63192c2ee868a836",
+    "quant_source_registry_blob": "b5740dbeeb1406c47d3d42322e7ba8b4a9e7a6c6",
+    "quant_spec_blob": "60aa019bff21330846376b1a8f28b95faf84e4b8",
+    "phase_test_blob": "d9ede0bb004091e281f7f99c3c66b145a4f3359d",
+    "config_blob": "a90848b9f9884c344d3fe2cc10cd6ec8c13da591",
+    "model": "none"
+  },
+  "ci": {
+    "run_id": 35851684023,
+    "job_id": 107150607851,
+    "python": "3.13.15",
+    "cumulative_unittests_passed": 126,
+    "phase_gate_tests_passed": 6,
+    "legacy_regression_tests_passed": 8,
+    "cumulative_seconds": 6.849,
+    "phase_seconds": 1.886
+  },
+  "blocked_by": [
+    "phase0-legacy-fast-suite",
+    "phase0-b0-offline-benchmark",
+    "phase5-mysql-fulltext-real-service",
+    "phase6-actual-embedding-model",
+    "phase6-milvus-real-lifecycle",
+    "phase8-actual-reranker-model",
+    "phase8-actual-generator-tokenizer",
+    "phase10-real-neo4j-restart-lifecycle",
+    "phase11-live-core-source-lifecycle",
+    "phase12-live-network-source-lifecycle",
+    "phase13-live-sec-fred-lifecycle",
+    "phase13-licensed-market-data-entitlement"
+  ],
+  "new_retrieval_enabled": false
+}

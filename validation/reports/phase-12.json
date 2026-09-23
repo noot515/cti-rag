@@ -1,0 +1,49 @@
+{
+  "schema_version": "phase-report/1",
+  "phase": 12,
+  "status": "blocked",
+  "own_gate": "passed",
+  "baseline_commit": "15f4050a387bf41b8d77daf05e271ccfe9e522da",
+  "code_checkpoint": "50780dbc1b22a26591073d1fe9455208580e4552",
+  "parent_report_ids": [
+    "phase-11"
+  ],
+  "fingerprints": {
+    "networking_fixtures_blob": "d51296b5d253be40825b03000b1dc18824b7750c",
+    "networking_sources_blob": "f638576d4b48f218965d5f7b7deddbb05161c9d6",
+    "networking_structured_blob": "6f8dbcd5d506f6a15eadbc4df2f38603eb2e41b0",
+    "networking_projections_blob": "0276139a584969f0fcf92e7f9ac01bc32d4d619c",
+    "networking_source_registry_blob": "18950b7124b6065768bd5539d7fa2acbff591e8f",
+    "networking_snapshot_blob": "bba7c43e8e0ca65823a5ef63407fb8d2055ea49c",
+    "networking_spec_blob": "c9cbddfcccc3a62f653c54d5978efc3548ea45f2",
+    "phase_test_blob": "fd05a088ee386e878ff9942523a7ede86b820b39",
+    "structured_compiler_blob": "c64eaaf09242f9fae1510968f6504082b359d0da",
+    "identifier_registry_blob": "0e2767114c2d3b90466ffc3069843425069e6202",
+    "graph_port_blob": "75b3bc0770020f69a44ca73b1d89d84dd3328b5b",
+    "config_blob": "a90848b9f9884c344d3fe2cc10cd6ec8c13da591",
+    "model": "none"
+  },
+  "ci": {
+    "run_id": 35851684023,
+    "job_id": 107150607851,
+    "python": "3.13.15",
+    "cumulative_unittests_passed": 126,
+    "phase_gate_tests_passed": 6,
+    "legacy_regression_tests_passed": 8,
+    "cumulative_seconds": 6.849,
+    "phase_seconds": 0.588
+  },
+  "blocked_by": [
+    "phase0-legacy-fast-suite",
+    "phase0-b0-offline-benchmark",
+    "phase5-mysql-fulltext-real-service",
+    "phase6-actual-embedding-model",
+    "phase6-milvus-real-lifecycle",
+    "phase8-actual-reranker-model",
+    "phase8-actual-generator-tokenizer",
+    "phase10-real-neo4j-restart-lifecycle",
+    "phase11-live-core-source-lifecycle",
+    "phase12-live-network-source-lifecycle"
+  ],
+  "new_retrieval_enabled": false
+}

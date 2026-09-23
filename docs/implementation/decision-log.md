@@ -121,3 +121,25 @@ The cyber projector emits CVE→CWE only from explicit CVE `problemTypes.cweId` 
 
 ## D-0040 — Source manifests carry provenance/licensing/parser identity
 Core cyber source manifests record upstream source URI, source terms/license identifier and notice, connector fingerprint, parser/normalizer fingerprint, availability basis, update semantics, deletion semantics, retention class, and supported projections. Runtime source content remains inert evidence; source records cannot grant tool permissions or executable authority.
+
+
+## D-0041 — Networking semantics are represented as distinct evidence relations
+BGP `announced_by`, RPKI `authorized_origin`, and RDAP `registered_to` remain distinct source assertions with their own source, observation/valid interval, and qualifiers. DNS answers remain time- and vantage-specific structured observations and never become ownership assertions. Graph relation requests are enforced during expansion so a request for one relation cannot silently traverse another.
+
+## D-0042 — IPv6-capable containment uses ordered 128-bit range values without backend IP extensions
+The typed `IP_IN_PREFIX` operator remains schema-controlled. Existing numeric IPv4 fixtures retain integer range fields; IPv4/IPv6-capable networking schemas store zero-padded 128-bit hexadecimal range bounds plus an explicit IP-family field. Lexicographic range comparison is therefore deterministic for both families without enabling arbitrary DuckDB filesystem/network extensions.
+
+## D-0043 — RFC citations are section-addressable and obsolescence is evidence, not deletion
+RFC canonical identity uses the RFC number, while explanatory passages use `CanonicalPassageLocator("rfc-section", "RFC N#section")`. Updates/obsoletes relationships remain source assertions. An obsolete RFC stays retrievable as its own preserved document and exact evidence explicitly reports its obsolescence metadata.
+
+## D-0044 — Tickers are exchange- and interval-qualified aliases, not issuer identity
+Issuer CIK, security ID, exchange, and ticker alias intervals are modeled separately. A ticker resolver requires both exchange and a timezone-aware point in time and rejects ambiguous or missing matches. Historical universe membership and delisted securities remain queryable according to their recorded intervals.
+
+## D-0045 — Financial calculations consume point-in-time StructuredResult inputs
+Returns and event-study calculations do not scan raw fixture rows directly. They obtain price observations through the existing Prompt 09 structured/temporal engine, so availability cutoff, logical-key revision precedence, scope, snapshot, and revocation semantics are applied before calculation. Derived outputs preserve input revision/provenance manifests and calculation versions.
+
+## D-0046 — Event-study outputs are associations, not causal or profitability claims
+The event-study specification pins target security, benchmark security, estimation/event windows, simple close-to-close return definition, missing-data rejection rule, provider, currency, and calculation version. The verified output reports abnormal-return association only; retrieved co-occurrence or computed abnormal return does not establish causation, predictability, or trading profitability.
+
+## D-0047 — Finance/network source readiness distinguishes fixture mechanics from live entitlement
+RFC, BGP/RPKI, DNS/RDAP, SEC, FRED/ALFRED, price, corporate-action, and security-master fixture adapters may be `fixture_validated` while their live source lifecycle remains blocked or deferred. Synthetic licensed-file fixtures do not imply a production market-data license, provider entitlement, or access to an unprovided feed.
