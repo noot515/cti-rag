@@ -4,7 +4,7 @@ from dataclasses import replace
 from datetime import datetime,timezone
 from cti_rag.context import AdvancedEvidenceResponse,ChannelDiagnostic,ContextBudget,EvidenceResponseStatus,capture_trace
 from cti_rag.contracts import TemporalMode
-from cti_rag.planning import PlanGap,PlanOperation,grouped_rrf
+from cti_rag.planning import PlanGap,PlanOperation,evaluate_obligation_coverage,grouped_rrf
 
 _FAILURE_STATUSES=frozenset(("timeout","unavailable","rejected"))
 def _status_value(result):
@@ -38,13 +38,16 @@ class AdvancedRetrievalService:
         try:
             scope=self.policy.authorize(principal,client_scope);pinned=self._pin(scope,temporal);lease=getattr(pinned,"lease_id",None);snapshot=pinned.manifest.to_ref()
             plan=self.planner.compile(query,scope,snapshot,temporal,_available_operations(self.executor),requested_budget)
-            execution=await self.executor.execute(plan);fusion=grouped_rrf(execution,top_k=plan.budget.max_rerank_candidates)
+            execution=await self.executor.execute(plan);coverage=evaluate_obligation_coverage(plan,execution);fusion=grouped_rrf(execution,top_k=plan.budget.max_rerank_candidates)
             hydrated,denied,invalid=self.hydrator.hydrate(fusion.passages,scope,snapshot)
             deadline=started+__import__("datetime").timedelta(milliseconds=plan.budget.deadline_ms)
             reranked=await self.reranker.rerank(query,hydrated,scope,deadline,plan.budget.max_rerank_candidates) if self.reranker is not None else __import__("cti_rag.context",fromlist=["RerankOutcome","RerankedPassage"]).RerankOutcome(tuple(__import__("cti_rag.context",fromlist=["RerankedPassage"]).RerankedPassage(v,i,i,v.fused.score,None) for i,v in enumerate(hydrated,1)))
             pack=await self.packer.pack(reranked,fusion,plan,self.context_budget)
             diagnostics=tuple(ChannelDiagnostic(item.node.node_id,item.node.operation.value,_status_value(item.result) or "typed",_reason_code(item.result)) for item in execution.nodes)
             gaps=list(pack.missing_obligations)
+            for item in coverage:
+                if item.required and item.status.value!="satisfied":
+                    gaps.append(PlanGap(item.kind,item.reason or item.status.value,item.subquestion_id))
             if denied:gaps.append(PlanGap("authorization","candidate denied during canonical hydration"))
             if invalid:gaps.append(PlanGap("provenance","candidate failed canonical hydration"))
             # Final policy epoch/scope revalidation. It may narrow evidence after a long request.
@@ -70,7 +73,7 @@ class AdvancedRetrievalService:
             elif required_missing or gaps or degraded:status=EvidenceResponseStatus.PARTIAL
             else:status=EvidenceResponseStatus.COMPLETE
             trace=capture_trace(query=query,scope=scope,plan=plan,snapshot=snapshot,reranker_fingerprint=reranked.model_fingerprint,tokenizer_fingerprint=pack.tokenizer_fingerprint,channel_statuses=tuple((d.node_id,d.status) for d in diagnostics),started_at=started)
-            return AdvancedEvidenceResponse("advanced-evidence/1",trace.request_id,plan.plan_id,snapshot,status,tuple(exact),tuple(structured),tuple(passages[:top_k]),tuple(gaps),diagnostics,degraded,reasons,trace if debug and final_scope.debug_traces_allowed else None,tuple(graph_paths[:top_k]),tuple(getattr(pack,"join_results",())))
+            return AdvancedEvidenceResponse("advanced-evidence/1",trace.request_id,plan.plan_id,snapshot,status,tuple(exact),tuple(structured),tuple(passages[:top_k]),tuple(gaps),diagnostics,degraded,reasons,trace if debug and final_scope.debug_traces_allowed else None,tuple(graph_paths[:top_k]),tuple(getattr(pack,"join_results",())),tuple(coverage))
         except Exception:
             raise
         finally:
