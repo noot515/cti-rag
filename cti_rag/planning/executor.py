@@ -1,6 +1,6 @@
 """Bounded asynchronous DAG executor with typed statuses and cancellation propagation."""
 from __future__ import annotations
-import asyncio
+import asyncio,inspect
 from dataclasses import dataclass
 from datetime import datetime,timedelta,timezone
 from typing import Any,Tuple
@@ -45,7 +45,9 @@ class QueryExecutor:
             return await port.search(SearchRequest(node.query,kind,scope,plan.temporal,budget,plan.snapshot,deadline,cancel_token))
         if node.operation==PlanOperation.GRAPH:
             if self.graph_port is None:return ChannelResult(ChannelStatus.UNSUPPORTED,reason="graph capability unavailable")
-            return await self.graph_port.run(node,scope,plan.snapshot,plan.temporal,prior,deadline,cancel_token)
+            parameters=inspect.signature(self.graph_port.run).parameters
+            if "temporal" in parameters:return await self.graph_port.run(node,scope,plan.snapshot,plan.temporal,prior,deadline,cancel_token)
+            return await self.graph_port.run(node,scope,plan.snapshot,prior,deadline,cancel_token)
         if node.operation==PlanOperation.STRUCTURED:
             if self.structured_port is None:return ChannelResult(ChannelStatus.UNSUPPORTED,reason="structured capability unavailable")
             return await self.structured_port.run(node,scope,plan.snapshot,plan.temporal,prior,deadline,cancel_token)
