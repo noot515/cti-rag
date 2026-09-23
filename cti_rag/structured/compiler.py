@@ -63,11 +63,17 @@ class StructuredCompiler:
         for pred in spec.predicates:
             field=base.schema.field(pred.field);col=f'd0.{_q(field.name)}'
             if pred.operator==PredicateOperator.IP_IN_PREFIX:
-                # Schema controls the paired range fields; the client supplies only the point IP.
+                # Schema controls the paired range/family fields; the client supplies only the point IP.
                 start=base.schema.field(pred.field+"_start");end=base.schema.field(pred.field+"_end")
-                try:value=int(ip_address(str(pred.value)))
+                try:address=ip_address(str(pred.value))
                 except ValueError as exc:raise StructuredValidationError("invalid IP address") from exc
-                clauses.append(f'd0.{_q(start.name)}<=? AND d0.{_q(end.name)}>=?');tparams.extend((value,value));continue
+                textual=start.data_type.upper() in ("VARCHAR","TEXT","CHAR")
+                value=address.packed.hex().rjust(32,"0") if textual else int(address)
+                clauses.append(f'd0.{_q(start.name)}<=? AND d0.{_q(end.name)}>=?');tparams.extend((value,value))
+                family_name=pred.field+"_family"
+                if family_name in {f.name for f in base.schema.fields}:
+                    clauses.append(f'd0.{_q(family_name)}=?');tparams.append(address.version)
+                continue
             if pred.operator in (PredicateOperator.IS_NULL,PredicateOperator.NOT_NULL):
                 clauses.append(f"{col} IS {'NOT ' if pred.operator==PredicateOperator.NOT_NULL else ''}NULL");continue
             if pred.operator==PredicateOperator.IN:
