@@ -6,16 +6,16 @@ Status: **own deterministic gate passed; cumulative acceptance remains blocked b
 
 - Baseline: `15f4050a387bf41b8d77daf05e271ccfe9e522da`
 - Parent report: `docs/implementation/12-report.md`
-- Validated Phase 12/13 checkpoint: `50780dbc1b22a26591073d1fe9455208580e4552`
-- Finance fixtures: `7652a8d95336f71f530484638ce260619b824aaf`
+- Validated Phase 12/13 checkpoint: `0b68a7a5dcb84036fc9592a185d66ebfd1d0f852`
+- Finance fixtures: `24e34bc2b26e6f64d28d5fdeec5b82db2e9ca855`
 - Source adapters/normalizers: `9bbf97907c99173d5bc3a339bbcdcbf4c236c11e`
-- Structured schemas: `b41d38dd7351e2d9cc3282c15300696bc158f873`
-- Projection layer: `b9d7bf89fa81f73028885953de3c7183345496f2`
+- Structured schemas: `e286bd3c39bef6d8654399c62cb8f7366f7f3efa`
+- Projection layer: `bb026f6dfde2b692a368d8c8fc22c2d70223a1ef`
 - Ticker resolver: `0c61db78c49088ec203520c42a63628afe819030`
 - Calculation engine: `480bab02a07d0641e573093c63192c2ee868a836`
 - Source readiness registry: `b5740dbeeb1406c47d3d42322e7ba8b4a9e7a6c6`
 - DomainSpec: `60aa019bff21330846376b1a8f28b95faf84e4b8`
-- Quant test blob: `d9ede0bb004091e281f7f99c3c66b145a4f3359d`
+- Quant test blob: `c6516edbc90bde056837602748021e08146c0a44`
 - Shared structured compiler: `c64eaaf09242f9fae1510968f6504082b359d0da`
 - Validation registry: `21ca5c2ffa337ffda1d225e0d85621c14092df95`
 - Workflow: `da090a5c0922b2690c29f1831768ac834b048acf`
@@ -26,7 +26,7 @@ Status: **own deterministic gate passed; cumulative acceptance remains blocked b
 
 ### SEC filing/XBRL-shaped evidence
 
-The offline SEC-shaped fixture distinguishes issuer CIK from filing accession identity. Filing normalization preserves form, filing/acceptance availability, amendment metadata, document section coordinates, XBRL-like namespace/tag/context coordinates, value, unit, currency, reporting period and reporting basis.
+The offline SEC-shaped fixture distinguishes issuer CIK from filing accession identity. Filing normalization preserves form, filing/acceptance availability, amendment metadata, document section coordinates, XBRL-like namespace/tag/context coordinates, value, unit, currency, explicit period type, reporting period and reporting basis.
 
 Company and filing identities project into exact retrieval. Filing document sections project into lexical/dense-compatible passages using canonical section coordinates. Filing → issuer and amendment relationships are explicit source-backed graph assertions.
 
@@ -82,15 +82,15 @@ Deferred:
 
 ## Validation actually executed
 
-GitHub Actions run `35851684023`, job `107150607851`, Python 3.13.15:
+GitHub Actions run `35852249421`, job `107152422271`, Python 3.13.15:
 
-- cumulative deterministic Phase 01–13 unittest suite: **126/126 passed in 6.849 s**
-- Phase 13 quant gate: **6/6 passed in 1.886 s**
+- cumulative deterministic Phase 01–13 unittest suite: **126/126 passed in 7.594 s**
+- Phase 13 quant gate: **6/6 passed in 1.888 s**
 - affected legacy API/runtime regressions: **8/8 passed**
 - fail-closed validation-registry audit: **passed**, while the registry's overall status correctly remains `fail`.
 
 Phase 13 verifies:
-- original SEC filing/XBRL-shaped and FRED/ALFRED-shaped source coordinates survive normalization;
+- original SEC filing/XBRL-shaped and FRED/ALFRED-shaped source coordinates survive normalization, including explicit XBRL period type;
 - company CIK and filing accession exact lookup;
 - cited filing-section retrieval;
 - a later SEC amendment does not leak into an earlier cutoff;
@@ -99,7 +99,7 @@ Phase 13 verifies:
 - later adjusted prices do not replace unadjusted historical-public prices before availability;
 - simple return fixture includes an independently known 5% return;
 - event-study fixture produces alpha = 0, beta = 2 and event CAR = 3%;
-- ticker reuse resolves by exchange/time;
+- ticker reuse resolves by exchange/time and an overlapping alias interval is rejected as ambiguous;
 - a delisted security remains visible in its historical universe interval;
 - unknown financial units are rejected;
 - output `presentation_limit=1` does not change a full-corpus row-count aggregate (10 rows).

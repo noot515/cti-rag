@@ -4,32 +4,32 @@
   "status": "blocked",
   "own_gate": "passed",
   "baseline_commit": "15f4050a387bf41b8d77daf05e271ccfe9e522da",
-  "code_checkpoint": "50780dbc1b22a26591073d1fe9455208580e4552",
+  "code_checkpoint": "0b68a7a5dcb84036fc9592a185d66ebfd1d0f852",
   "parent_report_ids": [
     "phase-12"
   ],
   "fingerprints": {
-    "quant_fixtures_blob": "7652a8d95336f71f530484638ce260619b824aaf",
+    "quant_fixtures_blob": "24e34bc2b26e6f64d28d5fdeec5b82db2e9ca855",
     "quant_sources_blob": "9bbf97907c99173d5bc3a339bbcdcbf4c236c11e",
-    "quant_structured_blob": "b41d38dd7351e2d9cc3282c15300696bc158f873",
-    "quant_projections_blob": "b9d7bf89fa81f73028885953de3c7183345496f2",
+    "quant_structured_blob": "e286bd3c39bef6d8654399c62cb8f7366f7f3efa",
+    "quant_projections_blob": "bb026f6dfde2b692a368d8c8fc22c2d70223a1ef",
     "ticker_resolver_blob": "0c61db78c49088ec203520c42a63628afe819030",
     "calculation_engine_blob": "480bab02a07d0641e573093c63192c2ee868a836",
     "quant_source_registry_blob": "b5740dbeeb1406c47d3d42322e7ba8b4a9e7a6c6",
     "quant_spec_blob": "60aa019bff21330846376b1a8f28b95faf84e4b8",
-    "phase_test_blob": "d9ede0bb004091e281f7f99c3c66b145a4f3359d",
+    "phase_test_blob": "c6516edbc90bde056837602748021e08146c0a44",
     "config_blob": "a90848b9f9884c344d3fe2cc10cd6ec8c13da591",
     "model": "none"
   },
   "ci": {
-    "run_id": 35851684023,
-    "job_id": 107150607851,
+    "run_id": 35852249421,
+    "job_id": 107152422271,
     "python": "3.13.15",
     "cumulative_unittests_passed": 126,
     "phase_gate_tests_passed": 6,
     "legacy_regression_tests_passed": 8,
-    "cumulative_seconds": 6.849,
-    "phase_seconds": 1.886
+    "cumulative_seconds": 7.594,
+    "phase_seconds": 1.888
   },
   "blocked_by": [
     "phase0-legacy-fast-suite",
@@ -45,5 +45,9 @@
     "phase13-live-sec-fred-lifecycle",
     "phase13-licensed-market-data-entitlement"
   ],
-  "new_retrieval_enabled": false
+  "new_retrieval_enabled": false,
+  "validation_notes": [
+    "XBRL period type is preserved explicitly.",
+    "Overlapping ticker aliases for the same ticker/exchange/time are rejected as ambiguous."
+  ]
 }

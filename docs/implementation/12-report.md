@@ -6,7 +6,7 @@ Status: **own deterministic gate passed; cumulative acceptance remains blocked b
 
 - Baseline: `15f4050a387bf41b8d77daf05e271ccfe9e522da`
 - Parent report: `docs/implementation/11-report.md`
-- Validated Phase 12/13 checkpoint: `50780dbc1b22a26591073d1fe9455208580e4552`
+- Validated Phase 12/13 checkpoint: `0b68a7a5dcb84036fc9592a185d66ebfd1d0f852`
 - Networking fixtures: `d51296b5d253be40825b03000b1dc18824b7750c`
 - Source adapters/normalizers: `f638576d4b48f218965d5f7b7deddbb05161c9d6`
 - Structured schemas: `6f8dbcd5d506f6a15eadbc4df2f38603eb2e41b0`
@@ -63,10 +63,10 @@ Readiness is explicit:
 
 ## Validation actually executed
 
-GitHub Actions run `35851684023`, job `107150607851`, Python 3.13.15:
+GitHub Actions run `35852249421`, job `107152422271`, Python 3.13.15:
 
-- cumulative deterministic Phase 01–13 unittest suite: **126/126 passed in 6.849 s**
-- Phase 12 networking gate: **6/6 passed in 0.588 s**
+- cumulative deterministic Phase 01–13 unittest suite: **126/126 passed in 7.594 s**
+- Phase 12 networking gate: **6/6 passed in 0.952 s**
 - affected legacy API/runtime regressions: **8/8 passed**
 - fail-closed validation-registry audit: **passed**, while the registry's overall status correctly remains `fail` because required external gates are blocked.
 
