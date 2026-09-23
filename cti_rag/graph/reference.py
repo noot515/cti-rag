@@ -50,8 +50,13 @@ class ReferenceGraphPort:
             if ref.revision_uid not in revisions or self.catalog.is_revoked(ref.revision_uid): return False
             if self.evidence_store is None or self.evidence_store.resolve(ref) is None:return False
         return self._policy(a.policy,a.source_id or "",scope) and self._time(a,temporal)
-    def _step_ok(self,template,a,subj,obj):
-        return any(s.predicate==a.predicate and subj.entity_type in s.subject_types and obj.entity_type in s.object_types for s in template.steps)
+    def _step_directions(self,template,a,subj,obj):
+        out=[]
+        for step in template.steps:
+            if step.predicate!=a.predicate:continue
+            if subj.entity_type in step.subject_types and obj.entity_type in step.object_types and step.direction in ("out","either"):out.append("out")
+            if obj.entity_type in step.subject_types and subj.entity_type in step.object_types and step.direction in ("in","either"):out.append("in")
+        return tuple(out)
     def _interval_compatible(self,assertions):
         starts=[a.valid_from for a in assertions if a.valid_from is not None]; ends=[a.valid_to for a in assertions if a.valid_to is not None]
         return not (starts and ends and max(starts)>=min(ends))
@@ -68,12 +73,15 @@ class ReferenceGraphPort:
         for a in assertions:
             if self.catalog.is_revoked(a.assertion_uid) or a.subject.entity_uid not in visible_entities or a.object.entity_uid not in visible_entities:continue
             if not self._support_ok(a,revisions,request.scope,request.temporal):continue
-            if not self._step_ok(template,a,visible_entities[a.subject.entity_uid],visible_entities[a.object.entity_uid]):continue
-            visible_assertions.append(a)
+            directions=self._step_directions(template,a,visible_entities[a.subject.entity_uid],visible_entities[a.object.entity_uid])
+            if not directions:continue
+            visible_assertions.append((a,directions))
         seeds=[s for s in request.seeds if s in visible_entities]
         if not seeds:return ChannelResult(ChannelStatus.EMPTY,reason="no authorized graph seeds")
-        by_subject={}
-        for a in visible_assertions:by_subject.setdefault(a.subject.entity_uid,[]).append(a)
+        adjacency={}
+        for a,directions in visible_assertions:
+            if "out" in directions:adjacency.setdefault(a.subject.entity_uid,[]).append((a,a.object.entity_uid,False))
+            if "in" in directions:adjacency.setdefault(a.object.entity_uid,[]).append((a,a.subject.entity_uid,True))
         examined=0; truncated=False; outputs=[]
         frontier=[(s,(s,),()) for s in seeds]
         for depth in range(request.max_hops):
@@ -81,11 +89,11 @@ class ReferenceGraphPort:
             for current,nodes,path_assertions in frontier:
                 if request.cancellation_token is not None and request.cancellation_token.is_set():return ChannelResult(ChannelStatus.REJECTED,reason="request cancelled")
                 if request.deadline is not None and datetime.now(timezone.utc)>=request.deadline:return ChannelResult(ChannelStatus.TIMEOUT,reason="graph deadline exceeded")
-                edges=sorted(by_subject.get(current,()),key=lambda a:a.assertion_uid)
+                edges=sorted(adjacency.get(current,()),key=lambda row:(row[0].assertion_uid,row[1]))
                 if len(edges)>request.max_degree:truncated=True;edges=edges[:request.max_degree]
-                for a in edges:
+                for a,target,reversed_edge in edges:
                     if examined>=request.max_examined_edges:truncated=True;break
-                    examined+=1; target=a.object.entity_uid
+                    examined+=1
                     if target in nodes:continue
                     chain=path_assertions+(a,)
                     if not self._interval_compatible(chain):continue
@@ -102,7 +110,7 @@ class ReferenceGraphPort:
             if truncated and (examined>=request.max_examined_edges or len(outputs)>=request.max_paths):break
             frontier=nxt
             if not frontier:break
-            if depth+1==request.max_hops and any(by_subject.get(n[0]) for n in frontier):truncated=True
+            if depth+1==request.max_hops and any(adjacency.get(n[0]) for n in frontier):truncated=True
         if not outputs:return ChannelResult(ChannelStatus.EMPTY,reason="no supported paths")
         if truncated: outputs=tuple(type(x)(**{**x.__dict__,"truncated":True}) for x in outputs)
         return ChannelResult(ChannelStatus.OK,tuple(outputs),truncated=truncated)
