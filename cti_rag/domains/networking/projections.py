@@ -23,7 +23,8 @@ class NetworkingProjectionProjector:
         available=_dt(d.get("available_at") or d.get("published_at"));vf=_dt(d.get("valid_from") or d.get("observed_at"));vt=_dt(d.get("valid_to") or d.get("observed_until"))
         if kind=="rfc":
             rid=d["id"];loc=CanonicalPassageLocator("rfc-document",rid)
-            exact.append(ExactRecord(revision_uid,object_uid,"rfc","rfc",rid,"networking",source_id,"public",AccessLabel.PUBLIC,available or _dt(d["published_at"]),vf,json.dumps(None) if False else None,json.dumps(locator_to_data(loc),sort_keys=True,separators=(",",":")),rid))
+            status=rid+(" (obsoleted by "+", ".join(d.get("obsoleted_by",()))+")" if d.get("obsoleted_by") else "")
+            exact.append(ExactRecord(revision_uid,object_uid,"rfc","rfc",rid,"networking",source_id,"public",AccessLabel.PUBLIC,available or _dt(d["published_at"]),vf,None,json.dumps(locator_to_data(loc),sort_keys=True,separators=(",",":")),status))
             rfc=CanonicalEntity("rfc","rfc",rid,rid,policy,source_id,available or _dt(d["published_at"]),vf,vt,system_manifest_id);entities.append(rfc)
             chunker=ComponentFingerprint("rfc-section","1")
             for sec in d["sections"]:
