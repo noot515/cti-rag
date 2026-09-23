@@ -127,6 +127,12 @@ class StructuredResult:
     verification_status: VerificationStatus
     calculation_fingerprint: Optional[str] = None
     scores: Tuple[ScoreMetadata, ...] = ()
+    dataset_snapshot: Optional[str] = None
+    query_spec_hash: Optional[str] = None
+    null_rules: Tuple[str, ...] = ()
+    temporal_mode: Optional[str] = None
+    input_manifest: Optional[str] = None
+    calculation_version: Optional[str] = None
     kind: str = "structured"
 
     def __post_init__(self) -> None:
@@ -201,6 +207,9 @@ def candidate_from_dict(data: Mapping[str, Any]) -> Candidate:
             fields=tuple(StructuredField(**item) for item in data.get("fields", ())),
             provenances=tuple(_provenance_from_dict(v) for v in data.get("provenances", ())),
             verification_status=status, calculation_fingerprint=data.get("calculation_fingerprint"), scores=scores,
+            dataset_snapshot=data.get("dataset_snapshot"), query_spec_hash=data.get("query_spec_hash"),
+            null_rules=tuple(str(v) for v in data.get("null_rules", ())), temporal_mode=data.get("temporal_mode"),
+            input_manifest=data.get("input_manifest"), calculation_version=data.get("calculation_version"),
         )
     raise UnknownDiscriminatorError(f"unknown candidate kind: {kind!r}")
 

@@ -115,6 +115,12 @@ class SnapshotCatalogStore:
         lease_id=uuid.uuid4().hex; expires=now+timedelta(seconds=ttl_seconds)
         with self.transaction() as cur:self.execute(cur,"INSERT INTO reader_leases (lease_id,manifest_id,expires_at,released) VALUES (?,?,?,0)",(lease_id,manifest.manifest_id,_iso(expires)))
         return PinnedSnapshot(manifest,lease_id,expires)
+    def pin_manifest(self,manifest_id,scope=None,ttl_seconds=30,now=None):
+        now=now or datetime.now(timezone.utc); manifest=self.get_manifest(manifest_id)
+        if manifest is None: raise KeyError(manifest_id)
+        lease_id=uuid.uuid4().hex; expires=now+timedelta(seconds=ttl_seconds)
+        with self.transaction() as cur:self.execute(cur,"INSERT INTO reader_leases (lease_id,manifest_id,expires_at,released) VALUES (?,?,?,0)",(lease_id,manifest.manifest_id,_iso(expires)))
+        return PinnedSnapshot(manifest,lease_id,expires)
     def resolve(self,manifest_id,scope=None):
         manifest=self.get_manifest(manifest_id)
         if manifest is None: raise KeyError(manifest_id)

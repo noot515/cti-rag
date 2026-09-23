@@ -34,6 +34,9 @@ class DuckDBStructuredPort:
     async def execute(self,request:StructuredRequest)->ChannelResult:
         if request.snapshot is None:return ChannelResult(ChannelStatus.REJECTED,reason="structured execution requires pinned snapshot")
         if not isinstance(request.spec,StructuredQuerySpec):return ChannelResult(ChannelStatus.REJECTED,reason="untyped structured query spec")
+        if request.temporal.mode==TemporalMode.HISTORICAL_PUBLIC and request.spec.unknown_availability_policy.value=="reject":
+            registered=self.registry.get(request.spec.dataset_id); field=registered.schema.availability_field
+            if any(row.get(field) is None for row in registered.rows):return ChannelResult(ChannelStatus.REJECTED,reason="structured_validation:unknown_availability")
         try:compiled=self.compiler.compile(request.spec,request.scope,request.temporal,request.snapshot)
         except Exception as exc:return ChannelResult(ChannelStatus.REJECTED,reason=f"structured_validation:{type(exc).__name__}")
         async def run():
@@ -42,6 +45,7 @@ class DuckDBStructuredPort:
                 rows=conn.execute(compiled.sql,compiled.params).fetchall();desc=conn.description
                 lineage=tuple(r[0] for r in conn.execute(compiled.lineage_sql,compiled.lineage_params).fetchall())
             finally:conn.close()
+            if not rows and not request.spec.aggregations:return ChannelResult(ChannelStatus.EMPTY,reason="no eligible structured rows")
             names=tuple(d[0] for d in desc);units=dict(compiled.result_units);fields=[]
             if len(rows)==1:
                 for name,value in zip(names,rows[0]):fields.append(StructuredField(name,value,type(value).__name__,units.get(name)))

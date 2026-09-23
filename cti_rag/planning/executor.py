@@ -48,7 +48,7 @@ class QueryExecutor:
             return await self.graph_port.run(node,scope,plan.snapshot,prior,deadline,cancel_token)
         if node.operation==PlanOperation.STRUCTURED:
             if self.structured_port is None:return ChannelResult(ChannelStatus.UNSUPPORTED,reason="structured capability unavailable")
-            return await self.structured_port.run(node,scope,plan.snapshot,prior,deadline,cancel_token)
+            return await self.structured_port.run(node,scope,plan.snapshot,plan.temporal,prior,deadline,cancel_token)
         return ChannelResult(ChannelStatus.UNSUPPORTED,reason="unsupported plan operation")
     async def execute(self,plan,cancellation_token=None):
         started=datetime.now(timezone.utc); deadline=started+timedelta(milliseconds=plan.budget.deadline_ms); remaining={n.node_id:n for n in plan.nodes}; done={}; ordered=[]; sem=asyncio.Semaphore(self.max_concurrency)

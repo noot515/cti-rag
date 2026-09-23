@@ -41,6 +41,7 @@ class EffectiveScope:
     processing_classes: Tuple[ProcessingClass,...]
     policy_epoch: int
     private_state_allowed: bool = False
+    debug_traces_allowed: bool = False
     def __post_init__(self):
         if not self.domains: raise PolicyDenied("effective scope contains no authorized domains")
 

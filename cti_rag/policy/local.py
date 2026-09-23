@@ -16,6 +16,7 @@ class PrincipalPolicy:
     processing_classes:Tuple[ProcessingClass,...]=(ProcessingClass.LOCAL_ONLY,)
     allowed_model_destinations:Tuple[Tuple[str,Tuple[str,...]],...]=()
     private_state_allowed:bool=False
+    debug_traces_allowed:bool=False
     def destinations_for(self,operation:str)->frozenset[str]:
         return frozenset(v for op,names in self.allowed_model_destinations if op==operation for v in names)
 
@@ -47,7 +48,7 @@ class LocalPolicyProvider:
         return EffectiveScope(
             principal_id=principal.principal_id,tenant_id=rule.tenant_id,domains=domains,source_ids=source_ids,
             access_labels=labels,processing_classes=tuple(rule.processing_classes),policy_epoch=self._epoch,
-            private_state_allowed=rule.private_state_allowed,
+            private_state_allowed=rule.private_state_allowed,debug_traces_allowed=rule.debug_traces_allowed,
         )
     def authorize_model(self,scope:EffectiveScope,labels:PolicyLabels,operation:str,destination:ProcessingDestination)->None:
         rule=self._rules.get(scope.principal_id)
@@ -64,6 +65,6 @@ class PublicOnlyLocalPolicy(LocalPolicyProvider):
         rule=PrincipalPolicy(
             principal_id=principal_id,tenant_id="public",domains=domains,access_labels=(AccessLabel.PUBLIC,),
             processing_classes=(ProcessingClass.LOCAL_ONLY,ProcessingClass.LOCAL_OR_APPROVED_REMOTE),
-            allowed_model_destinations=tuple((op.value,("local",)) for op in ModelOperation),private_state_allowed=False,
+            allowed_model_destinations=tuple((op.value,("local",)) for op in ModelOperation),private_state_allowed=False,debug_traces_allowed=False,
         )
         return cls((rule,),epoch=1)
