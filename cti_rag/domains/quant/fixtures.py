@@ -6,14 +6,14 @@ SEC_FILING_FIXTURE={
  "record_type":"filing","cik":"0000123456","company_name":"Example Holdings, Inc.","accessionNumber":"0000123456-26-000001","form":"8-K",
  "filed":"2026-01-05","acceptanceDateTime":"2026-01-05T12:00:00Z","amendment":False,"amends":None,
  "document":{"name":"example-8k.htm","sections":[{"id":"item-1-05","title":"Item 1.05 Material Cybersecurity Incidents","text":"Example Holdings disclosed a fictitious cybersecurity incident for deterministic retrieval tests."}]},
- "facts":[{"namespace":"us-gaap","tag":"Revenues","unit":"USD","value":100.0,"period_start":"2025-10-01","period_end":"2025-12-31","reporting_basis":"US-GAAP","context_id":"ctx-revenue","currency":"USD"}],
+ "facts":[{"namespace":"us-gaap","tag":"Revenues","unit":"USD","value":100.0,"period_type":"duration","period_start":"2025-10-01","period_end":"2025-12-31","reporting_basis":"US-GAAP","context_id":"ctx-revenue","currency":"USD"}],
  "version":"filing-1"
 }
 SEC_FILING_AMENDED_FIXTURE={
  "record_type":"filing","cik":"0000123456","company_name":"Example Holdings, Inc.","accessionNumber":"0000123456-26-000002","form":"8-K/A",
  "filed":"2026-01-20","acceptanceDateTime":"2026-01-20T12:00:00Z","amendment":True,"amends":"0000123456-26-000001",
  "document":{"name":"example-8ka.htm","sections":[{"id":"item-1-05","title":"Item 1.05 Material Cybersecurity Incidents","text":"Example Holdings amended the fictitious disclosure with corrected financial context."}]},
- "facts":[{"namespace":"us-gaap","tag":"Revenues","unit":"USD","value":105.0,"period_start":"2025-10-01","period_end":"2025-12-31","reporting_basis":"US-GAAP","context_id":"ctx-revenue","currency":"USD"}],
+ "facts":[{"namespace":"us-gaap","tag":"Revenues","unit":"USD","value":105.0,"period_type":"duration","period_start":"2025-10-01","period_end":"2025-12-31","reporting_basis":"US-GAAP","context_id":"ctx-revenue","currency":"USD"}],
  "version":"filing-2"
 }
 
