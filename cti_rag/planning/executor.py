@@ -36,7 +36,8 @@ class QueryExecutor:
         scope=self._node_scope(plan.scope,node)
         if node.operation==PlanOperation.EXACT:
             if self.exact_index is None:return ExactLookupResult(ExactLookupStatus.REJECTED,reason="exact capability unavailable")
-            return self.exact_index.lookup(ExactLookupRequest(node.query,scope,plan.temporal,plan.snapshot))
+            constraints=dict(node.constraints)
+            return self.exact_index.lookup(ExactLookupRequest(node.query,scope,plan.temporal,plan.snapshot,namespace=constraints.get("namespace"),object_type=constraints.get("object_type")))
         if node.operation in (PlanOperation.LEXICAL,PlanOperation.DENSE):
             port=self.search_ports.get(node.operation.value)
             if port is None:return ChannelResult(ChannelStatus.UNSUPPORTED,reason=f"{node.operation.value} capability unavailable")
