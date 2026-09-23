@@ -34,7 +34,10 @@ CVE_V5_FIXTURE=b'''{
    "descriptions":[{"lang":"en","value":"Fictitious cross-site scripting issue for parser tests."}],
    "problemTypes":[{"descriptions":[{"lang":"en","type":"CWE","cweId":"CWE-79","description":"CWE-79"}]}],
    "metrics":[{"cvssV3_1":{"version":"3.1","baseScore":8.8,"baseSeverity":"HIGH","vectorString":"CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:U/C:H/I:H/A:H"}}]
- }}
+ },"adp":[{
+   "descriptions":[],"problemTypes":[],
+   "metrics":[{"cvssV3_1":{"version":"3.1","baseScore":7.5,"baseSeverity":"HIGH","vectorString":"CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:C/C:H/I:L/A:L"}}]
+ }]}
 }'''
 CVE_V5_UPDATED_FIXTURE=b'''{
  "dataType":"CVE_RECORD","dataVersion":"5.2",
@@ -43,7 +46,10 @@ CVE_V5_UPDATED_FIXTURE=b'''{
    "descriptions":[{"lang":"en","value":"Updated fictitious cross-site scripting issue for parser tests."}],
    "problemTypes":[{"descriptions":[{"lang":"en","type":"CWE","cweId":"CWE-79","description":"CWE-79"}]}],
    "metrics":[{"cvssV3_1":{"version":"3.1","baseScore":9.8,"baseSeverity":"CRITICAL","vectorString":"CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"}}]
- }}
+ },"adp":[{
+   "descriptions":[],"problemTypes":[],
+   "metrics":[{"cvssV3_1":{"version":"3.1","baseScore":7.5,"baseSeverity":"HIGH","vectorString":"CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:C/C:H/I:L/A:L"}}]
+ }]}
 }'''
 
 KEV_FIXTURE=b'''{
