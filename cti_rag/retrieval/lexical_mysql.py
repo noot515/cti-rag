@@ -53,6 +53,7 @@ class MySQLFullTextLexicalIndex:
         docs=tuple(sorted(documents,key=lambda d:d.passage_uid)); revisions=tuple(sorted(request.revision_uids)); allowed=set(revisions)
         if any(d.revision_uid not in allowed for d in docs):raise ValueError("document revision outside projection revision set")
         analyzers=tuple(sorted({d.analyzer_version for d in docs}))
+        if not analyzers and len(request.representation_versions)==1:analyzers=(request.representation_versions[0],)
         if len(analyzers)!=1:raise ValueError("one lexical generation requires one analyzer version")
         checksum=sha256_hex({"generation_id":request.generation_id,"documents":[self._identity(d) for d in docs],"revision_uids":revisions,"representation_versions":request.representation_versions})
         conn=self.connect(); cur=conn.cursor()
