@@ -84,6 +84,12 @@ class GraphPathHit:
     provenances: Tuple[ProvenanceRef, ...]
     scores: Tuple[ScoreMetadata, ...] = ()
     kind: str = "graph_path"
+    node_uids: Tuple[str, ...] = ()
+    assertion_uids: Tuple[str, ...] = ()
+    relation_types: Tuple[str, ...] = ()
+    epistemic_labels: Tuple[str, ...] = ()
+    semantics: str = "supported_path"
+    truncated: bool = False
 
     def __post_init__(self) -> None:
         if not self.hit_id.strip() or not self.path_uid.strip():
@@ -93,6 +99,14 @@ class GraphPathHit:
         allowed = set(self.revision_uids)
         if any(ref.revision_uid not in allowed for ref in self.provenances):
             raise ValidationError("graph provenance must refer to one of path revision_uids")
+        if self.assertion_uids and len(self.assertion_uids)!=len(self.assertions):
+            raise ValidationError("graph assertion_uids must align with assertions")
+        if self.relation_types and len(self.relation_types)!=len(self.assertions):
+            raise ValidationError("graph relation types must align with assertions")
+        if self.epistemic_labels and len(self.epistemic_labels)!=len(self.assertions):
+            raise ValidationError("graph epistemic labels must align with assertions")
+        if self.node_uids and len(self.node_uids)!=len(self.assertions)+1:
+            raise ValidationError("graph node chain must contain one more node than assertions")
 
     @property
     def citation_key(self) -> Tuple[Tuple[str, ...], Tuple[str, ...]]:
@@ -195,6 +209,11 @@ def candidate_from_dict(data: Mapping[str, Any]) -> Candidate:
             revision_uids=tuple(str(v) for v in data.get("revision_uids", ())),
             assertions=tuple(str(v) for v in data.get("assertions", ())),
             provenances=tuple(_provenance_from_dict(v) for v in data.get("provenances", ())), scores=scores,
+            node_uids=tuple(str(v) for v in data.get("node_uids", ())),
+            assertion_uids=tuple(str(v) for v in data.get("assertion_uids", ())),
+            relation_types=tuple(str(v) for v in data.get("relation_types", ())),
+            epistemic_labels=tuple(str(v) for v in data.get("epistemic_labels", ())),
+            semantics=str(data.get("semantics","supported_path")),truncated=bool(data.get("truncated",False)),
         )
     if kind == "structured":
         try:

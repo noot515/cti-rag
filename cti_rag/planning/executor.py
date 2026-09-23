@@ -45,7 +45,7 @@ class QueryExecutor:
             return await port.search(SearchRequest(node.query,kind,scope,plan.temporal,budget,plan.snapshot,deadline,cancel_token))
         if node.operation==PlanOperation.GRAPH:
             if self.graph_port is None:return ChannelResult(ChannelStatus.UNSUPPORTED,reason="graph capability unavailable")
-            return await self.graph_port.run(node,scope,plan.snapshot,prior,deadline,cancel_token)
+            return await self.graph_port.run(node,scope,plan.snapshot,plan.temporal,prior,deadline,cancel_token)
         if node.operation==PlanOperation.STRUCTURED:
             if self.structured_port is None:return ChannelResult(ChannelStatus.UNSUPPORTED,reason="structured capability unavailable")
             return await self.structured_port.run(node,scope,plan.snapshot,plan.temporal,prior,deadline,cancel_token)

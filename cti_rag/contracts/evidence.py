@@ -12,6 +12,7 @@ from .identity import (
     ComponentFingerprint,
     make_artifact_uid,
     make_assertion_uid,
+    make_entity_uid,
     make_object_uid,
     make_passage_uid,
     make_representation_uid,
@@ -72,10 +73,19 @@ class EntityRef:
     namespace: str
     identifier: str
     entity_type: Optional[str] = None
+    entity_uid: Optional[str] = None
 
     def __post_init__(self) -> None:
         if not self.namespace.strip() or not self.identifier.strip():
             raise ValidationError("entity references require namespace and identifier")
+        if self.entity_type is not None:
+            if not self.entity_type.strip():
+                raise ValidationError("entity_type must be non-empty when supplied")
+            expected=make_entity_uid(self.namespace,self.entity_type,self.identifier)
+            if self.entity_uid is None:
+                object.__setattr__(self,"entity_uid",expected)
+            elif self.entity_uid!=expected:
+                raise ValidationError("entity_uid does not match canonical graph identity")
 
 
 @dataclass(frozen=True)
@@ -234,10 +244,21 @@ class SourceAssertion:
     epistemic: EpistemicMetadata
     schema_version: str = "source-assertion/1"
     assertion_uid: Optional[str] = None
+    source_id: Optional[str] = None
+    policy: Optional[PolicyLabels] = None
+    available_at: Optional[datetime] = None
+    valid_from: Optional[datetime] = None
+    valid_to: Optional[datetime] = None
+    system_manifest_id: Optional[str] = None
 
     def __post_init__(self) -> None:
         if not self.support:
             raise ValidationError("source assertions require at least one supporting locator")
+        for value in (self.available_at,self.valid_from,self.valid_to):
+            if value is not None:
+                ensure_utc(value)
+        if self.valid_from is not None and self.valid_to is not None and self.valid_to<=self.valid_from:
+            raise ValidationError("assertion valid interval must be increasing")
         if any(ref.revision_uid != self.revision_uid for ref in self.support):
             raise ValidationError("source assertion support must point at the source revision")
         expected = make_assertion_uid(

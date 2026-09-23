@@ -51,6 +51,7 @@ class ComponentFingerprint:
     def __post_init__(self):
         if not self.name.strip() or not self.version.strip(): raise ValidationError("fingerprint fields required")
     def identity_material(self): return {"name":self.name,"version":self.version,"digest":self.digest}
+def make_entity_uid(namespace,entity_type,identifier): return namespaced_uid("ent","graph.entity",{"namespace":namespace,"entity_type":entity_type,"identifier":identifier})
 def make_object_uid(source_namespace,upstream_object_type,stable_upstream_id): return namespaced_uid("obj","evidence.object",{"source_namespace":source_namespace,"upstream_object_type":upstream_object_type,"stable_upstream_id":stable_upstream_id})
 def make_revision_uid(object_uid,upstream_version,raw_digest,identity_attributes): return namespaced_uid("rev","evidence.revision",{"object_uid":object_uid,"upstream_version":upstream_version,"raw_digest":raw_digest,"identity_attributes":identity_attributes})
 def make_artifact_uid(revision_uid,parser,normalizer,schema_version,normalized_digest): return namespaced_uid("art","evidence.artifact",{"revision_uid":revision_uid,"parser":parser.identity_material(),"normalizer":normalizer.identity_material(),"schema_version":schema_version,"normalized_digest":normalized_digest})

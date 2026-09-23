@@ -50,8 +50,8 @@ class AdvancedRetrievalService:
             final_scope=self.policy.authorize(principal,client_scope)
             passages=tuple(p for p in pack.passages if p.evidence.labels.tenant_id in (final_scope.tenant_id,"public") and p.evidence.labels.access_label in final_scope.access_labels and p.evidence.labels.processing_class in final_scope.processing_classes)
             if len(passages)!=len(pack.passages):gaps.append(PlanGap("authorization","evidence revoked by final response policy"))
-            exact=pack.exact_obligations;structured=pack.structured_obligations
-            evidence_count=len(passages)+sum(1 for v in exact if _status_value(v)=="found")+sum(1 for v in structured if _status_value(v)=="ok")
+            exact=pack.exact_obligations;structured=pack.structured_obligations;graph_paths=pack.graph_paths
+            evidence_count=len(passages)+len(graph_paths)+sum(1 for v in exact if _status_value(v)=="found")+sum(1 for v in structured if _status_value(v)=="ok")
             required_missing=any(g.obligation in ("exact","structured","required_evidence","citation","authorization") for g in gaps)
             failures=tuple(d for d in diagnostics if d.status in _FAILURE_STATUSES)
             successes=tuple(d for d in diagnostics if d.status in ("ok","empty","typed"))
@@ -62,7 +62,7 @@ class AdvancedRetrievalService:
             elif required_missing or gaps or degraded:status=EvidenceResponseStatus.PARTIAL
             else:status=EvidenceResponseStatus.COMPLETE
             trace=capture_trace(query=query,scope=scope,plan=plan,snapshot=snapshot,reranker_fingerprint=reranked.model_fingerprint,tokenizer_fingerprint=pack.tokenizer_fingerprint,channel_statuses=tuple((d.node_id,d.status) for d in diagnostics),started_at=started)
-            return AdvancedEvidenceResponse("advanced-evidence/1",trace.request_id,plan.plan_id,snapshot,status,tuple(exact),tuple(structured),tuple(passages[:top_k]),tuple(gaps),diagnostics,degraded,reasons,trace if debug and final_scope.debug_traces_allowed else None)
+            return AdvancedEvidenceResponse("advanced-evidence/1",trace.request_id,plan.plan_id,snapshot,status,tuple(exact),tuple(structured),tuple(passages[:top_k]),tuple(gaps),diagnostics,degraded,reasons,trace if debug and final_scope.debug_traces_allowed else None,tuple(graph_paths[:top_k]))
         except Exception:
             raise
         finally:

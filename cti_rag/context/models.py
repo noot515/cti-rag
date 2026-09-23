@@ -66,6 +66,7 @@ class ContextPack:
     missing_obligations:Tuple[PlanGap,...]
     origin_groups:Tuple[str,...]
     tokenizer_fingerprint:str
+    graph_paths:Tuple[Any,...]=()
 
 @dataclass(frozen=True)
 class ChannelDiagnostic:
@@ -104,3 +105,4 @@ class AdvancedEvidenceResponse:
     degraded:bool
     degradation_reasons:Tuple[str,...]
     trace:Optional[RetrievalTrace]=None
+    graph_paths:Tuple[Any,...]=()

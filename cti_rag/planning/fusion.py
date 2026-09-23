@@ -21,6 +21,7 @@ class FusionResult:
     gaps:Tuple[object,...]
     channel_statuses:Tuple[Tuple[str,str],...]
     configuration_hash:str
+    graph_paths:Tuple[object,...]=()
 
 def _variant_group(executions,k):
     unique={}
@@ -39,13 +40,16 @@ def _variant_group(executions,k):
 
 def grouped_rrf(execution,k=60,top_k=20):
     if k<=0 or top_k<=0:raise ValueError("RRF k/top_k must be positive")
-    passage_exec=[]; exact=[]; structured=[]; statuses=[]
+    passage_exec=[]; exact=[]; structured=[]; graph_paths=[]; statuses=[]
     for item in execution.nodes:
         op=item.node.operation; result=item.result
         if op in (PlanOperation.LEXICAL,PlanOperation.DENSE):
             passage_exec.append(item); statuses.append((item.node.node_id,getattr(getattr(result,"status",None),"value",str(getattr(result,"status","unknown")))))
         elif op==PlanOperation.EXACT:exact.append(result)
         elif op==PlanOperation.STRUCTURED:structured.append(result)
+        elif op==PlanOperation.GRAPH:
+            statuses.append((item.node.node_id,getattr(getattr(result,"status",None),"value",str(getattr(result,"status","unknown")))))
+            if isinstance(result,ChannelResult) and result.status==ChannelStatus.OK:graph_paths.extend(result.items)
     channel_groups={}
     for item in passage_exec:channel_groups.setdefault((item.node.subquestion_id,item.node.operation.value),[]).append(item)
     channel_rankings={key:_variant_group(items,k) for key,items in channel_groups.items()}
@@ -70,4 +74,4 @@ def grouped_rrf(execution,k=60,top_k=20):
         if not added:break
         index+=1
     config_hash=sha256_hex({"method":"grouped_rrf","k":k,"top_k":top_k,"channels":tuple(sorted(channel_groups))})
-    return FusionResult(tuple(output),tuple(exact),tuple(structured),execution.gaps,tuple(statuses),config_hash)
+    return FusionResult(tuple(output),tuple(exact),tuple(structured),execution.gaps,tuple(statuses),config_hash,tuple(graph_paths))
