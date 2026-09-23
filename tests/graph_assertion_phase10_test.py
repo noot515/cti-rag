@@ -40,7 +40,8 @@ def assertion(rev,left,predicate,right,policy=PUBLIC,available=NOW,valid_from=No
 def build_graph(tmp,entities,assertions,template,support_revisions=None):
     catalog=SnapshotCatalogStore.sqlite(Path(tmp)/"catalog.db")
     resolver=EntityResolutionJournal(entities)
-    port=ReferenceGraphPort(catalog,SupportStore(support_revisions or [a.revision_uid for a in assertions]),(template,),resolver)
+    support_revisions=[a.revision_uid for a in assertions] if support_revisions is None else support_revisions
+    port=ReferenceGraphPort(catalog,SupportStore(support_revisions),(template,),resolver)
     revs=tuple(sorted({a.revision_uid for a in assertions}))
     generation=port.build(ProjectionBuildRequest("graph-g","graph",revs,("graph-assertion/1",),("graph",)),entities,assertions)
     pub=SnapshotPublisher(catalog);pub.stage_generation(generation);manifest=pub.publish(("graph-g",),("graph",),created_at=NOW)
