@@ -63,4 +63,8 @@ def default_identifier_registry():
     reg.register("doi","work",_regex(r"10\.[0-9]{4,9}/\S+",lower=True))
     reg.register("rfc","rfc",_regex(r"RFC[ -]?[0-9]+",upper=True,transform=lambda v:"RFC "+re.sub(r"^RFC[ -]?","",v)))
     reg.register("isbn","edition",_regex(r"(?:97[89])?[0-9]{9}[0-9X]",upper=True))
+    reg.register("work-id","work",_regex(r"WORK:[A-Z0-9._-]+",upper=True))
+    reg.register("edition-id","edition",_regex(r"EDITION:[A-Z0-9._-]+",upper=True))
+    reg.register("passage-id","passage",_regex(r"PASSAGE:[A-Z0-9._:-]+",upper=True))
+    reg.register("cts","passage",_regex(r"urn:cts:[^\s]+",lower=True))
     return reg

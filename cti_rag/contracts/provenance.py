@@ -4,7 +4,7 @@ import math
 from typing import Any, Mapping, Optional, Tuple, Union
 from .errors import UnknownDiscriminatorError, ValidationError
 class LocatorKind(str,Enum):
-    CHARACTER_SPAN="character_span"; JSON_POINTER="json_pointer"; PAGE="page"; TABLE_KEY="table_key"; TEI="tei"; CANONICAL_PASSAGE="canonical_passage"
+    CHARACTER_SPAN="character_span"; JSON_POINTER="json_pointer"; PAGE="page"; TABLE_KEY="table_key"; TEI="tei"; IIIF="iiif"; CANONICAL_PASSAGE="canonical_passage"
 @dataclass(frozen=True)
 class CharacterSpanLocator:
     start:int; end:int; kind:str=LocatorKind.CHARACTER_SPAN.value
@@ -41,11 +41,18 @@ class TeiLocator:
     def __post_init__(self):
         if not self.xpath.startswith("/"): raise ValidationError("TEI xpath must be absolute")
 @dataclass(frozen=True)
+class IiifLocator:
+    canvas_id:str; page:int; bbox:Optional[Tuple[float,float,float,float]]=None; kind:str=LocatorKind.IIIF.value
+    def __post_init__(self):
+        if not self.canvas_id.strip() or self.page<1: raise ValidationError("IIIF locator requires canvas_id and 1-based page")
+        if self.bbox is not None:
+            if len(self.bbox)!=4 or any(not math.isfinite(v) for v in self.bbox): raise ValidationError("invalid IIIF bbox")
+@dataclass(frozen=True)
 class CanonicalPassageLocator:
     scheme:str; value:str; kind:str=LocatorKind.CANONICAL_PASSAGE.value
     def __post_init__(self):
         if not self.scheme.strip() or not self.value.strip(): raise ValidationError("canonical passage fields required")
-Locator=Union[CharacterSpanLocator,JsonPointerLocator,PageLocator,TableKeyLocator,TeiLocator,CanonicalPassageLocator]
+Locator=Union[CharacterSpanLocator,JsonPointerLocator,PageLocator,TableKeyLocator,TeiLocator,IiifLocator,CanonicalPassageLocator]
 def locator_to_data(l):
     d={"kind":l.kind}
     for k,v in l.__dict__.items():
@@ -58,6 +65,7 @@ def locator_from_dict(d:Mapping[str,Any]):
     if k==LocatorKind.PAGE.value:return PageLocator(int(d["page"]),None if d.get("bbox") is None else tuple(map(float,d["bbox"])))
     if k==LocatorKind.TABLE_KEY.value:return TableKeyLocator(str(d["table"]),tuple((str(a),str(b)) for a,b in d["row_key"]),d.get("column"))
     if k==LocatorKind.TEI.value:return TeiLocator(str(d["xpath"]),d.get("canonical_id"))
+    if k==LocatorKind.IIIF.value:return IiifLocator(str(d["canvas_id"]),int(d["page"]),None if d.get("bbox") is None else tuple(map(float,d["bbox"])))
     if k==LocatorKind.CANONICAL_PASSAGE.value:return CanonicalPassageLocator(str(d["scheme"]),str(d["value"]))
     raise UnknownDiscriminatorError(f"unknown locator kind: {k!r}")
 @dataclass(frozen=True)
