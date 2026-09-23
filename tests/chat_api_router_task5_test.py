@@ -271,6 +271,7 @@ def test_temporary_chat_stream_contains_actual_model_metadata_from_router():
 
     async def _run():
         response = await chat_api.temporary_chat(
+            request=object(),
             query="hello router",
             meta={"model_provider": "deepseek", "model_name": "deepseek-chat"},
         )
@@ -403,6 +404,7 @@ def test_stream_retrieval_gating_still_respects_use_web_without_db_id():
 
     async def _run():
         response = await chat_api.chat_post(
+            request=object(),
             query="hello",
             user_id=1,
             thread_id="thread-1",
