@@ -68,7 +68,6 @@ class ContextPack:
     tokenizer_fingerprint:str
     graph_paths:Tuple[Any,...]=()
     join_results:Tuple[Any,...]=()
-    join_results:Tuple[Any,...]=()
 
 @dataclass(frozen=True)
 class ChannelDiagnostic:
