@@ -11,6 +11,7 @@ class SourceManifest:
     source_id:str; domain:str; format:str; upstream_object_type:str; versioning_strategy:str; license_id:Optional[str]
     access_label:AccessLabel; processing_class:ProcessingClass; retention_class:str; update_strategy:str; deletion_strategy:str
     availability_basis:AvailabilityBasis; supported_projections:Tuple[str,...]; schema_version:str="source-manifest/1"
+    source_uri:Optional[str]=None; license_notice:Optional[str]=None; connector_fingerprint:Optional[str]=None; parser_fingerprint:Optional[str]=None
     def __post_init__(self):
         required=(self.source_id,self.domain,self.format,self.upstream_object_type,self.versioning_strategy,self.retention_class,self.update_strategy,self.deletion_strategy)
         if not all(v.strip() for v in required): raise ValueError("source manifest required fields must be non-empty")

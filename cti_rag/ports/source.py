@@ -7,7 +7,7 @@ class SourceRecord:
     record_key:str; raw_bytes:bytes; upstream_version:Optional[str]=None; claimed_digest:Optional[str]=None
 @dataclass(frozen=True)
 class SourcePage:
-    records:Tuple[SourceRecord,...]; next_cursor:Optional[str]; exhausted:bool=False
+    records:Tuple[SourceRecord,...]; next_cursor:Optional[str]; exhausted:bool=False; deletions:Tuple["SourceDeletion",...]=()
 @dataclass(frozen=True)
 class SourceDeletion:
     stable_upstream_id:str; reason:str

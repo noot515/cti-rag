@@ -144,6 +144,12 @@ class CanonicalMetadataStore:
                 self.execute(cur,"UPDATE outbox SET status=?, attempts=?, last_error=? WHERE event_id=?",("dead_letter",attempts,error,event.event_id))
                 self._insert_if_absent(cur,"dead_letters","event_id",event.event_id,("event_id","payload_json","reason","attempts","created_at"),(event.event_id,event.payload_json,error,attempts,now))
             else:self.execute(cur,"UPDATE outbox SET attempts=?, last_error=? WHERE event_id=?",(attempts,error,event.event_id))
+    def revision_uids_for_source_object(self,source_id,stable_upstream_id):
+        conn=self._connection_factory(); cur=conn.cursor()
+        try:
+            self.execute(cur,"SELECT r.revision_uid FROM revisions r JOIN source_objects o ON r.object_uid=o.object_uid WHERE o.source_id=? AND o.stable_upstream_id=? ORDER BY r.revision_uid",(source_id,stable_upstream_id))
+            return tuple(r[0] for r in cur.fetchall())
+        finally:cur.close(); conn.close()
     def add_revocation(self,target_uid,reason):
         event_id=namespaced_uid("del","evidence.revocation",{"target_uid":target_uid,"reason":reason}); now=datetime.now(timezone.utc); cleanup_id=namespaced_uid("evt","projection.cleanup",{"target_uid":target_uid,"reason":reason})
         payload=_json({"target_uid":target_uid,"reason":reason})
