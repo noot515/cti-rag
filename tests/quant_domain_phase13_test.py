@@ -49,7 +49,7 @@ class Phase13QuantTests(unittest.TestCase):
     def test_source_metadata_real_shape_coordinates_and_readiness_are_explicit(self):
         company=SecNormalizer().normalize(asyncio.run(SecConnector((SEC_COMPANY_FIXTURE,)).fetch_page(None)).records[0]);self.assertEqual(json.loads(company.normalized_bytes)["cik"],"0000123456")
         filing=SecNormalizer().normalize(asyncio.run(SecConnector((SEC_FILING_FIXTURE,)).fetch_page(None)).records[0]);f=json.loads(filing.normalized_bytes)
-        self.assertTrue(f["facts"][0]["source_coordinate"].startswith("0000123456-26-000001:ctx-revenue:"));self.assertIn("example-8k.htm",f["sections"][0]["source_coordinate"])
+        self.assertTrue(f["facts"][0]["source_coordinate"].startswith("0000123456-26-000001:ctx-revenue:"));self.assertEqual(f["facts"][0]["period_type"],"duration");self.assertIn("example-8k.htm",f["sections"][0]["source_coordinate"])
         macro=FredAlfredNormalizer().normalize(asyncio.run(FredAlfredConnector().fetch_page(None)).records[0]);self.assertEqual(json.loads(macro.normalized_bytes)["source_coordinate"],"GDPX:2025-12-01:2026-01-10")
         for manifest in (SEC_MANIFEST,FRED_MANIFEST,PRICE_MANIFEST,ACTION_MANIFEST,SECURITY_MASTER_MANIFEST):
             self.assertTrue(manifest.format and manifest.license_notice and manifest.connector_fingerprint and manifest.parser_fingerprint)
@@ -108,6 +108,8 @@ class Phase13QuantTests(unittest.TestCase):
             self.assertEqual(resolver.resolve("XYZ","XNAS","2024-06-01T00:00:00Z").security_id,"SEC-OLD")
             self.assertEqual(resolver.resolve("XYZ","XNAS","2026-01-01T00:00:00Z").security_id,"SEC-NEW")
             with self.assertRaises(ValueError):resolver.resolve("XYZ","",None)
+            duplicate=alias_rows+(dict(alias_rows[0]),);ambiguous=TickerAliasResolver(duplicate)
+            with self.assertRaisesRegex(ValueError,"ambiguous_or_missing_ticker_alias"):ambiguous.resolve("XYZ","XNAS","2024-06-01T00:00:00Z")
             port=DuckDBStructuredPort(quant_dataset_registry(bundle.structured_rows));snap=SnapshotManifestRef("quant-manifest","c",NOW,("structured-g",))
             spec=StructuredQuerySpec("quant_universe",select_fields=("security_id","delisted_at"),predicates=(Predicate("universe_id",PredicateOperator.EQ,"TEST-100"),),valid_at_iso="2024-06-01T00:00:00Z")
             hist=asyncio.run(port.execute(StructuredRequest(spec,SCOPE,TemporalRequest(TemporalMode.CURRENT),snap)))
