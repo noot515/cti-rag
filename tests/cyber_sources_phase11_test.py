@@ -4,7 +4,7 @@ from pathlib import Path
 
 from cti_rag.contracts import AccessLabel,CandidateBudget,ProcessingClass,TemporalMode,TemporalRequest
 from cti_rag.domains.cybersecurity import (
-    ATTACK_MANIFEST,CVE_MANIFEST,KEV_MANIFEST,ATTACK_STIX_FIXTURE,ATTACK_STIX_REVOKED_FIXTURE,CVE_V5_FIXTURE,CVE_V5_UPDATED_FIXTURE,INVALID_STIX_FIXTURE,KEV_FIXTURE,
+    ATTACK_MANIFEST,CVE_MANIFEST,KEV_MANIFEST,CORE_CYBER_BENCHMARK,ATTACK_STIX_FIXTURE,ATTACK_STIX_REVOKED_FIXTURE,CVE_V5_FIXTURE,CVE_V5_UPDATED_FIXTURE,INVALID_STIX_FIXTURE,KEV_FIXTURE,
     AttackStixConnector,AttackStixNormalizer,CveJsonV5Normalizer,CveListConnector,CyberProjectionRebuilder,CyberSourceLifecycle,KevConnector,KevNormalizer,
     SourceAdapterStatus,cyber_dataset_registry,source_coverage_matrix
 )
@@ -46,6 +46,10 @@ class Phase11CyberSourceTests(unittest.TestCase):
         matrix={x.source_id:x for x in source_coverage_matrix()}
         for source_id in ("mitre-attack-stix","cve-list-v5","cisa-kev"):
             self.assertEqual(matrix[source_id].status,SourceAdapterStatus.FIXTURE_VALIDATED);self.assertTrue(matrix[source_id].connector and matrix[source_id].normalizer)
+        for manifest in (ATTACK_MANIFEST,CVE_MANIFEST,KEV_MANIFEST):
+            self.assertTrue(manifest.source_uri);self.assertTrue(manifest.license_id);self.assertTrue(manifest.license_notice);self.assertTrue(manifest.connector_fingerprint);self.assertTrue(manifest.parser_fingerprint)
+        self.assertEqual({c.expected_kind for c in CORE_CYBER_BENCHMARK},{"exact","passage","structured","graph_path"})
+        self.assertTrue(all(c.source_ids for c in CORE_CYBER_BENCHMARK))
         for source_id in ("nvd","ghsa","cwe","capec","d3fend","atlas","car","attack-flow","misp","sigma","atomic-red-team","cvefixes","megavul","poc-metadata","soc-corpora"):
             self.assertEqual(matrix[source_id].status,SourceAdapterStatus.DEFERRED);self.assertTrue(matrix[source_id].reason)
 
