@@ -7,7 +7,7 @@ COMMON=(
 )
 FUNDAMENTAL_SCHEMA=DatasetSchema("quant_fundamental","quant_fundamental",COMMON+(
  FieldSchema("cik","VARCHAR",nullable=False),FieldSchema("accession","VARCHAR",nullable=False),FieldSchema("form","VARCHAR"),FieldSchema("tag","VARCHAR",nullable=False),FieldSchema("namespace","VARCHAR",nullable=False),
- FieldSchema("value","DOUBLE"),FieldSchema("unit","VARCHAR",nullable=False),FieldSchema("currency","VARCHAR"),FieldSchema("period_start","VARCHAR"),FieldSchema("period_end","VARCHAR"),FieldSchema("reporting_basis","VARCHAR"),FieldSchema("context_id","VARCHAR"),FieldSchema("source_coordinate","VARCHAR",nullable=False),FieldSchema("amendment","BOOLEAN",nullable=False),
+ FieldSchema("value","DOUBLE"),FieldSchema("unit","VARCHAR",nullable=False),FieldSchema("currency","VARCHAR"),FieldSchema("period_type","VARCHAR",nullable=False),FieldSchema("period_start","VARCHAR"),FieldSchema("period_end","VARCHAR"),FieldSchema("reporting_basis","VARCHAR"),FieldSchema("context_id","VARCHAR"),FieldSchema("source_coordinate","VARCHAR",nullable=False),FieldSchema("amendment","BOOLEAN",nullable=False),
 ),("cik","tag","period_end","unit","context_id"),data_snapshot="quant-fixture/1",allowed_join_keys=("cik","accession"))
 MACRO_SCHEMA=DatasetSchema("quant_macro","quant_macro",COMMON+(
  FieldSchema("series_id","VARCHAR",nullable=False),FieldSchema("observation_date","VARCHAR",nullable=False),FieldSchema("value","DOUBLE"),FieldSchema("unit","VARCHAR",nullable=False),FieldSchema("realtime_start","VARCHAR",nullable=False),FieldSchema("realtime_end","VARCHAR"),FieldSchema("frequency","VARCHAR"),FieldSchema("seasonal_adjustment","VARCHAR"),FieldSchema("source_coordinate","VARCHAR",nullable=False),
