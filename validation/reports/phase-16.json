@@ -1,0 +1,59 @@
+{
+  "schema_version": "phase-report/1",
+  "phase": 16,
+  "status": "blocked",
+  "own_gate": "passed",
+  "baseline_commit": "15f4050a387bf41b8d77daf05e271ccfe9e522da",
+  "code_checkpoint": "595a48eda8b55ea3870ec6a8ab8391f64160853c",
+  "parent_report_ids": [
+    "phase-15"
+  ],
+  "missing_prerequisite": "phase-14",
+  "fingerprints": {
+    "planning_models_blob": "10752dfa13b14e2ad2539f56f0a74a397257d2ab",
+    "executor_blob": "95f9e8f4825179a4319f6b82beba6f2a566d7924",
+    "fusion_blob": "407cb41835e8269b10e0857b02aecab6ea6531c7",
+    "cross_domain_blob": "f2560ec12f51824cf00a580a9c03f3c1df3cbc4f",
+    "cross_domain_fixture_blob": "94b3d266028b50627c9179484a937fbc688ad3c1",
+    "context_models_blob": "9d1a3cf49e0c277ea240a412849753eba95f2023",
+    "context_packer_blob": "4d9f8550f6b7467db99ad1936ddaa0555143a347",
+    "advanced_retrieval_blob": "22423464b4ef263bafb996b7a0441b3e75def66f",
+    "phase_test_blob": "f4c9e805bcad28ad574acd655cdb0fe7a4e02799",
+    "validation_registry_blob": "ec3185e687675ebc1b262b4e16e3207daeea790d",
+    "workflow_blob": "67aaba40cd907bce604d79d2b20289ded020ac22",
+    "config_blob": "a90848b9f9884c344d3fe2cc10cd6ec8c13da591",
+    "model": "none"
+  },
+  "ci": {
+    "run_id": 35861752271,
+    "job_id": 107183398771,
+    "python": "3.13.15",
+    "cumulative_unittests_passed": 140,
+    "phase_gate_tests_passed": 7,
+    "legacy_regression_tests_passed": 8,
+    "cumulative_seconds": 11.04,
+    "phase_seconds": 1.669
+  },
+  "ground_truth": {
+    "event_study_alpha": 0,
+    "event_study_beta": 2,
+    "cumulative_abnormal_return": 0.03
+  },
+  "blocked_by": [
+    "phase0-legacy-fast-suite",
+    "phase0-b0-offline-benchmark",
+    "phase5-mysql-fulltext-real-service",
+    "phase6-actual-embedding-model",
+    "phase6-milvus-real-lifecycle",
+    "phase8-actual-reranker-model",
+    "phase8-actual-generator-tokenizer",
+    "phase10-real-neo4j-restart-lifecycle",
+    "phase11-live-core-source-lifecycle",
+    "phase12-live-network-source-lifecycle",
+    "phase13-live-sec-fred-lifecycle",
+    "phase13-licensed-market-data-entitlement",
+    "phase14-required-prerequisite",
+    "phase15-live-humanities-source-lifecycle"
+  ],
+  "new_retrieval_enabled": false
+}

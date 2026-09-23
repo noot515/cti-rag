@@ -143,3 +143,34 @@ The event-study specification pins target security, benchmark security, estimati
 
 ## D-0047 — Finance/network source readiness distinguishes fixture mechanics from live entitlement
 RFC, BGP/RPKI, DNS/RDAP, SEC, FRED/ALFRED, price, corporate-action, and security-master fixture adapters may be `fixture_validated` while their live source lifecycle remains blocked or deferred. Synthetic licensed-file fixtures do not imply a production market-data license, provider entitlement, or access to an unprovided feed.
+
+
+## D-0048 — Humanities search normalization never replaces the citable transcription
+Humanities passages preserve source/original transcription separately from a normalized search representation. OCR cleanup, Unicode normalization, and analyzer-specific forms may improve retrieval, but a quotation resolves through the original passage plus TEI/IIIF/canonical provenance. Search normalization is derived evidence, not an editorial rewrite of the source.
+
+## D-0049 — Historical uncertainty is represented as intervals and precision labels, not fabricated instants
+Humanities date metadata uses bounded intervals and explicit precision such as exact date, month, year, range, approximate, or uncertain. Month/year/uncertain source dates remain structured interval evidence and do not become exact `valid_from` instants. Interval-overlap queries operate on the declared bounds.
+
+## D-0050 — Work, edition, witness, translation, passage, page, article, and institution are separate identities
+Humanities identity is namespace/type-qualified. An edition is related to a work; a witness is related to an edition; a translation is another edition with an explicit `translation_of` assertion. Editorial notes and scholarship are separate passage roles. They do not become primary-source quotations merely by sharing a document container.
+
+## D-0051 — Humanities rights/readiness is source- and item-specific
+The validated Gutenberg text fixture is explicitly scoped as public-domain-in-the-USA material; TEI and newspaper/IIIF fixtures are synthetic source-shaped records. A source-level rights statement does not erase item-level review requirements. BigLAM, DPLA, Europeana, museums, and other archives remain deferred until source-specific rights, update, provenance, and analyzer contracts are pinned.
+
+## D-0052 — Cross-domain joins use typed keys plus source-backed support, never display names
+A join key is a `(namespace, entity_type, canonical identifier)` triple. Typed join records additionally carry relation type, source, provenance, policy, availability, and validity interval. When bound to a snapshot catalog/evidence store, every supporting revision must belong to the pinned manifest, remain unrevoked, and resolve to evidence. Display-name equality is never sufficient to satisfy a join.
+
+## D-0053 — Unresolved joins block dependent graph and calculation nodes
+A required join may resolve, remain ambiguous, be missing, be time-incompatible, expose suggestion-only candidates, or be rejected. Only `resolved` may feed a dependent graph traversal or verified calculation. Ambiguity is returned as partial evidence; the runtime does not choose an arbitrary candidate to keep the DAG moving.
+
+## D-0054 — Graph suggestions are not confirmed cross-domain identity
+Graph-derived candidate keys may be returned separately as suggestions, but they cannot satisfy a confirmed typed-join obligation. This preserves a distinction between exploratory association and source-backed identity/relation evidence.
+
+## D-0055 — Cross-domain completeness is obligation-based and replayable
+Each evidence obligation receives a status and citation count. Required unsatisfied obligations become explicit gaps in the advanced evidence response. Replay traces record plan/configuration identity, snapshot, node statuses, typed-join decisions, and structured-calculation input lineage. Passage fusion remains passage-only; exact, graph, structured, and join evidence stay typed outside reciprocal-rank fusion.
+
+## D-0056 — Global budgets and subquestion coverage survive cross-domain expansion
+Cross-domain plans are rejected before execution when backend-call/candidate/context budgets are exceeded. Passage fusion and context packing preserve coverage across subquestions so a large corpus cannot consume all packed context before a required smaller-domain subquestion contributes evidence.
+
+## D-0057 — Phase 14 remains an explicit prerequisite blocker
+The current branch contains no Phase 14 implementation/report. Phases 15 and 16 can therefore pass their own independently executable gates, but cumulative acceptance through Phase 16 remains fail-closed until Phase 14 and its required evidence are supplied. The missing phase is not silently inferred or marked complete.

@@ -1,7 +1,7 @@
 {
   "schema_version": "phase-status/1",
   "baseline_commit": "15f4050a387bf41b8d77daf05e271ccfe9e522da",
-  "latest_code_checkpoint": "0b68a7a5dcb84036fc9592a185d66ebfd1d0f852",
+  "latest_code_checkpoint": "595a48eda8b55ea3870ec6a8ab8391f64160853c",
   "phases": {
     "0": {
       "implementation": "implemented",
@@ -98,6 +98,33 @@
       "acceptance": "blocked_by_external_required_gates"
     },
     "14": {
+      "implementation": "not_started",
+      "own_gate": "not_run",
+      "acceptance": "blocked_required_prerequisite"
+    },
+    "15": {
+      "implementation": "implemented",
+      "own_gate": "passed",
+      "humanities_fixture_lifecycle": "passed",
+      "work_edition_passage_identity": "passed",
+      "ocr_original_quote_alignment": "passed",
+      "tei_iiif_provenance": "passed",
+      "uncertain_date_intervals": "passed",
+      "translation_witness_separation": "passed",
+      "live_humanities_source_lifecycle": "blocked",
+      "acceptance": "blocked_by_phase14_and_external_required_gates"
+    },
+    "16": {
+      "implementation": "implemented",
+      "own_gate": "passed",
+      "cross_domain_e2e_fixture": "passed",
+      "typed_join_ambiguity_and_time_gates": "passed",
+      "missing_numeric_evidence": "passed",
+      "global_budget_and_fair_packing": "passed",
+      "obligation_coverage_and_replay_lineage": "passed",
+      "acceptance": "blocked_by_phase14_and_external_required_gates"
+    },
+    "17": {
       "implementation": "not_started",
       "acceptance": "not_run"
     }

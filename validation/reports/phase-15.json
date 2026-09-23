@@ -1,0 +1,55 @@
+{
+  "schema_version": "phase-report/1",
+  "phase": 15,
+  "status": "blocked",
+  "own_gate": "passed",
+  "baseline_commit": "15f4050a387bf41b8d77daf05e271ccfe9e522da",
+  "code_checkpoint": "595a48eda8b55ea3870ec6a8ab8391f64160853c",
+  "parent_report_ids": [
+    "phase-13"
+  ],
+  "missing_prerequisite": "phase-14",
+  "fingerprints": {
+    "provenance_blob": "d5c30865c28f6e619dbc36dc8c55ae4a79c26ba2",
+    "identifier_registry_blob": "571f8496a551ca4db2299fc4ef056dec81043edb",
+    "humanities_spec_blob": "5251a8a35084da81632b618856cf4bb5cf2c5d5f",
+    "fixtures_blob": "45df141f6eedd9169ef5481f33c0ce614775215e",
+    "analyzers_blob": "c260d09290db47ca06c6fc5d9cf8241a7f0ae624",
+    "sources_blob": "dfd8dbfcf5f4a86daa5799c04f3eb865a14b1a2b",
+    "structured_blob": "a86f7adb533df4ad76d04df315be0213a1363e8b",
+    "comparison_blob": "049c38b5eb138ad9b583e22df76fe89ed0bea689",
+    "phrase_blob": "74e97339d8d317111f1d8c134e3f29477bd4bcc2",
+    "projections_blob": "e49b1b2f239ca392075e312a1f64a5d7a7d6d37b",
+    "source_registry_blob": "549316d51e90c0ebee7d4d1406e9a7f7ec30a0a1",
+    "phase_test_blob": "d33ce4e0edfde7bfaae08a71cffca9573a03c80a",
+    "config_blob": "a90848b9f9884c344d3fe2cc10cd6ec8c13da591",
+    "model": "none"
+  },
+  "ci": {
+    "run_id": 35861752271,
+    "job_id": 107183398771,
+    "python": "3.13.15",
+    "cumulative_unittests_passed": 140,
+    "phase_gate_tests_passed": 7,
+    "legacy_regression_tests_passed": 8,
+    "cumulative_seconds": 11.04,
+    "phase_seconds": 0.382
+  },
+  "blocked_by": [
+    "phase0-legacy-fast-suite",
+    "phase0-b0-offline-benchmark",
+    "phase5-mysql-fulltext-real-service",
+    "phase6-actual-embedding-model",
+    "phase6-milvus-real-lifecycle",
+    "phase8-actual-reranker-model",
+    "phase8-actual-generator-tokenizer",
+    "phase10-real-neo4j-restart-lifecycle",
+    "phase11-live-core-source-lifecycle",
+    "phase12-live-network-source-lifecycle",
+    "phase13-live-sec-fred-lifecycle",
+    "phase13-licensed-market-data-entitlement",
+    "phase14-required-prerequisite",
+    "phase15-live-humanities-source-lifecycle"
+  ],
+  "new_retrieval_enabled": false
+}
