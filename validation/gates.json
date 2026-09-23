@@ -13,6 +13,11 @@
     {"id":"phase6-dense-representation-invariants","phase":6,"required":true,"command":"python -m unittest tests.dense_phase6_test -v"},
     {"id":"phase6-actual-embedding-model","phase":6,"required":true,"status_override":"blocked","reason":"No pinned actual embedding model/runtime was available in offline CI. Deterministic fake embeddings validate mechanics only and are not semantic retrieval-quality evidence."},
     {"id":"phase6-milvus-real-lifecycle","phase":6,"required":true,"status_override":"blocked","reason":"No reachable compatible Milvus service was available to execute real publication, filtered ANN, deletion, restart persistence, and ANN-vs-exhaustive recall validation."},
-    {"id":"phase7-query-dag-fusion-invariants","phase":7,"required":true,"command":"python -m unittest tests.query_dag_fusion_phase7_test -v"}
+    {"id":"phase7-query-dag-fusion-invariants","phase":7,"required":true,"command":"python -m unittest tests.query_dag_fusion_phase7_test -v"},
+    {"id":"phase8-rerank-context-api-invariants","phase":8,"required":true,"command":"python -m unittest tests.rerank_context_api_phase8_test -v"},
+    {"id":"phase8-legacy-api-regression","phase":8,"required":true,"command":"python -m pytest -q tests/chat_api_router_task5_test.py tests/dockerfile_api_requirements_split_test.py"},
+    {"id":"phase8-actual-reranker-model","phase":8,"required":true,"status_override":"blocked","reason":"No pinned actual reranker model/runtime was available in offline CI. Spy/fake rerankers validate authorization, degradation, ordering, and packing mechanics only."},
+    {"id":"phase8-actual-generator-tokenizer","phase":8,"required":true,"status_override":"blocked","reason":"The actual configured answer-generator tokenizer/model was not loaded in offline CI. TokenizerAdapter and deterministic tokenizer fixtures validate exact token-budget accounting mechanics only."},
+    {"id":"phase9-structured-temporal-duckdb-invariants","phase":9,"required":true,"command":"python -m unittest tests.structured_temporal_phase9_test -v"}
   ]
 }

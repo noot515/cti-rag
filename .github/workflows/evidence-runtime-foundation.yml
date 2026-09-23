@@ -9,39 +9,54 @@ on:
 jobs:
   deterministic-evidence-runtime:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.13"
+      - name: Install narrow validation dependencies
+        run: python -m pip install "duckdb>=1.4,<2" pytest
       - name: Compile side-effect-free runtime and chained gate modules
         run: |
           python -m compileall -q cti_rag scripts
-          python -m py_compile tests/contracts_phase1_test.py tests/validation_runner_test.py tests/ports_policy_phase2_test.py tests/canonical_ingestion_phase3_test.py tests/snapshot_publication_phase4_test.py tests/exact_lexical_phase5_test.py tests/dense_phase6_test.py tests/query_dag_fusion_phase7_test.py tests/actual_dense_integrations_phase6_test.py
+          python -m py_compile tests/contracts_phase1_test.py tests/validation_runner_test.py tests/ports_policy_phase2_test.py tests/canonical_ingestion_phase3_test.py tests/snapshot_publication_phase4_test.py tests/exact_lexical_phase5_test.py tests/dense_phase6_test.py tests/query_dag_fusion_phase7_test.py tests/rerank_context_api_phase8_test.py tests/structured_temporal_phase9_test.py tests/actual_dense_integrations_phase6_test.py
       - name: Run cumulative deterministic gates
         run: |
-          python -m unittest tests.contracts_phase1_test tests.validation_runner_test tests.ports_policy_phase2_test tests.canonical_ingestion_phase3_test tests.snapshot_publication_phase4_test tests.exact_lexical_phase5_test tests.dense_phase6_test tests.query_dag_fusion_phase7_test -v
+          python -m unittest tests.contracts_phase1_test tests.validation_runner_test tests.ports_policy_phase2_test tests.canonical_ingestion_phase3_test tests.snapshot_publication_phase4_test tests.exact_lexical_phase5_test tests.dense_phase6_test tests.query_dag_fusion_phase7_test tests.rerank_context_api_phase8_test tests.structured_temporal_phase9_test -v
+      - name: Run affected legacy API regression tests
+        run: python -m pytest -q tests/chat_api_router_task5_test.py tests/dockerfile_api_requirements_split_test.py
       - name: Verify cumulative registry remains fail-closed
         run: |
           set +e
-          python scripts/validate_phases.py --through-phase 7 --report /tmp/cumulative-phase7.json
+          python scripts/validate_phases.py --through-phase 9 --report /tmp/cumulative-phase9.json
           rc=$?
           set -e
           test "$rc" -eq 1
           python - <<'PY'
           import json
-          with open("/tmp/cumulative-phase7.json", "r", encoding="utf-8") as handle:
+          with open("/tmp/cumulative-phase9.json", "r", encoding="utf-8") as handle:
               report = json.load(handle)
           states = {gate["id"]: gate["status"] for gate in report["gates"]}
           assert report["status"] == "fail"
-          assert states["phase4-snapshot-publication-invariants"] == "pass"
-          assert states["phase5-exact-independent-lexical-invariants"] == "pass"
-          assert states["phase6-dense-representation-invariants"] == "pass"
-          assert states["phase7-query-dag-fusion-invariants"] == "pass"
-          assert states["phase0-legacy-fast-suite"] == "blocked"
-          assert states["phase0-b0-offline-benchmark"] == "blocked"
-          assert states["phase5-mysql-fulltext-real-service"] == "blocked"
-          assert states["phase6-actual-embedding-model"] == "blocked"
-          assert states["phase6-milvus-real-lifecycle"] == "blocked"
+          for gate in (
+              "phase4-snapshot-publication-invariants",
+              "phase5-exact-independent-lexical-invariants",
+              "phase6-dense-representation-invariants",
+              "phase7-query-dag-fusion-invariants",
+              "phase8-rerank-context-api-invariants",
+              "phase8-legacy-api-regression",
+              "phase9-structured-temporal-duckdb-invariants",
+          ):
+              assert states[gate] == "pass", (gate, states[gate])
+          for gate in (
+              "phase0-legacy-fast-suite",
+              "phase0-b0-offline-benchmark",
+              "phase5-mysql-fulltext-real-service",
+              "phase6-actual-embedding-model",
+              "phase6-milvus-real-lifecycle",
+              "phase8-actual-reranker-model",
+              "phase8-actual-generator-tokenizer",
+          ):
+              assert states[gate] == "blocked", (gate, states[gate])
           PY

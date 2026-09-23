@@ -5,7 +5,7 @@ from types import SimpleNamespace
 
 from cti_rag.application.advanced_retrieval import AdvancedRetrievalService
 from cti_rag.context import (
-    ContextBudget,ContextPacker,EvidenceHydrator,EvidencePassage,EvidenceResponseStatus,FusionResult,
+    ContextBudget,ContextPacker,EvidenceHydrator,EvidencePassage,EvidenceResponseStatus,
     PassageMetadata,PassageReranker,compare_b4_to_b3,
 )
 from cti_rag.contracts import (
@@ -14,7 +14,7 @@ from cti_rag.contracts import (
 )
 from cti_rag.ingestion import IngestionPipeline,SYNTHETIC_MANIFEST,SyntheticCyberConnector,SyntheticCyberNormalizer
 from cti_rag.infrastructure import CanonicalMetadataStore,FileObjectStore
-from cti_rag.planning import DeterministicQueryPlanner,FusedPassage,PlanBudget,QueryExecutor,scope_hash
+from cti_rag.planning import DeterministicQueryPlanner,FusedPassage,FusionResult,PlanBudget,QueryExecutor,scope_hash
 from cti_rag.policy.local import LocalPolicyProvider,PrincipalPolicy,PublicOnlyLocalPolicy
 from cti_rag.ports import (
     AuthenticatedPrincipal,BackendCapabilities,ChannelResult,ChannelStatus,ClientScopeRequest,ProcessingDestination,
