@@ -35,8 +35,8 @@ class ReferenceGraphPort:
     def validate(self,generation):
         current=self.generations.get(generation.generation_id); return bool(current and current[0].checksum==generation.checksum)
     def cleanup(self,generation_id): self.generations.pop(generation_id,None)
-    def _policy(self,policy,source_id,scope):
-        return policy is not None and policy.tenant_id in (scope.tenant_id,"public") and policy.access_label in scope.access_labels and policy.processing_class in scope.processing_classes and (not scope.source_ids or source_id in scope.source_ids)
+    def _policy(self,policy,source_id,scope,enforce_source=True):
+        return policy is not None and policy.tenant_id in (scope.tenant_id,"public") and policy.access_label in scope.access_labels and policy.processing_class in scope.processing_classes and (not enforce_source or not scope.source_ids or source_id in scope.source_ids)
     def _time(self,obj,temporal):
         if temporal.mode==TemporalMode.HISTORICAL_SYSTEM_REPLAY:
             return getattr(obj,"system_manifest_id",None)==temporal.snapshot_manifest_id
@@ -68,7 +68,7 @@ class ReferenceGraphPort:
         gid=self.catalog.generation_for_manifest(request.snapshot.manifest_id,"graph")
         if gid is None or gid not in self.generations:return ChannelResult(ChannelStatus.REJECTED,reason="snapshot has no graph generation")
         generation,entities,assertions=self.generations[gid]; revisions=set(generation.revision_uids)
-        visible_entities={e.entity_uid:e for e in entities if self._policy(e.policy,e.source_id,request.scope) and self._time(e,request.temporal) and not self.catalog.is_revoked(e.entity_uid)}
+        visible_entities={e.entity_uid:e for e in entities if self._policy(e.policy,e.source_id,request.scope,False) and not self.catalog.is_revoked(e.entity_uid)}
         visible_assertions=[]
         for a in assertions:
             if request.relations and a.predicate not in request.relations:continue
