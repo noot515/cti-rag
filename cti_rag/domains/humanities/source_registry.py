@@ -10,7 +10,7 @@ HUMANITIES_SOURCE_COVERAGE=(
  HumanitiesSourceCoverage("tei-perseus-style-fixture",HumanitiesSourceStatus.FIXTURE_VALIDATED,"TEI XML","synthetic TEI/Perseus-style fixture; no live Perseus endpoint or redistribution claim",True,True,None),
  HumanitiesSourceCoverage("chronicling-america-iiif-fixture",HumanitiesSourceStatus.FIXTURE_VALIDATED,"IIIF/newspaper JSON","synthetic newspaper/IIIF metadata with LOC rights guidance; no live item harvest",True,True,"https://www.loc.gov/collections/chronicling-america/"),
  HumanitiesSourceCoverage("biglam",HumanitiesSourceStatus.DEFERRED,"aggregated library/archive metadata","source-specific rights, availability, and update contract not pinned"),
- HumanitiesSourceCoverage("dpla",HumanitiesSourceStatus.DEFERRED,"DPLA JSON-LD API","API key and item-level rights/source coverage not activated","",False,"https://pro.dp.la/developers/api-basics"),
+ HumanitiesSourceCoverage("dpla",HumanitiesSourceStatus.DEFERRED,"DPLA JSON-LD API","API key and item-level rights/source coverage not activated",False,False,"https://pro.dp.la/developers/api-basics"),
  HumanitiesSourceCoverage("europeana",HumanitiesSourceStatus.DEFERRED,"Europeana EDM","per-object rights statements must be preserved; API/source lifecycle not activated",False,False,"https://pro.europeana.eu/page/available-rights-statements"),
  HumanitiesSourceCoverage("museums",HumanitiesSourceStatus.DEFERRED,"institution APIs/IIIF","institution-specific rights and schemas require separate manifests"),
  HumanitiesSourceCoverage("other-archives",HumanitiesSourceStatus.DEFERRED,"archive/IIIF/TEI","rights, provenance, language analyzer, and update semantics must be validated per archive"),
