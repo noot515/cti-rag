@@ -49,7 +49,7 @@ def incident_market_plan(scope,snapshot,temporal=None,budget=None):
     )
     constraints=(("valid_at",EVENT_TIME),)
     nodes=(
-      PlanNode("issuer-exact",PlanOperation.EXACT,"0000123456","incident",1,("quant",),required=True),
+      PlanNode("issuer-exact",PlanOperation.EXACT,"0000123456","incident",1,("quant",),required=True,constraints=(("namespace","cik"),("object_type","legal-entity"))),
       PlanNode("incident-disclosure",PlanOperation.LEXICAL,"fictitious cybersecurity incident","incident",10,("quant",),required=True),
       PlanNode("network-join",PlanOperation.JOIN,"resolve issuer to observed network resource","network",3,("quant","networking"),("issuer-exact",),required=True,template_id=ISSUER_NETWORK_TEMPLATE.template_id,constraints=constraints),
       PlanNode("security-join",PlanOperation.JOIN,"resolve issuer to historical security","return",3,("quant",),("issuer-exact",),required=True,template_id=ISSUER_SECURITY_TEMPLATE.template_id,constraints=constraints),
