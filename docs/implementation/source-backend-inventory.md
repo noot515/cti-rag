@@ -13,15 +13,17 @@ Baseline: `15f4050a387bf41b8d77daf05e271ccfe9e522da`
 | RabbitMQ 3.13 | Background tasks | Reuse after idempotency/outbox contracts exist; projection generation publication remains controlled by the metadata catalog, not queue acknowledgment. |
 | MinIO | Milvus dependency | Not used as canonical identity authority. Canonical object-storage semantics are implemented separately and remain explicit. |
 | Ollama / local embedding runtime | Local model serving | ModelPort-compatible destination. Dense mechanics are implemented, but the repository's actual embedding model was not loaded in offline CI; the real-model gate remains blocked. |
-| Remote model providers | Generation/embedding/reranking | Explicit processing destinations under policy enforcement. Provider authorization occurs before uncached text is assembled or dispatched. |
+| Remote model providers | Generation/embedding/reranking | Explicit processing destinations under policy enforcement. Provider authorization occurs before uncached text is assembled or dispatched. The Phase 08 reranker is centrally owned and receives only authorized hydrated passages; real reranker-model acceptance remains blocked. |
+| DuckDB | Not a baseline service | Added as the structured analytical engine. CI executes a real DuckDB runtime over server-preloaded fixture tables with external access/unsigned extensions disabled and memory/thread/scan/time bounds. Typed query compilation, temporal revision selection, units/nulls, lineage, aggregation semantics, and IP containment pass. |
+| Advanced evidence API | Not a baseline endpoint | `POST /research/advanced-retrieval` is additive, evidence-only, dependency-injected, authenticated, and disabled by default behind `CTI_RAG_ADVANCED_RETRIEVAL_ENABLED`. Existing chat/data endpoints remain the default legacy route. |
 | Tavily/web | Optional live search | Not used for baseline/B0 or Phase 04–07 acceptance; any future live overlay must remain separate from pinned snapshots. |
 
-Existing repository data includes `benchmark/dataset.xlsx`, `config.yaml`, model material under `models/`, and runtime data roots under `./data`. Phases 00–07 did not activate the new retrieval route or mutate the live legacy corpus/indexes.
+Existing repository data includes `benchmark/dataset.xlsx`, `config.yaml`, model material under `models/`, and runtime data roots under `./data`. Phases 00–09 did not activate the new retrieval route or mutate the live legacy corpus/indexes.
 
 **Production lexical choice remains MySQL 8 FULLTEXT.** The adapter has generation IDs, snapshot selection, security/temporal filters, deterministic ordering, and tombstone filtering, but the real MySQL service still requires execution evidence.
 
 **Dense migration strategy:** do not rewrite the legacy KnowledgeBase collection in place. Build new compatible Milvus generations keyed by deterministic passage UID, publish them only through the shared snapshot catalog, and keep incompatible embedding fingerprints physically/logically separate.
 
-**Actual integration evidence available today:** SQLite FTS5 executed persistently in GitHub Actions. Dense and query-DAG/fusion behavior is currently deterministic contract evidence; actual embedding-model and real Milvus lifecycle/ANN gates are intentionally still blocked.
+**Actual integration evidence available today:** SQLite FTS5 executes persistently in GitHub Actions; DuckDB executes as a real analytical engine over preloaded registered tables. The Phase 08 synthetic end-to-end fixture runs source ingestion → canonical objects → published exact/lexical indexes → planning/retrieval → canonical hydration → reranking → tokenizer-bounded context/citation verification → evidence response. Dense semantic quality, real Milvus lifecycle/ANN behavior, actual reranker quality, and the actual configured generator tokenizer remain explicit external gates.
 
 Security note: baseline compose exposure and weak development credential defaults remain recorded baseline risks and were not modified as unrelated work.
