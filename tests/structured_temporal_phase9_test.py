@@ -1,4 +1,7 @@
 import asyncio,unittest
+from types import SimpleNamespace
+from cti_rag.context import ContextBudget,ContextPacker,RerankOutcome
+from cti_rag.planning import FusionResult
 from cti_rag.contracts import AccessLabel,ProcessingClass,SnapshotManifestRef,TemporalMode,TemporalRequest
 from cti_rag.ports import ChannelStatus,EffectiveScope,StructuredRequest
 from cti_rag.structured import (
@@ -73,6 +76,17 @@ class Phase9StructuredTemporalTests(unittest.TestCase):
             StructuredCompiler(self.registry).compile(StructuredQuerySpec("macro",select_fields=('value" FROM macro_fixture; DROP TABLE macro_fixture; --',)),scope("quant"),TemporalRequest(TemporalMode.CURRENT),snap())
         function=StructuredQuerySpec("macro",aggregations=(Aggregation("read_csv","value","x"),))
         self.assertEqual(run(self.port,function,"quant").status,ChannelStatus.REJECTED)
+
+    def test_verified_structured_result_stays_typed_outside_passage_rrf(self):
+        result=run(self.port,StructuredQuerySpec("vulnerability",aggregations=(Aggregation(AggregationFunction.COUNT,None,"count"),)),"cybersecurity")
+        class Tokenizer:
+            name="char";revision="1";fingerprint="char/1"
+            def encode(self,text):return tuple(ord(c) for c in text)
+            def decode(self,tokens):return "".join(chr(v) for v in tokens)
+        plan=SimpleNamespace(budget=SimpleNamespace(max_context_tokens=128),scope=scope("cybersecurity"),snapshot=snap())
+        fusion=FusionResult((),(),(result,),(),(),"cfg")
+        pack=asyncio.run(ContextPacker(Tokenizer(),None).pack(RerankOutcome(()),fusion,plan,ContextBudget(128,8,8)))
+        self.assertEqual(pack.structured_obligations,(result,));self.assertEqual(pack.passages,())
 
     def test_scan_budget_is_distinct_from_output_limit(self):
         bounded=DuckDBStructuredPort(self.registry,max_scan_rows=50)
