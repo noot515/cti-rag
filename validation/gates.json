@@ -18,6 +18,10 @@
     {"id":"phase8-legacy-api-regression","phase":8,"required":true,"command":"python -m pytest -q tests/chat_api_router_task5_test.py tests/dockerfile_api_requirements_split_test.py"},
     {"id":"phase8-actual-reranker-model","phase":8,"required":true,"status_override":"blocked","reason":"No pinned actual reranker model/runtime was available in offline CI. Spy/fake rerankers validate authorization, degradation, ordering, and packing mechanics only."},
     {"id":"phase8-actual-generator-tokenizer","phase":8,"required":true,"status_override":"blocked","reason":"The actual configured answer-generator tokenizer/model was not loaded in offline CI. TokenizerAdapter and deterministic tokenizer fixtures validate exact token-budget accounting mechanics only."},
-    {"id":"phase9-structured-temporal-duckdb-invariants","phase":9,"required":true,"command":"python -m unittest tests.structured_temporal_phase9_test -v"}
+    {"id":"phase9-structured-temporal-duckdb-invariants","phase":9,"required":true,"command":"python -m unittest tests.structured_temporal_phase9_test -v"},
+    {"id":"phase10-graph-assertion-invariants","phase":10,"required":true,"command":"python -m unittest tests.graph_assertion_phase10_test -v"},
+    {"id":"phase10-real-neo4j-restart-lifecycle","phase":10,"required":true,"status_override":"blocked","reason":"The fixed-query Neo4j projection adapter and uniqueness/idempotency mechanics are fixture-tested, and an opt-in real-driver integration exists, but no reachable Neo4j service with restart control was available in CI to execute create/upsert/restart/reconnect/traverse persistence validation."},
+    {"id":"phase11-core-cyber-source-fixtures","phase":11,"required":true,"command":"python -m unittest tests.cyber_sources_phase11_test -v"},
+    {"id":"phase11-live-core-source-lifecycle","phase":11,"required":true,"status_override":"blocked","reason":"ATT&CK STIX, CVE JSON 5.x, and CISA KEV are validated against small pinned real-format offline fixtures. Live upstream fetch/update/delete/rebuild/reconciliation was not executed in CI, so fixture validation is not reported as live validation."}
   ]
 }
