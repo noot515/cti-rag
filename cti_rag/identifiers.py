@@ -66,5 +66,5 @@ def default_identifier_registry():
     reg.register("work-id","work",_regex(r"WORK:[A-Z0-9._-]+",upper=True))
     reg.register("edition-id","edition",_regex(r"EDITION:[A-Z0-9._-]+",upper=True))
     reg.register("passage-id","passage",_regex(r"PASSAGE:[A-Z0-9._:-]+",upper=True))
-    reg.register("cts","passage",_regex(r"urn:cts:[^\s]+",lower=True))
+    reg.register("cts","passage",_regex(r"urn:cts:[^\s]+"))
     return reg
