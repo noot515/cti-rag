@@ -121,7 +121,7 @@ class CveJsonV5Normalizer:
 
 class KevConnector:
     source_id=KEV_MANIFEST.source_id;connector_fingerprint="cisa-kev-connector/1";capabilities=BackendCapabilities(pagination=True,cancellation=True,max_batch_size=1000)
-    def __init__(self,catalog_bytes=KEV_FIXTURE,page_size=1000):self.catalog_bytes=catalog_bytes;self.page_size=page_size
+    def __init__(self,catalog_bytes=KEV_FIXTURE,page_size=1000,previous_cve_ids=()):self.catalog_bytes=catalog_bytes;self.page_size=page_size;self.previous_cve_ids=tuple(previous_cve_ids)
     def _records(self):
         try:data=json.loads(self.catalog_bytes.decode("utf-8"))
         except Exception:return (SourceRecord("invalid-kev",self.catalog_bytes,"invalid"),)
@@ -130,7 +130,9 @@ class KevConnector:
             body=dict(item);body["_catalogVersion"]=version;body["_dateReleased"]=data.get("dateReleased");raw=canonical_json_bytes(body);records.append(SourceRecord(str(item.get("cveID","invalid")),raw,version))
         return tuple(records)
     async def fetch_page(self,cursor=None,deadline=None,cancellation_token=None):
-        rows=self._records();start=int(cursor or 0);end=min(len(rows),start+self.page_size);next_cursor=None if end>=len(rows) else str(end);return SourcePage(rows[start:end],next_cursor,end>=len(rows))
+        rows=self._records();start=int(cursor or 0);end=min(len(rows),start+self.page_size);next_cursor=None if end>=len(rows) else str(end)
+        current=tuple(r.record_key for r in rows);deletions=tuple(SourceDeletion(cve,"removed from later KEV catalog") for cve in self.previous_cve_ids if cve not in current) if end>=len(rows) else ()
+        return SourcePage(rows[start:end],next_cursor,end>=len(rows),deletions)
 
 class KevNormalizer:
     normalizer_fingerprint="cisa-kev-normalizer/1"
