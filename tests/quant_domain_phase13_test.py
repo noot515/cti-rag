@@ -108,7 +108,7 @@ class Phase13QuantTests(unittest.TestCase):
             self.assertEqual(resolver.resolve("XYZ","XNAS","2024-06-01T00:00:00Z").security_id,"SEC-OLD")
             self.assertEqual(resolver.resolve("XYZ","XNAS","2026-01-01T00:00:00Z").security_id,"SEC-NEW")
             with self.assertRaises(ValueError):resolver.resolve("XYZ","",None)
-            duplicate=alias_rows+[dict(alias_rows[0])];ambiguous=TickerAliasResolver(duplicate)
+            overlap=next(r for r in alias_rows if r["ticker"]=="XYZ" and r["security_id"]=="SEC-OLD");duplicate=alias_rows+[dict(overlap)];ambiguous=TickerAliasResolver(duplicate)
             with self.assertRaisesRegex(ValueError,"ambiguous_or_missing_ticker_alias"):ambiguous.resolve("XYZ","XNAS","2024-06-01T00:00:00Z")
             port=DuckDBStructuredPort(quant_dataset_registry(bundle.structured_rows));snap=SnapshotManifestRef("quant-manifest","c",NOW,("structured-g",))
             spec=StructuredQuerySpec("quant_universe",select_fields=("security_id","delisted_at"),predicates=(Predicate("universe_id",PredicateOperator.EQ,"TEST-100"),),valid_at_iso="2024-06-01T00:00:00Z")
