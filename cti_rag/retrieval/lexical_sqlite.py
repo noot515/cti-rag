@@ -55,6 +55,7 @@ class SQLiteFTS5LexicalIndex:
         revision_uids=tuple(sorted(request.revision_uids))
         if any(d.revision_uid not in set(revision_uids) for d in docs): raise ValueError("document revision outside projection revision set")
         analyzer_versions=tuple(sorted({d.analyzer_version for d in docs}))
+        if not analyzer_versions and len(request.representation_versions)==1: analyzer_versions=(request.representation_versions[0],)
         if len(analyzer_versions)!=1: raise ValueError("one lexical generation requires one analyzer version")
         checksum=sha256_hex({"generation_id":request.generation_id,"documents":[self._document_identity(d) for d in docs],"revision_uids":revision_uids,"representation_versions":request.representation_versions})
         conn=self.connect()
