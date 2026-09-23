@@ -1,27 +1,179 @@
 {
   "schema_version": "validation-registry/1",
   "gates": [
-    {"id":"phase0-runner-invariants","phase":0,"required":true,"command":"python -m unittest tests.validation_runner_test -v"},
-    {"id":"phase0-legacy-fast-suite","phase":0,"required":true,"status_override":"blocked","reason":"Not executed in the connector/CI environment: the service-complete legacy runtime dependency stack is not available. This is not a pass."},
-    {"id":"phase0-b0-offline-benchmark","phase":0,"required":true,"status_override":"blocked","reason":"The legacy B0 benchmark requires the running pinned API/model/corpus stack. No remote search, model call, or substitute service was used to manufacture a pass."},
-    {"id":"phase1-contract-invariants","phase":1,"required":true,"command":"python -m unittest tests.contracts_phase1_test -v"},
-    {"id":"phase2-ports-domain-policy-invariants","phase":2,"required":true,"command":"python -m unittest tests.ports_policy_phase2_test -v"},
-    {"id":"phase3-canonical-ingestion-outbox-invariants","phase":3,"required":true,"command":"python -m unittest tests.canonical_ingestion_phase3_test -v"},
-    {"id":"phase4-snapshot-publication-invariants","phase":4,"required":true,"command":"python -m unittest tests.snapshot_publication_phase4_test -v"},
-    {"id":"phase5-exact-independent-lexical-invariants","phase":5,"required":true,"command":"python -m unittest tests.exact_lexical_phase5_test -v"},
-    {"id":"phase5-mysql-fulltext-real-service","phase":5,"required":true,"status_override":"blocked","reason":"MySQL 8 FULLTEXT is the production-candidate lexical adapter, but no service-complete MySQL environment was available for real analyzer/filter/publication/restart/delete/rollback/performance validation."},
-    {"id":"phase6-dense-representation-invariants","phase":6,"required":true,"command":"python -m unittest tests.dense_phase6_test -v"},
-    {"id":"phase6-actual-embedding-model","phase":6,"required":true,"status_override":"blocked","reason":"No pinned actual embedding model/runtime was available in offline CI. Deterministic fake embeddings validate mechanics only and are not semantic retrieval-quality evidence."},
-    {"id":"phase6-milvus-real-lifecycle","phase":6,"required":true,"status_override":"blocked","reason":"No reachable compatible Milvus service was available to execute real publication, filtered ANN, deletion, restart persistence, and ANN-vs-exhaustive recall validation."},
-    {"id":"phase7-query-dag-fusion-invariants","phase":7,"required":true,"command":"python -m unittest tests.query_dag_fusion_phase7_test -v"},
-    {"id":"phase8-rerank-context-api-invariants","phase":8,"required":true,"command":"python -m unittest tests.rerank_context_api_phase8_test -v"},
-    {"id":"phase8-legacy-api-regression","phase":8,"required":true,"command":"python -m pytest -q tests/chat_api_router_task5_test.py tests/dockerfile_api_requirements_split_test.py"},
-    {"id":"phase8-actual-reranker-model","phase":8,"required":true,"status_override":"blocked","reason":"No pinned actual reranker model/runtime was available in offline CI. Spy/fake rerankers validate authorization, degradation, ordering, and packing mechanics only."},
-    {"id":"phase8-actual-generator-tokenizer","phase":8,"required":true,"status_override":"blocked","reason":"The actual configured answer-generator tokenizer/model was not loaded in offline CI. TokenizerAdapter and deterministic tokenizer fixtures validate exact token-budget accounting mechanics only."},
-    {"id":"phase9-structured-temporal-duckdb-invariants","phase":9,"required":true,"command":"python -m unittest tests.structured_temporal_phase9_test -v"},
-    {"id":"phase10-graph-assertion-invariants","phase":10,"required":true,"command":"python -m unittest tests.graph_assertion_phase10_test -v"},
-    {"id":"phase10-real-neo4j-restart-lifecycle","phase":10,"required":true,"status_override":"blocked","reason":"The fixed-query Neo4j projection adapter and uniqueness/idempotency mechanics are fixture-tested, and an opt-in real-driver integration exists, but no reachable Neo4j service with restart control was available in CI to execute create/upsert/restart/reconnect/traverse persistence validation."},
-    {"id":"phase11-core-cyber-source-fixtures","phase":11,"required":true,"command":"python -m unittest tests.cyber_sources_phase11_test -v"},
-    {"id":"phase11-live-core-source-lifecycle","phase":11,"required":true,"status_override":"blocked","reason":"ATT&CK STIX, CVE JSON 5.x, and CISA KEV are validated against small pinned real-format offline fixtures. Live upstream fetch/update/delete/rebuild/reconciliation was not executed in CI, so fixture validation is not reported as live validation."}
+    {
+      "id": "phase0-runner-invariants",
+      "phase": 0,
+      "required": true,
+      "command": "python -m unittest tests.validation_runner_test -v"
+    },
+    {
+      "id": "phase0-legacy-fast-suite",
+      "phase": 0,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "Not executed in the connector/CI environment: the service-complete legacy runtime dependency stack is not available. This is not a pass."
+    },
+    {
+      "id": "phase0-b0-offline-benchmark",
+      "phase": 0,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "The legacy B0 benchmark requires the running pinned API/model/corpus stack. No remote search, model call, or substitute service was used to manufacture a pass."
+    },
+    {
+      "id": "phase1-contract-invariants",
+      "phase": 1,
+      "required": true,
+      "command": "python -m unittest tests.contracts_phase1_test -v"
+    },
+    {
+      "id": "phase2-ports-domain-policy-invariants",
+      "phase": 2,
+      "required": true,
+      "command": "python -m unittest tests.ports_policy_phase2_test -v"
+    },
+    {
+      "id": "phase3-canonical-ingestion-outbox-invariants",
+      "phase": 3,
+      "required": true,
+      "command": "python -m unittest tests.canonical_ingestion_phase3_test -v"
+    },
+    {
+      "id": "phase4-snapshot-publication-invariants",
+      "phase": 4,
+      "required": true,
+      "command": "python -m unittest tests.snapshot_publication_phase4_test -v"
+    },
+    {
+      "id": "phase5-exact-independent-lexical-invariants",
+      "phase": 5,
+      "required": true,
+      "command": "python -m unittest tests.exact_lexical_phase5_test -v"
+    },
+    {
+      "id": "phase5-mysql-fulltext-real-service",
+      "phase": 5,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "MySQL 8 FULLTEXT is the production-candidate lexical adapter, but no service-complete MySQL environment was available for real analyzer/filter/publication/restart/delete/rollback/performance validation."
+    },
+    {
+      "id": "phase6-dense-representation-invariants",
+      "phase": 6,
+      "required": true,
+      "command": "python -m unittest tests.dense_phase6_test -v"
+    },
+    {
+      "id": "phase6-actual-embedding-model",
+      "phase": 6,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "No pinned actual embedding model/runtime was available in offline CI. Deterministic fake embeddings validate mechanics only and are not semantic retrieval-quality evidence."
+    },
+    {
+      "id": "phase6-milvus-real-lifecycle",
+      "phase": 6,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "No reachable compatible Milvus service was available to execute real publication, filtered ANN, deletion, restart persistence, and ANN-vs-exhaustive recall validation."
+    },
+    {
+      "id": "phase7-query-dag-fusion-invariants",
+      "phase": 7,
+      "required": true,
+      "command": "python -m unittest tests.query_dag_fusion_phase7_test -v"
+    },
+    {
+      "id": "phase8-rerank-context-api-invariants",
+      "phase": 8,
+      "required": true,
+      "command": "python -m unittest tests.rerank_context_api_phase8_test -v"
+    },
+    {
+      "id": "phase8-legacy-api-regression",
+      "phase": 8,
+      "required": true,
+      "command": "python -m pytest -q tests/chat_api_router_task5_test.py tests/dockerfile_api_requirements_split_test.py"
+    },
+    {
+      "id": "phase8-actual-reranker-model",
+      "phase": 8,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "No pinned actual reranker model/runtime was available in offline CI. Spy/fake rerankers validate authorization, degradation, ordering, and packing mechanics only."
+    },
+    {
+      "id": "phase8-actual-generator-tokenizer",
+      "phase": 8,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "The actual configured answer-generator tokenizer/model was not loaded in offline CI. TokenizerAdapter and deterministic tokenizer fixtures validate exact token-budget accounting mechanics only."
+    },
+    {
+      "id": "phase9-structured-temporal-duckdb-invariants",
+      "phase": 9,
+      "required": true,
+      "command": "python -m unittest tests.structured_temporal_phase9_test -v"
+    },
+    {
+      "id": "phase10-graph-assertion-invariants",
+      "phase": 10,
+      "required": true,
+      "command": "python -m unittest tests.graph_assertion_phase10_test -v"
+    },
+    {
+      "id": "phase10-real-neo4j-restart-lifecycle",
+      "phase": 10,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "The fixed-query Neo4j projection adapter and uniqueness/idempotency mechanics are fixture-tested, and an opt-in real-driver integration exists, but no reachable Neo4j service with restart control was available in CI to execute create/upsert/restart/reconnect/traverse persistence validation."
+    },
+    {
+      "id": "phase11-core-cyber-source-fixtures",
+      "phase": 11,
+      "required": true,
+      "command": "python -m unittest tests.cyber_sources_phase11_test -v"
+    },
+    {
+      "id": "phase11-live-core-source-lifecycle",
+      "phase": 11,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "ATT&CK STIX, CVE JSON 5.x, and CISA KEV are validated against small pinned real-format offline fixtures. Live upstream fetch/update/delete/rebuild/reconciliation was not executed in CI, so fixture validation is not reported as live validation."
+    },
+    {
+      "id": "phase12-networking-domain-invariants",
+      "phase": 12,
+      "required": true,
+      "command": "python -m unittest tests.networking_domain_phase12_test -v"
+    },
+    {
+      "id": "phase12-live-network-source-lifecycle",
+      "phase": 12,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "RFC/RIS/RPKI/DNS/RDAP domain semantics are validated with small pinned offline fixtures. CI did not execute live RFC Editor reconciliation, RIPE RIS collection, live RPKI repository/validator state, or production DNS/RDAP source lifecycle, so fixture validation is not reported as live validation."
+    },
+    {
+      "id": "phase13-quant-domain-invariants",
+      "phase": 13,
+      "required": true,
+      "command": "python -m unittest tests.quant_domain_phase13_test -v"
+    },
+    {
+      "id": "phase13-live-sec-fred-lifecycle",
+      "phase": 13,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "SEC filing/XBRL and FRED/ALFRED semantics are validated with offline source-shaped fixtures. CI did not execute live EDGAR or FRED/ALFRED network/API update and amendment/vintage reconciliation."
+    },
+    {
+      "id": "phase13-licensed-market-data-entitlement",
+      "phase": 13,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "Price and corporate-action file-import mechanics use synthetic licensed-file fixtures only. No production market-data credentials, provider entitlement, or licensed feed were supplied, so live market-data readiness is not a pass."
+    }
   ]
 }
