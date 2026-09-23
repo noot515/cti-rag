@@ -10,6 +10,8 @@ from cti_rag.graph import (
     CanonicalEntity,EntityResolutionJournal,IdentityRelation,Neo4jGraphProjectionAdapter,ReferenceGraphPort,
     ResolutionDecision,TraversalStep,TraversalTemplate
 )
+from cti_rag.context import ContextBudget,ContextPacker,RerankOutcome
+from cti_rag.planning import DeterministicQueryPlanner,PlanOperation,QueryExecutor,grouped_rrf
 from cti_rag.ports import EffectiveScope,GraphRequest,ProjectionBuildRequest
 from cti_rag.snapshots import SnapshotCatalogStore,SnapshotPublisher
 
@@ -117,6 +119,33 @@ class Phase10GraphTests(unittest.TestCase):
             _catalog,port,_resolver,snapshot=build_graph(td,(seed,*neighbors),edges,MAPPING)
             result=asyncio.run(port.traverse(GraphRequest((seed.entity_uid,),MAPPING.relations,SCOPE,TemporalRequest(TemporalMode.CURRENT),1,20,snapshot,template_id=MAPPING.template_id,max_degree=3,max_examined_edges=3)))
             self.assertEqual(result.status.value,"ok");self.assertEqual(len(result.items),3);self.assertTrue(result.truncated);self.assertTrue(all(p.truncated for p in result.items))
+
+    def test_query_dag_fusion_and_packer_keep_graph_path_typed_outside_rrf(self):
+        a=entity("cve","cve","CVE-2099-0001");b=entity("cwe","cwe","CWE-79");edge=assertion("r1",a,"has_weakness",b)
+        with tempfile.TemporaryDirectory() as td:
+            _catalog,port,_resolver,snapshot=build_graph(td,(a,b),(edge,),MAPPING)
+            planner=DeterministicQueryPlanner()
+            plan=planner.compile("How is CVE-2099-0001 related to weaknesses?",SCOPE,snapshot,TemporalRequest(TemporalMode.CURRENT),{PlanOperation.GRAPH})
+            execution=asyncio.run(QueryExecutor(graph_port=port).execute(plan))
+            fused=grouped_rrf(execution,top_k=10)
+            self.assertEqual(fused.passages,());self.assertEqual(len(fused.graph_paths),1)
+            class Tokenizer:
+                name="char";revision="1";fingerprint="char/1"
+                def encode(self,text):return tuple(ord(c) for c in text)
+                def decode(self,tokens):return "".join(chr(v) for v in tokens)
+            pack=asyncio.run(ContextPacker(Tokenizer(),None).pack(RerankOutcome(()),fused,plan,ContextBudget(1024,32,32)))
+            self.assertEqual(pack.passages,());self.assertEqual(pack.graph_paths,fused.graph_paths)
+            self.assertEqual(pack.graph_paths[0].semantics,"ontology_mapping_path")
+
+    def test_current_revocation_hides_previously_published_graph_assertion(self):
+        a=entity("cve","cve","CVE-2099-0001");b=entity("cwe","cwe","CWE-79");edge=assertion("r1",a,"has_weakness",b)
+        with tempfile.TemporaryDirectory() as td:
+            catalog,port,_resolver,snapshot=build_graph(td,(a,b),(edge,),MAPPING)
+            request=GraphRequest((a.entity_uid,),MAPPING.relations,SCOPE,TemporalRequest(TemporalMode.CURRENT),1,10,snapshot,template_id=MAPPING.template_id)
+            self.assertEqual(asyncio.run(port.traverse(request)).status.value,"ok")
+            catalog.admit_revocation(edge.assertion_uid,"withdrawn mapping",(),("graph",))
+            result=asyncio.run(port.traverse(request))
+            self.assertEqual(result.status.value,"empty")
 
     def test_neo4j_adapter_uses_only_fixed_merge_schema_and_uniqueness_constraints(self):
         calls=[]
