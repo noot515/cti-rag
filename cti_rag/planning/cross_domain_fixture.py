@@ -6,6 +6,7 @@ from .cross_domain import (
     JoinEvidenceKind,JoinedCalculationTemplate,JoinedGraphTemplate,TypedEntityKey,TypedJoinRecord,TypedJoinTemplate,
 )
 from .models import EvidenceObligation,PlanBudget,PlanNode,PlanOperation,QueryFeatures,QueryIntent,QueryPlan,Subquestion
+from .validator import validate_plan
 
 EVENT_DATE="2026-01-09"
 EVENT_TIME="2026-01-09T20:00:00Z"
@@ -23,14 +24,14 @@ ISSUER_SECURITY_TEMPLATE=TypedJoinTemplate("issuer-security-at-event","issued_se
 NETWORK_GRAPH_TEMPLATE=JoinedGraphTemplate("joined-network-announcement","network-join","network-relations",("announced_by",),1)
 RETURN_CALC_TEMPLATE=JoinedCalculationTemplate("joined-abnormal-return","security-join","event-study")
 
-def incident_join_records(*,ambiguous_security=False,time_incompatible_network=False,suggestion_only_network=False):
+def incident_join_records(*,ambiguous_security=False,time_incompatible_network=False,suggestion_only_network=False,missing_price_security=False):
     network_valid_from=_dt("2025-01-01T00:00:00Z") if time_incompatible_network else _dt("2026-01-05T00:00:00Z")
     network_valid_to=_dt("2025-12-31T00:00:00Z") if time_incompatible_network else _dt("2026-01-11T00:00:00Z")
     network_kind=JoinEvidenceKind.GRAPH_SUGGESTION if suggestion_only_network else JoinEvidenceKind.CONFIRMED_RELATION
     rows=[
       TypedJoinRecord(ISSUER,"observed_network_association",NETWORK_PREFIX,"incident-network-observation-fixture",(ProvenanceRef(_rev("issuer-network"),JsonPointerLocator("/observed_network_resources/0")),),network_kind,_dt("2026-01-05T12:10:00Z"),network_valid_from,network_valid_to,domains=("quant","networking")),
       TypedJoinRecord(ISSUER,"observed_network_association",TypedEntityKey("cidr","prefix","198.51.100.0/24"),"graph-suggestion-fixture",(ProvenanceRef(_rev("network-suggestion"),JsonPointerLocator("/suggested_prefix")),),JoinEvidenceKind.GRAPH_SUGGESTION,_dt("2026-01-05T12:11:00Z"),_dt("2026-01-01T00:00:00Z"),_dt("2026-01-11T00:00:00Z"),domains=("quant","networking")),
-      TypedJoinRecord(ISSUER,"issued_security",SECURITY,"security-master-fixture",(ProvenanceRef(_rev("issuer-security"),JsonPointerLocator("/security_id")),),JoinEvidenceKind.CONFIRMED_RELATION,_dt("2025-01-01T00:00:00Z"),_dt("2025-01-01T00:00:00Z"),None,domains=("quant",)),
+      TypedJoinRecord(ISSUER,"issued_security",TypedEntityKey("security","security","SEC-NO-PRICE") if missing_price_security else SECURITY,"security-master-fixture",(ProvenanceRef(_rev("issuer-security"),JsonPointerLocator("/security_id")),),JoinEvidenceKind.CONFIRMED_RELATION,_dt("2025-01-01T00:00:00Z"),_dt("2025-01-01T00:00:00Z"),None,domains=("quant",)),
     ]
     if ambiguous_security:
         rows.append(TypedJoinRecord(ISSUER,"issued_security",TypedEntityKey("security","security","SEC-ALT"),"security-master-conflict-fixture",(ProvenanceRef(_rev("issuer-security-alt"),JsonPointerLocator("/security_id")),),JoinEvidenceKind.CONFIRMED_RELATION,_dt("2025-01-01T00:00:00Z"),_dt("2025-01-01T00:00:00Z"),None,domains=("quant",)))
@@ -57,4 +58,4 @@ def incident_market_plan(scope,snapshot,temporal=None,budget=None):
     )
     obligations=tuple(EvidenceObligation(n.node_id,n.operation.value,n.query,True,n.subquestion_id) for n in nodes)
     features=QueryFeatures((("cik","legal-entity","0000123456"),),(EVENT_DATE,),("USD",))
-    return QueryPlan("Incident, network infrastructure, and abnormal return","incident network abnormal return",QueryIntent.CROSS_DOMAIN,scope,snapshot,temporal,budget,features,nodes,obligations,(),(),subquestions)
+    return validate_plan(QueryPlan("Incident, network infrastructure, and abnormal return","incident network abnormal return",QueryIntent.CROSS_DOMAIN,scope,snapshot,temporal,budget,features,nodes,obligations,(),(),subquestions))
