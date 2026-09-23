@@ -8,7 +8,7 @@ from cti_rag.ports import EffectiveScope
 
 class PlanValidationError(ValueError): pass
 class PlanOperation(str,Enum):
-    EXACT="exact"; LEXICAL="lexical"; DENSE="dense"; GRAPH="graph"; STRUCTURED="structured"
+    EXACT="exact"; LEXICAL="lexical"; DENSE="dense"; GRAPH="graph"; STRUCTURED="structured"; JOIN="join"
 class QueryIntent(str,Enum):
     EXACT="exact_lookup"; NUMERICAL="numerical"; EXPLANATION="explanation"; RELATION="relation"; CROSS_DOMAIN="cross_domain"
 
@@ -56,10 +56,15 @@ class PlanNode:
     dependencies:Tuple[str,...]=()
     variant_key:str="base"
     required:bool=False
+    template_id:Optional[str]=None
+    constraints:Tuple[Tuple[str,str],...]=()
     def __post_init__(self):
         if not self.node_id.strip() or not self.query.strip() or not self.subquestion_id.strip(): raise PlanValidationError("plan node identity/query required")
         if self.candidate_limit<=0: raise PlanValidationError("plan node candidate limit must be positive")
         if not self.domains: raise PlanValidationError("plan node requires at least one domain")
+        if self.template_id is not None and not self.template_id.strip(): raise PlanValidationError("template_id must be non-empty")
+        keys=[k for k,_v in self.constraints]
+        if any(not str(k).strip() for k in keys) or len(keys)!=len(set(keys)): raise PlanValidationError("plan node constraints require unique non-empty keys")
 
 @dataclass(frozen=True)
 class QueryFeatures:

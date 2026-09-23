@@ -26,8 +26,8 @@ class QueryExecution:
         return None
 
 class QueryExecutor:
-    def __init__(self,search_ports=None,exact_index=None,graph_port=None,structured_port=None,max_concurrency=4):
-        self.search_ports=search_ports or {}; self.exact_index=exact_index; self.graph_port=graph_port; self.structured_port=structured_port; self.max_concurrency=max_concurrency
+    def __init__(self,search_ports=None,exact_index=None,graph_port=None,structured_port=None,join_port=None,max_concurrency=4):
+        self.search_ports=search_ports or {}; self.exact_index=exact_index; self.graph_port=graph_port; self.structured_port=structured_port; self.join_port=join_port; self.max_concurrency=max_concurrency
     @staticmethod
     def _node_scope(scope,node):
         return EffectiveScope(scope.principal_id,scope.tenant_id,tuple(node.domains),scope.source_ids,scope.access_labels,scope.processing_classes,scope.policy_epoch,scope.private_state_allowed)
@@ -51,11 +51,20 @@ class QueryExecutor:
         if node.operation==PlanOperation.STRUCTURED:
             if self.structured_port is None:return ChannelResult(ChannelStatus.UNSUPPORTED,reason="structured capability unavailable")
             return await self.structured_port.run(node,scope,plan.snapshot,plan.temporal,prior,deadline,cancel_token)
+        if node.operation==PlanOperation.JOIN:
+            if self.join_port is None:return ChannelResult(ChannelStatus.UNSUPPORTED,reason="typed join capability unavailable")
+            return await self.join_port.run(node,scope,plan.snapshot,plan.temporal,prior,deadline,cancel_token)
         return ChannelResult(ChannelStatus.UNSUPPORTED,reason="unsupported plan operation")
     async def execute(self,plan,cancellation_token=None):
         started=datetime.now(timezone.utc); deadline=started+timedelta(milliseconds=plan.budget.deadline_ms); remaining={n.node_id:n for n in plan.nodes}; done={}; ordered=[]; sem=asyncio.Semaphore(self.max_concurrency)
+        node_map={n.node_id:n for n in plan.nodes}
         async def bounded(node):
             async with sem:
+                for dep in node.dependencies:
+                    dep_node=node_map[dep];dep_result=done.get(dep)
+                    if dep_node.operation==PlanOperation.JOIN:
+                        status=getattr(getattr(dep_result,"status",None),"value",str(getattr(dep_result,"status","")))
+                        if status!="resolved":return ChannelResult(ChannelStatus.REJECTED,reason=f"typed join dependency unresolved: {dep}")
                 seconds=max(0.0,(deadline-datetime.now(timezone.utc)).total_seconds())
                 if seconds<=0:return ChannelResult(ChannelStatus.TIMEOUT,reason="request deadline exceeded")
                 try:return await asyncio.wait_for(self._run_node(plan,node,deadline,cancellation_token,done),timeout=seconds)
@@ -82,4 +91,7 @@ class QueryExecutor:
             r=item.result
             if isinstance(r,ChannelResult) and r.status in (ChannelStatus.UNSUPPORTED,ChannelStatus.UNAVAILABLE,ChannelStatus.TIMEOUT,ChannelStatus.REJECTED): gaps.append(PlanGap(item.node.operation.value,r.reason or r.status.value,item.node.subquestion_id))
             if isinstance(r,ExactLookupResult) and item.node.required and r.status!=ExactLookupStatus.FOUND:gaps.append(PlanGap("exact",r.reason or r.status.value,item.node.subquestion_id))
+            if item.node.operation==PlanOperation.JOIN and item.node.required and not isinstance(r,ChannelResult):
+                value=getattr(getattr(r,"status",None),"value",str(getattr(r,"status","")))
+                if value!="resolved":gaps.append(PlanGap("join",getattr(r,"reason",None) or value or "unresolved typed join",item.node.subquestion_id))
         return QueryExecution(plan.plan_id,tuple(ordered),tuple(gaps),started,datetime.now(timezone.utc))

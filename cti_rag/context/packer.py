@@ -39,9 +39,9 @@ class ContextPacker:
         if callable(value):value=value()
         return value or f"{self.tokenizer.name}:{self.tokenizer.revision}"
     async def pack(self,reranked:RerankOutcome,fusion,plan,budget:ContextBudget):
-        available=min(plan.budget.max_context_tokens,budget.available); used=0; missing=list(fusion.gaps); exact=tuple(fusion.exact_obligations); structured=tuple(fusion.structured_obligations); graph_paths=tuple(getattr(fusion,"graph_paths",()))
+        available=min(plan.budget.max_context_tokens,budget.available); used=0; missing=list(fusion.gaps); exact=tuple(fusion.exact_obligations); structured=tuple(fusion.structured_obligations); graph_paths=tuple(getattr(fusion,"graph_paths",())); joins=tuple(getattr(fusion,"join_results",()))
         # Required typed evidence is accounted before free-text passages but always returned separately.
-        for obligation in exact+structured+graph_paths:
+        for obligation in exact+structured+graph_paths+joins:
             cost=len(self.tokenizer.encode(json.dumps(_typed_summary(obligation),sort_keys=True,separators=(",",":"))))
             if used+cost<=available:used+=cost
             else:missing.append(PlanGap("required_evidence","required typed evidence does not fit context budget"))
@@ -80,7 +80,7 @@ class ContextPacker:
             valid=self.verifier.verify(item)
             verified.append(PackedPassage(item.evidence,item.display_text,item.token_count,item.truncated,valid,item.parent_of))
             if not valid:missing.append(PlanGap("citation","packed citation failed canonical verification",item.evidence.subquestion_id))
-        return ContextPack(tuple(verified),exact,structured,used,available,tuple(missing),tuple(sorted(origins)),self.tokenizer_fingerprint,graph_paths)
+        return ContextPack(tuple(verified),exact,structured,used,available,tuple(missing),tuple(sorted(origins)),self.tokenizer_fingerprint,graph_paths,joins)
     def _fit(self,evidence,used,available,plan,parent_of=None):
         if not _scope_allows(plan.scope,evidence,plan.snapshot.manifest_id):return None,used
         remaining=available-used

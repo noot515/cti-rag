@@ -67,6 +67,8 @@ class ContextPack:
     origin_groups:Tuple[str,...]
     tokenizer_fingerprint:str
     graph_paths:Tuple[Any,...]=()
+    join_results:Tuple[Any,...]=()
+    join_results:Tuple[Any,...]=()
 
 @dataclass(frozen=True)
 class ChannelDiagnostic:
@@ -106,3 +108,5 @@ class AdvancedEvidenceResponse:
     degradation_reasons:Tuple[str,...]
     trace:Optional[RetrievalTrace]=None
     graph_paths:Tuple[Any,...]=()
+    join_results:Tuple[Any,...]=()
+    obligation_coverage:Tuple[Any,...]=()

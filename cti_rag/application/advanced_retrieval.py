@@ -20,6 +20,7 @@ def _available_operations(executor):
     if "dense" in executor.search_ports:ops.add(PlanOperation.DENSE)
     if executor.graph_port is not None:ops.add(PlanOperation.GRAPH)
     if executor.structured_port is not None:ops.add(PlanOperation.STRUCTURED)
+    if getattr(executor,"join_port",None) is not None:ops.add(PlanOperation.JOIN)
     return ops
 
 class AdvancedRetrievalService:
@@ -69,7 +70,7 @@ class AdvancedRetrievalService:
             elif required_missing or gaps or degraded:status=EvidenceResponseStatus.PARTIAL
             else:status=EvidenceResponseStatus.COMPLETE
             trace=capture_trace(query=query,scope=scope,plan=plan,snapshot=snapshot,reranker_fingerprint=reranked.model_fingerprint,tokenizer_fingerprint=pack.tokenizer_fingerprint,channel_statuses=tuple((d.node_id,d.status) for d in diagnostics),started_at=started)
-            return AdvancedEvidenceResponse("advanced-evidence/1",trace.request_id,plan.plan_id,snapshot,status,tuple(exact),tuple(structured),tuple(passages[:top_k]),tuple(gaps),diagnostics,degraded,reasons,trace if debug and final_scope.debug_traces_allowed else None,tuple(graph_paths[:top_k]))
+            return AdvancedEvidenceResponse("advanced-evidence/1",trace.request_id,plan.plan_id,snapshot,status,tuple(exact),tuple(structured),tuple(passages[:top_k]),tuple(gaps),diagnostics,degraded,reasons,trace if debug and final_scope.debug_traces_allowed else None,tuple(graph_paths[:top_k]),tuple(getattr(pack,"join_results",())))
         except Exception:
             raise
         finally:
