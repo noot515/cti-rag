@@ -62,12 +62,12 @@ class AttackStixNormalizer:
             ext=next((r.get("external_id") for r in data.get("external_references",()) if r.get("source_name")=="mitre-attack" and r.get("external_id")),None)
             if not ext or not str(ext).startswith("T"):raise ValueError("attack_pattern_missing_mitre_external_id")
             stable=str(ext).upper();obj_type="attack-technique";identity=(IdentityAttribute("attack_id",stable),IdentityAttribute("stix_id",data["id"]))
-            normalized={"kind":"attack-technique","id":stable,"stix_id":data["id"],"name":str(data.get("name","")).strip(),"description":str(data.get("description","")).strip(),"version":str(data.get("x_mitre_version","")),"revoked":bool(data.get("revoked",False)),"deprecated":bool(data.get("x_mitre_deprecated",False))}
+            normalized={"kind":"attack-technique","id":stable,"stix_id":data["id"],"name":str(data.get("name","")).strip(),"description":str(data.get("description","")).strip(),"version":str(data.get("x_mitre_version","")),"created":data.get("created"),"modified":data.get("modified"),"revoked":bool(data.get("revoked",False)),"deprecated":bool(data.get("x_mitre_deprecated",False))}
         elif typ=="relationship":
             for k in ("source_ref","target_ref","relationship_type"):
                 if not str(data.get(k,"")).strip():raise ValueError("attack_relationship_missing_field")
             stable=str(data["id"]);obj_type="attack-relationship";identity=(IdentityAttribute("stix_id",stable),)
-            normalized={"kind":"attack-relationship","id":stable,"source_ref":data["source_ref"],"target_ref":data["target_ref"],"relationship_type":data["relationship_type"],"description":str(data.get("description","")).strip(),"revoked":bool(data.get("revoked",False))}
+            normalized={"kind":"attack-relationship","id":stable,"source_ref":data["source_ref"],"target_ref":data["target_ref"],"relationship_type":data["relationship_type"],"description":str(data.get("description","")).strip(),"created":data.get("created"),"modified":data.get("modified"),"revoked":bool(data.get("revoked",False))}
         else:raise ValueError("unsupported_attack_stix_type")
         modified=_dt(data.get("modified"));created=_dt(data.get("created")) or modified
         if modified is None:raise ValueError("attack_object_missing_modified")

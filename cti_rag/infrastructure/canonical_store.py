@@ -144,6 +144,16 @@ class CanonicalMetadataStore:
                 self.execute(cur,"UPDATE outbox SET status=?, attempts=?, last_error=? WHERE event_id=?",("dead_letter",attempts,error,event.event_id))
                 self._insert_if_absent(cur,"dead_letters","event_id",event.event_id,("event_id","payload_json","reason","attempts","created_at"),(event.event_id,event.payload_json,error,attempts,now))
             else:self.execute(cur,"UPDATE outbox SET attempts=?, last_error=? WHERE event_id=?",(attempts,error,event.event_id))
+    def projection_artifacts(self,source_ids=()):
+        conn=self._connection_factory(); cur=conn.cursor()
+        try:
+            clauses=[];params=[]
+            if source_ids:
+                clauses.append("o.source_id IN ("+",".join("?" for _ in source_ids)+")");params.extend(source_ids)
+            where=(" WHERE "+" AND ".join(clauses)) if clauses else ""
+            self.execute(cur,"SELECT a.artifact_uid,a.revision_uid,a.object_digest,a.retention_class,o.object_uid,o.source_id,o.stable_upstream_id,o.object_type,r.revoked FROM artifacts a JOIN revisions r ON a.revision_uid=r.revision_uid JOIN source_objects o ON r.object_uid=o.object_uid"+where+" ORDER BY o.source_id,o.stable_upstream_id,a.revision_uid",tuple(params))
+            return tuple(cur.fetchall())
+        finally:cur.close(); conn.close()
     def revision_uids_for_source_object(self,source_id,stable_upstream_id):
         conn=self._connection_factory(); cur=conn.cursor()
         try:
