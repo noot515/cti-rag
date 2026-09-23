@@ -57,6 +57,16 @@ class StructuredFieldModel(BaseModel):
     value:Any
     data_type:str
     unit:Optional[str]=None
+class GraphPathEvidenceModel(BaseModel):
+    path_uid:str
+    node_uids:list[str]
+    assertion_uids:list[str]
+    assertions:list[str]
+    relation_types:list[str]
+    epistemic_labels:list[str]
+    semantics:str
+    truncated:bool
+    provenances:list[dict[str,Any]]
 class StructuredEvidenceModel(BaseModel):
     result_uid:str
     revision_uids:list[str]
@@ -73,6 +83,7 @@ class AdvancedRetrievalResponseModel(BaseModel):
     status:str
     exact:list[ExactEvidenceModel]
     structured:list[StructuredEvidenceModel]
+    graph_paths:list[GraphPathEvidenceModel]
     passages:list[PassageEvidenceModel]
     gaps:list[GapModel]
     diagnostics:list[ChannelDiagnosticModel]
@@ -94,10 +105,11 @@ def _serialize(response):
     for item in response.structured:
         rows=getattr(item,"items",()) if getattr(getattr(item,"status",None),"value",None)=="ok" else ()
         for r in rows:structured.append(StructuredEvidenceModel(result_uid=r.result_uid,revision_uids=list(r.revision_uids),fields=[StructuredFieldModel(name=f.name,value=f.value,data_type=f.data_type,unit=f.unit) for f in r.fields],dataset_snapshot=r.dataset_snapshot,query_spec_hash=r.query_spec_hash,temporal_mode=r.temporal_mode,calculation_version=r.calculation_version))
+    graph_paths=[GraphPathEvidenceModel(path_uid=p.path_uid,node_uids=list(p.node_uids),assertion_uids=list(p.assertion_uids),assertions=list(p.assertions),relation_types=list(p.relation_types),epistemic_labels=list(p.epistemic_labels),semantics=p.semantics,truncated=p.truncated,provenances=[{"revision_uid":x.revision_uid,"locator":locator_to_data(x.locator)} for x in p.provenances]) for p in response.graph_paths]
     passages=[PassageEvidenceModel(passage_uid=p.evidence.passage.passage_uid,revision_uid=p.evidence.passage.revision_uid,text=p.display_text,locator=locator_to_data(p.evidence.passage.provenance.locator),source_id=p.evidence.source_id,origin_group=p.evidence.origin_group,epistemic_label=p.evidence.epistemic_label,available_at=None if p.evidence.available_at is None else p.evidence.available_at.isoformat(),unit=p.evidence.unit,citation_valid=p.citation_valid,truncated=p.truncated,token_count=p.token_count) for p in response.passages]
     trace=None
     if response.trace is not None:trace={k:(v.isoformat() if hasattr(v,"isoformat") else v) for k,v in response.trace.__dict__.items()}
-    return AdvancedRetrievalResponseModel(schema_version=response.schema_version,request_id=response.request_id,plan_id=response.plan_id,snapshot_manifest_id=response.snapshot.manifest_id,status=response.status.value,exact=exact,structured=structured,passages=passages,gaps=[GapModel(obligation=g.obligation,reason=g.reason,subquestion_id=g.subquestion_id) for g in response.gaps],diagnostics=[ChannelDiagnosticModel(**d.__dict__) for d in response.diagnostics],degraded=response.degraded,degradation_reasons=list(response.degradation_reasons),debug_trace=trace)
+    return AdvancedRetrievalResponseModel(schema_version=response.schema_version,request_id=response.request_id,plan_id=response.plan_id,snapshot_manifest_id=response.snapshot.manifest_id,status=response.status.value,exact=exact,structured=structured,graph_paths=graph_paths,passages=passages,gaps=[GapModel(obligation=g.obligation,reason=g.reason,subquestion_id=g.subquestion_id) for g in response.gaps],diagnostics=[ChannelDiagnosticModel(**d.__dict__) for d in response.diagnostics],degraded=response.degraded,degradation_reasons=list(response.degradation_reasons),debug_trace=trace)
 
 @research.post("/advanced-retrieval",response_model=AdvancedRetrievalResponseModel)
 async def advanced_retrieval(payload:AdvancedRetrievalRequestModel,current_user=Depends(get_required_user)):

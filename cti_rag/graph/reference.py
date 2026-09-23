@@ -103,7 +103,11 @@ class ReferenceGraphPort:
                     labels=tuple(x.epistemic.kind.value for x in chain)
                     assertions_text=tuple(f"{x.subject.identifier} --{x.predicate}--> {x.object.identifier}" for x in chain)
                     path_uid=namespaced_uid("pth","graph.path",{"nodes":new_nodes,"assertions":tuple(x.assertion_uid for x in chain),"snapshot":request.snapshot.manifest_id})
-                    outputs.append(GraphPathHit(path_uid,path_uid,revs,assertions_text,provenances,(ScoreMetadata("graph",None,ScoreDirection.UNORDERED,len(outputs)+1,"reference-graph"),),node_uids=new_nodes,assertion_uids=tuple(x.assertion_uid for x in chain),relation_types=tuple(x.predicate for x in chain),epistemic_labels=labels,semantics=semantics,truncated=False))
+                    outputs.append(GraphPathHit(path_uid,path_uid,revs,assertions_text,provenances,(ScoreMetadata("graph",None,ScoreDirection.UNORDERED,len(outputs)+1,"reference-graph"),),node_uids=new_nodes,assertion_uids=tuple(x.assertion_uid for x in chain),relation_types=tuple(x.predicate for x in chain),epistemic_labels=labels,semantics=semantics,truncated=False,
+                        source_ids=tuple(sorted({x.source_id for x in chain if x.source_id})),
+                        tenant_ids=tuple(sorted({x.policy.tenant_id for x in chain if x.policy is not None})),
+                        access_labels=tuple(sorted({x.policy.access_label.value for x in chain if x.policy is not None})),
+                        processing_classes=tuple(sorted({x.policy.processing_class.value for x in chain if x.policy is not None}))))
                     if len(outputs)>=request.max_paths:truncated=True;break
                     nxt.append((target,new_nodes,chain))
                 if truncated and (examined>=request.max_examined_edges or len(outputs)>=request.max_paths):break

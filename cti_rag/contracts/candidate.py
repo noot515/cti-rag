@@ -90,6 +90,10 @@ class GraphPathHit:
     epistemic_labels: Tuple[str, ...] = ()
     semantics: str = "supported_path"
     truncated: bool = False
+    source_ids: Tuple[str, ...] = ()
+    tenant_ids: Tuple[str, ...] = ()
+    access_labels: Tuple[str, ...] = ()
+    processing_classes: Tuple[str, ...] = ()
 
     def __post_init__(self) -> None:
         if not self.hit_id.strip() or not self.path_uid.strip():
@@ -214,6 +218,8 @@ def candidate_from_dict(data: Mapping[str, Any]) -> Candidate:
             relation_types=tuple(str(v) for v in data.get("relation_types", ())),
             epistemic_labels=tuple(str(v) for v in data.get("epistemic_labels", ())),
             semantics=str(data.get("semantics","supported_path")),truncated=bool(data.get("truncated",False)),
+            source_ids=tuple(str(v) for v in data.get("source_ids", ())),tenant_ids=tuple(str(v) for v in data.get("tenant_ids", ())),
+            access_labels=tuple(str(v) for v in data.get("access_labels", ())),processing_classes=tuple(str(v) for v in data.get("processing_classes", ())),
         )
     if kind == "structured":
         try:

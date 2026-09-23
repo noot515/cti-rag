@@ -50,7 +50,14 @@ class AdvancedRetrievalService:
             final_scope=self.policy.authorize(principal,client_scope)
             passages=tuple(p for p in pack.passages if p.evidence.labels.tenant_id in (final_scope.tenant_id,"public") and p.evidence.labels.access_label in final_scope.access_labels and p.evidence.labels.processing_class in final_scope.processing_classes)
             if len(passages)!=len(pack.passages):gaps.append(PlanGap("authorization","evidence revoked by final response policy"))
-            exact=pack.exact_obligations;structured=pack.structured_obligations;graph_paths=pack.graph_paths
+            exact=pack.exact_obligations;structured=pack.structured_obligations
+            graph_paths=tuple(p for p in pack.graph_paths if
+                all(t in (final_scope.tenant_id,"public") for t in p.tenant_ids) and
+                all(v in tuple(x.value for x in final_scope.access_labels) for v in p.access_labels) and
+                all(v in tuple(x.value for x in final_scope.processing_classes) for v in p.processing_classes) and
+                (not final_scope.source_ids or all(src in final_scope.source_ids for src in p.source_ids)) and
+                not any(self.catalog.is_revoked(uid) for uid in p.revision_uids+p.assertion_uids+p.node_uids))
+            if len(graph_paths)!=len(pack.graph_paths):gaps.append(PlanGap("authorization","graph evidence revoked by final response policy"))
             evidence_count=len(passages)+len(graph_paths)+sum(1 for v in exact if _status_value(v)=="found")+sum(1 for v in structured if _status_value(v)=="ok")
             required_missing=any(g.obligation in ("exact","structured","required_evidence","citation","authorization") for g in gaps)
             failures=tuple(d for d in diagnostics if d.status in _FAILURE_STATUSES)
