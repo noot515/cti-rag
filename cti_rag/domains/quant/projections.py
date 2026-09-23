@@ -32,6 +32,8 @@ class QuantProjectionProjector:
             cik=d["cik"];loc=JsonPointerLocator("/cik")
             exact.append(ExactRecord(revision_uid,object_uid,"cik","legal-entity",cik,"quant",source_id,"public",AccessLabel.PUBLIC,available,vf,vt,json.dumps(locator_to_data(loc),sort_keys=True,separators=(",",":")),d.get("name") or cik))
             entities.append(CanonicalEntity("cik","legal-entity",cik,d.get("name") or cik,policy,source_id,available,vf,vt,system_manifest_id))
+            name=str(d.get("name") or cik);nloc=JsonPointerLocator("/name");passage=Passage(artifact_uid,revision_uid,nloc,name,ComponentFingerprint("sec-company-field","1"),EpistemicMetadata(EpistemicKind.SOURCE_CLAIM))
+            lex.append(LexicalDocument(passage.passage_uid,revision_uid,object_uid,"cik","legal-entity",cik,"quant",source_id,"public",AccessLabel.PUBLIC,available,vf,vt,json.dumps(locator_to_data(nloc),sort_keys=True,separators=(",",":")),name,normalize_search_text(name),normalize_search_text(cik),"unicode61/1"))
         elif kind=="sec-filing":
             accn=d["accession"];loc=JsonPointerLocator("/accession")
             exact.append(ExactRecord(revision_uid,object_uid,"sec-accession","sec-filing",accn,"quant",source_id,"public",AccessLabel.PUBLIC,available,vf,vt,json.dumps(locator_to_data(loc),sort_keys=True,separators=(",",":")),accn))
