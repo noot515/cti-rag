@@ -71,6 +71,7 @@ class ReferenceGraphPort:
         visible_entities={e.entity_uid:e for e in entities if self._policy(e.policy,e.source_id,request.scope) and self._time(e,request.temporal) and not self.catalog.is_revoked(e.entity_uid)}
         visible_assertions=[]
         for a in assertions:
+            if request.relations and a.predicate not in request.relations:continue
             if self.catalog.is_revoked(a.assertion_uid) or a.subject.entity_uid not in visible_entities or a.object.entity_uid not in visible_entities:continue
             if not self._support_ok(a,revisions,request.scope,request.temporal):continue
             directions=self._step_directions(template,a,visible_entities[a.subject.entity_uid],visible_entities[a.object.entity_uid])
