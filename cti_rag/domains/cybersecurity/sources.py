@@ -103,7 +103,12 @@ class CveJsonV5Normalizer:
                 for item in body.get("descriptions",()):descriptions.append({"lang":item.get("lang"),"value":item.get("value")})
                 for group in body.get("problemTypes",()):
                     for item in group.get("descriptions",()):
-                        if item.get("cweId"):cwes.append(str(item["cweId"]).upper())
+                        cwe=item.get("cweId")
+                        if item.get("type")=="CWE" and not cwe:raise ValueError("cve_cwe_mapping_missing_cweId")
+                        if cwe:
+                            cwe=str(cwe).upper()
+                            if not cwe.startswith("CWE-") or not cwe[4:].isdigit():raise ValueError("cve_invalid_cwe_mapping")
+                            cwes.append(cwe)
                 for metric_group in body.get("metrics",()):
                     for key,value in metric_group.items():
                         if not key.lower().startswith("cvss") or not isinstance(value,dict):continue
