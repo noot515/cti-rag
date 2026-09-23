@@ -90,3 +90,34 @@ Historical-public mode requires trustworthy non-null availability at or before t
 
 ## D-0030 — Verified structured outputs remain typed evidence outside passage RRF
 StructuredResult records dataset snapshot, query-spec hash, typed values/units, null rules, temporal mode, calculation fingerprint/version, and reproducible input lineage. Context packing reserves space for verified structured obligations directly; arbitrary table row order is never converted into passage-ranking votes.
+
+
+## D-0031 — Graph identity is namespaced and typed; display names never define identity
+Graph entities use a deterministic `entity_uid` derived from namespace, entity type, and canonical identifier. Name similarity is only a provisional resolution signal. Sourced identity decisions distinguish `confirmed_same_entity`, `possible_same_entity`, and `alias_of`; only confirmed links of compatible entity types participate in confirmed equivalence closure.
+
+## D-0032 — Graph authorization and temporal eligibility are applied before adjacency exists
+The reference GraphPort filters entity policy, source scope, assertion policy, revision/support availability, snapshot membership, current revocations, and temporal validity before constructing traversal adjacency. Hidden private bridge nodes and edges therefore cannot consume public degree/edge budgets or change public path-count/truncation behavior.
+
+## D-0033 — Graph traversal is typed and bounded rather than arbitrary Cypher
+Query plans can invoke registered traversal templates containing allowed predicates, endpoint types, and directions. The runtime defaults to at most two hops, eight seeds, degree 20, 100 paths, a bounded examined-edge count, one request deadline, and cancellation propagation. The Neo4j adapter exposes fixed schema/upsert operations rather than a model/client arbitrary-Cypher surface.
+
+## D-0034 — Ontology mappings are not behavioral observations
+CVE→CWE, CWE→CAPEC, CAPEC→ATT&CK, and similar chains are labeled as ontology/source mappings when their source assertions exist. They are not automatically described as exploitation, causation, ownership, attacker intent, or observed technique use. Longer chains are composed from bounded traversals rather than silently raising the graph hop limit.
+
+## D-0035 — Graph paths remain typed evidence outside passage RRF
+GraphPathHit carries the node chain, assertion UIDs, source-backed provenances, relation types, epistemic labels, source/policy metadata, mapping semantics, and truncation status. Query-DAG fusion and context packing retain these typed paths separately from passage reciprocal-rank fusion. Final response admission rechecks current scope and revocations before serialization.
+
+## D-0036 — Cyber source adapter status distinguishes fixture validation from live validation
+ATT&CK STIX 2.1, CVE JSON 5.x, and CISA KEV adapters are `fixture_validated` using small fictitious records encoded in their real upstream shapes. They are not `live_validated` until network fetch/update/delete/rebuild reconciliation executes against the pinned upstream source. Deferred source families remain explicitly deferred rather than sharing a misleading generic parser.
+
+## D-0037 — Source revisions are preserved; updates and removals are tombstones, not mutation
+Changed upstream content creates a new immutable revision while prior raw/normalized bytes remain addressable. ATT&CK revoked/deprecated objects, explicit source deletions, and detected KEV catalog removals enter the current revocation overlay and projection-cleanup lifecycle. Empty post-deletion lexical generations retain a pinned analyzer identity so coherent empty snapshots remain publishable.
+
+## D-0038 — CVSS assessments remain source/version-specific evidence
+CVE normalization retains CVSS scheme/version, score, severity, vector, and source container independently. Multiple CNA/ADP assessments are not averaged or overwritten into one severity truth. KEV membership is a separate structured eligibility fact.
+
+## D-0039 — Cyber graph edges require explicit source mapping fields
+The cyber projector emits CVE→CWE only from explicit CVE `problemTypes.cweId` evidence and attaches its source locator/qualifier. A declared CWE mapping missing a valid `cweId` is quarantined. No CAPEC/ATT&CK edge is inferred merely from text similarity or identifier co-occurrence.
+
+## D-0040 — Source manifests carry provenance/licensing/parser identity
+Core cyber source manifests record upstream source URI, source terms/license identifier and notice, connector fingerprint, parser/normalizer fingerprint, availability basis, update semantics, deletion semantics, retention class, and supported projections. Runtime source content remains inert evidence; source records cannot grant tool permissions or executable authority.
