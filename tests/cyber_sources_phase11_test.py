@@ -92,6 +92,16 @@ class Phase11CyberSourceTests(unittest.TestCase):
             revisions=meta.revision_uids_for_source_object("mitre-attack-stix","T9001");self.assertEqual(len(revisions),2);self.assertGreaterEqual(result["tombstoned"],2)
             self.assertTrue(all(catalog.is_revoked(r) for r in revisions))
 
+    def test_kev_catalog_removal_emits_tombstone(self):
+        empty=b'{"title":"Fixture","catalogVersion":"2099.02.01","dateReleased":"2026-02-01T00:00:00Z","count":0,"vulnerabilities":[]}'
+        with tempfile.TemporaryDirectory() as td:
+            objects,meta,catalog,rev=runtime(td)
+            first=CyberSourceLifecycle(IngestionPipeline(KEV_MANIFEST,KevConnector(KEV_FIXTURE),KevNormalizer(),objects,meta,rev))
+            second=CyberSourceLifecycle(IngestionPipeline(KEV_MANIFEST,KevConnector(empty,previous_cve_ids=("CVE-2099-0001",)),KevNormalizer(),objects,meta,rev))
+            asyncio.run(first.ingest_all());result=asyncio.run(second.ingest_all())
+            revisions=meta.revision_uids_for_source_object("cisa-kev","CVE-2099-0001")
+            self.assertEqual(len(revisions),1);self.assertEqual(result["tombstoned"],1);self.assertTrue(catalog.is_revoked(revisions[0]))
+
     def test_structured_cvss_disagreement_and_kev_eligibility_are_exact(self):
         with tempfile.TemporaryDirectory() as td:
             objects,meta,_catalog,_rev=runtime(td)

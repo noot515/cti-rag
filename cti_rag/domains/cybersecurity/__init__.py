@@ -5,3 +5,4 @@ from .source_registry import *
 from .lifecycle import *
 from .projections import *
 from .structured import *
+from .benchmark import *
