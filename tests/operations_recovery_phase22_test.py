@@ -9,7 +9,7 @@ from cti_rag.ingestion import IngestionPipeline
 from cti_rag.operations import (
     BoundedScheduler,CacheBundle,CacheIdentity,CacheState,CancellationToken,ConcurrentMemoryWindow,
     MemoryProbe,OperationalPaths,ProtectedDebugTraceStore,QueueFull,RecoveryManager,TelemetryRecorder,
-    WorkItem,WorkLane,freshness_status,load_profile,scheduler_from_profile,
+    WorkItem,WorkLane,SecretConfigurationError,freshness_status,load_profile,resolve_profile_secrets,scheduler_from_profile,
 )
 from cti_rag.snapshots import ProjectionGeneration,ProjectionPayload,SnapshotCatalogStore,SnapshotPublisher
 
@@ -53,6 +53,16 @@ class Phase22OperationsRecoveryTest(unittest.TestCase):
         self.assertEqual((),loaded["fixture"].compose_services)
         self.assertIn("threatrag",loaded["text-mvp"].compose_services)
         self.assertIn("neo4j",loaded["analytical"].compose_services)
+
+
+    def test_profile_secrets_require_mounted_files_and_reject_literal_values(self):
+        profile=load_profile(PROFILES/"text-mvp.json")
+        with self.assertRaises(SecretConfigurationError):
+            resolve_profile_secrets(profile,{"MYSQL_PASSWORD":"literal","RABBITMQ_PASSWORD":"literal"})
+        with tempfile.TemporaryDirectory() as td:
+            td=Path(td);mysql=td/"mysql";rabbit=td/"rabbit";mysql.write_text("mysql-secret\n");rabbit.write_text("rabbit-secret\n")
+            values=resolve_profile_secrets(profile,{"MYSQL_PASSWORD_FILE":str(mysql),"RABBITMQ_PASSWORD_FILE":str(rabbit)})
+            self.assertEqual({"MYSQL_PASSWORD","RABBITMQ_PASSWORD"},set(values));self.assertEqual("mysql-secret",values["MYSQL_PASSWORD"])
 
     def test_profile_smoke_uses_isolated_fixture_storage(self):
         with tempfile.TemporaryDirectory() as td:
