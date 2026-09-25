@@ -20,22 +20,22 @@ jobs:
       - name: Compile side-effect-free runtime and chained gate modules
         run: |
           python -m compileall -q cti_rag scripts
-          python -m py_compile tests/contracts_phase1_test.py tests/validation_runner_test.py tests/ports_policy_phase2_test.py tests/canonical_ingestion_phase3_test.py tests/snapshot_publication_phase4_test.py tests/exact_lexical_phase5_test.py tests/dense_phase6_test.py tests/query_dag_fusion_phase7_test.py tests/rerank_context_api_phase8_test.py tests/structured_temporal_phase9_test.py tests/graph_assertion_phase10_test.py tests/cyber_sources_phase11_test.py tests/networking_domain_phase12_test.py tests/quant_domain_phase13_test.py tests/humanities_domain_phase15_test.py tests/cross_domain_phase16_test.py tests/actual_dense_integrations_phase6_test.py tests/actual_graph_integrations_phase10_test.py
+          python -m py_compile tests/contracts_phase1_test.py tests/validation_runner_test.py tests/ports_policy_phase2_test.py tests/canonical_ingestion_phase3_test.py tests/snapshot_publication_phase4_test.py tests/exact_lexical_phase5_test.py tests/dense_phase6_test.py tests/query_dag_fusion_phase7_test.py tests/rerank_context_api_phase8_test.py tests/structured_temporal_phase9_test.py tests/graph_assertion_phase10_test.py tests/cyber_sources_phase11_test.py tests/networking_domain_phase12_test.py tests/quant_domain_phase13_test.py tests/humanities_domain_phase15_test.py tests/cross_domain_phase16_test.py tests/claim_grounding_phase17_test.py tests/hardened_web_overlay_phase18_test.py tests/actual_dense_integrations_phase6_test.py tests/actual_graph_integrations_phase10_test.py
       - name: Run cumulative deterministic gates
         run: |
-          python -m unittest tests.contracts_phase1_test tests.validation_runner_test tests.ports_policy_phase2_test tests.canonical_ingestion_phase3_test tests.snapshot_publication_phase4_test tests.exact_lexical_phase5_test tests.dense_phase6_test tests.query_dag_fusion_phase7_test tests.rerank_context_api_phase8_test tests.structured_temporal_phase9_test tests.graph_assertion_phase10_test tests.cyber_sources_phase11_test tests.networking_domain_phase12_test tests.quant_domain_phase13_test tests.humanities_domain_phase15_test tests.cross_domain_phase16_test -v
+          python -m unittest tests.contracts_phase1_test tests.validation_runner_test tests.ports_policy_phase2_test tests.canonical_ingestion_phase3_test tests.snapshot_publication_phase4_test tests.exact_lexical_phase5_test tests.dense_phase6_test tests.query_dag_fusion_phase7_test tests.rerank_context_api_phase8_test tests.structured_temporal_phase9_test tests.graph_assertion_phase10_test tests.cyber_sources_phase11_test tests.networking_domain_phase12_test tests.quant_domain_phase13_test tests.humanities_domain_phase15_test tests.cross_domain_phase16_test tests.claim_grounding_phase17_test tests.hardened_web_overlay_phase18_test -v
       - name: Run affected legacy API regression tests
         run: python -m pytest -q tests/chat_api_router_task5_test.py tests/dockerfile_api_requirements_split_test.py
       - name: Verify cumulative registry remains fail-closed
         run: |
           set +e
-          python scripts/validate_phases.py --through-phase 16 --report /tmp/cumulative-phase16.json
+          python scripts/validate_phases.py --through-phase 18 --report /tmp/cumulative-phase18.json
           rc=$?
           set -e
           test "$rc" -eq 1
           python - <<'PY'
           import json
-          with open("/tmp/cumulative-phase16.json", "r", encoding="utf-8") as handle:
+          with open("/tmp/cumulative-phase18.json", "r", encoding="utf-8") as handle:
               report = json.load(handle)
           states = {gate["id"]: gate["status"] for gate in report["gates"]}
           assert report["status"] == "fail"
@@ -53,6 +53,8 @@ jobs:
               "phase13-quant-domain-invariants",
               "phase15-humanities-domain-invariants",
               "phase16-cross-domain-dag-invariants",
+              "phase17-claim-grounding-abstention-invariants",
+              "phase18-hardened-web-overlay-invariants",
           ):
               assert states[gate] == "pass", (gate, states[gate])
           for gate in (
@@ -70,6 +72,8 @@ jobs:
               "phase13-licensed-market-data-entitlement",
               "phase14-required-prerequisite",
               "phase15-live-humanities-source-lifecycle",
+              "phase17-evaluated-semantic-judge",
+              "phase18-live-provider-egress",
           ):
               assert states[gate] == "blocked", (gate, states[gate])
           PY
