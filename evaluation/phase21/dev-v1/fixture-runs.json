@@ -67,7 +67,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "attack"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-002",
@@ -121,7 +124,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "cve"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-003",
@@ -180,7 +186,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "kev"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-004",
@@ -235,7 +244,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "opencti"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-005",
@@ -289,7 +301,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "attack"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-006",
@@ -326,7 +341,8 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": []
         },
         {
           "query_id": "cybersecurity-dev-007",
@@ -381,7 +397,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "kev"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-008",
@@ -435,7 +454,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "opencti"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-009",
@@ -489,7 +511,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "attack"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-010",
@@ -543,7 +568,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "cve"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-011",
@@ -596,7 +624,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "kev"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-012",
@@ -650,7 +681,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "opencti"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-013",
@@ -709,7 +743,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "attack"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-014",
@@ -765,7 +802,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "cve"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-015",
@@ -819,7 +859,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "kev"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-016",
@@ -856,7 +899,8 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": []
         },
         {
           "query_id": "cybersecurity-dev-017",
@@ -910,7 +954,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "attack"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-018",
@@ -964,7 +1011,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "cve"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-019",
@@ -1018,7 +1068,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "kev"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-020",
@@ -1072,7 +1125,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "opencti"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-021",
@@ -1126,7 +1182,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "attack"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-022",
@@ -1180,7 +1239,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "cve"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-023",
@@ -1239,7 +1301,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "kev"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-024",
@@ -1294,7 +1359,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "opencti"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-025",
@@ -1348,7 +1416,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "attack"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-026",
@@ -1385,7 +1456,8 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": []
         },
         {
           "query_id": "cybersecurity-dev-027",
@@ -1439,7 +1511,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "kev"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-028",
@@ -1494,7 +1569,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "opencti"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-029",
@@ -1548,7 +1626,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "attack"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-030",
@@ -1602,7 +1683,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "cve"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-031",
@@ -1655,7 +1739,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "kev"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-032",
@@ -1709,7 +1796,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "opencti"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-033",
@@ -1768,7 +1858,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "attack"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-034",
@@ -1823,7 +1916,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "cve"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-035",
@@ -1878,7 +1974,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "kev"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-036",
@@ -1915,7 +2014,8 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": []
         },
         {
           "query_id": "cybersecurity-dev-037",
@@ -1969,7 +2069,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "attack"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-038",
@@ -2023,7 +2126,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "cve"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-039",
@@ -2077,7 +2183,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "kev"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-040",
@@ -2131,7 +2240,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "opencti"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-041",
@@ -2184,7 +2296,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "attack"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-042",
@@ -2239,7 +2354,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "cve"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-043",
@@ -2298,7 +2416,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "kev"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-044",
@@ -2353,7 +2474,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "opencti"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-045",
@@ -2407,7 +2531,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "attack"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-046",
@@ -2444,7 +2571,8 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": []
         },
         {
           "query_id": "cybersecurity-dev-047",
@@ -2498,7 +2626,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "kev"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-048",
@@ -2552,7 +2683,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "opencti"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-049",
@@ -2607,7 +2741,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "attack"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-050",
@@ -2661,7 +2798,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "cve"
+          ]
         },
         {
           "query_id": "networking-dev-001",
@@ -2714,7 +2854,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "rfc"
+          ]
         },
         {
           "query_id": "networking-dev-002",
@@ -2768,7 +2911,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "bgp"
+          ]
         },
         {
           "query_id": "networking-dev-003",
@@ -2827,7 +2973,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "dns"
+          ]
         },
         {
           "query_id": "networking-dev-004",
@@ -2882,7 +3031,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "rir"
+          ]
         },
         {
           "query_id": "networking-dev-005",
@@ -2936,7 +3088,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "rfc"
+          ]
         },
         {
           "query_id": "networking-dev-006",
@@ -2973,7 +3128,8 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": []
         },
         {
           "query_id": "networking-dev-007",
@@ -3028,7 +3184,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "dns"
+          ]
         },
         {
           "query_id": "networking-dev-008",
@@ -3082,7 +3241,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "rir"
+          ]
         },
         {
           "query_id": "networking-dev-009",
@@ -3136,7 +3298,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "rfc"
+          ]
         },
         {
           "query_id": "networking-dev-010",
@@ -3190,7 +3355,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "bgp"
+          ]
         },
         {
           "query_id": "networking-dev-011",
@@ -3243,7 +3411,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "dns"
+          ]
         },
         {
           "query_id": "networking-dev-012",
@@ -3297,7 +3468,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "rir"
+          ]
         },
         {
           "query_id": "networking-dev-013",
@@ -3356,7 +3530,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "rfc"
+          ]
         },
         {
           "query_id": "networking-dev-014",
@@ -3412,7 +3589,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "bgp"
+          ]
         },
         {
           "query_id": "networking-dev-015",
@@ -3466,7 +3646,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "dns"
+          ]
         },
         {
           "query_id": "networking-dev-016",
@@ -3503,7 +3686,8 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": []
         },
         {
           "query_id": "networking-dev-017",
@@ -3557,7 +3741,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "rfc"
+          ]
         },
         {
           "query_id": "networking-dev-018",
@@ -3611,7 +3798,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "bgp"
+          ]
         },
         {
           "query_id": "networking-dev-019",
@@ -3665,7 +3855,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "dns"
+          ]
         },
         {
           "query_id": "networking-dev-020",
@@ -3719,7 +3912,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "rir"
+          ]
         },
         {
           "query_id": "networking-dev-021",
@@ -3773,7 +3969,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "rfc"
+          ]
         },
         {
           "query_id": "networking-dev-022",
@@ -3827,7 +4026,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "bgp"
+          ]
         },
         {
           "query_id": "networking-dev-023",
@@ -3886,7 +4088,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "dns"
+          ]
         },
         {
           "query_id": "networking-dev-024",
@@ -3941,7 +4146,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "rir"
+          ]
         },
         {
           "query_id": "networking-dev-025",
@@ -3995,7 +4203,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "rfc"
+          ]
         },
         {
           "query_id": "networking-dev-026",
@@ -4032,7 +4243,8 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": []
         },
         {
           "query_id": "networking-dev-027",
@@ -4086,7 +4298,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "dns"
+          ]
         },
         {
           "query_id": "networking-dev-028",
@@ -4141,7 +4356,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "rir"
+          ]
         },
         {
           "query_id": "networking-dev-029",
@@ -4195,7 +4413,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "rfc"
+          ]
         },
         {
           "query_id": "networking-dev-030",
@@ -4249,7 +4470,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "bgp"
+          ]
         },
         {
           "query_id": "networking-dev-031",
@@ -4302,7 +4526,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "dns"
+          ]
         },
         {
           "query_id": "networking-dev-032",
@@ -4356,7 +4583,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "rir"
+          ]
         },
         {
           "query_id": "networking-dev-033",
@@ -4415,7 +4645,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "rfc"
+          ]
         },
         {
           "query_id": "networking-dev-034",
@@ -4470,7 +4703,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "bgp"
+          ]
         },
         {
           "query_id": "networking-dev-035",
@@ -4525,7 +4761,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "dns"
+          ]
         },
         {
           "query_id": "networking-dev-036",
@@ -4562,7 +4801,8 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": []
         },
         {
           "query_id": "networking-dev-037",
@@ -4616,7 +4856,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "rfc"
+          ]
         },
         {
           "query_id": "networking-dev-038",
@@ -4670,7 +4913,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "bgp"
+          ]
         },
         {
           "query_id": "networking-dev-039",
@@ -4724,7 +4970,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "dns"
+          ]
         },
         {
           "query_id": "networking-dev-040",
@@ -4778,7 +5027,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "rir"
+          ]
         },
         {
           "query_id": "networking-dev-041",
@@ -4831,7 +5083,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "rfc"
+          ]
         },
         {
           "query_id": "networking-dev-042",
@@ -4886,7 +5141,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "bgp"
+          ]
         },
         {
           "query_id": "networking-dev-043",
@@ -4945,7 +5203,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "dns"
+          ]
         },
         {
           "query_id": "networking-dev-044",
@@ -5000,7 +5261,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "rir"
+          ]
         },
         {
           "query_id": "networking-dev-045",
@@ -5054,7 +5318,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "rfc"
+          ]
         },
         {
           "query_id": "networking-dev-046",
@@ -5091,7 +5358,8 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": []
         },
         {
           "query_id": "networking-dev-047",
@@ -5145,7 +5413,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "dns"
+          ]
         },
         {
           "query_id": "networking-dev-048",
@@ -5199,7 +5470,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "rir"
+          ]
         },
         {
           "query_id": "networking-dev-049",
@@ -5254,7 +5528,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "rfc"
+          ]
         },
         {
           "query_id": "networking-dev-050",
@@ -5308,7 +5585,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "bgp"
+          ]
         },
         {
           "query_id": "quant-dev-001",
@@ -5361,7 +5641,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "sec"
+          ]
         },
         {
           "query_id": "quant-dev-002",
@@ -5415,7 +5698,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "fred"
+          ]
         },
         {
           "query_id": "quant-dev-003",
@@ -5474,7 +5760,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "prices"
+          ]
         },
         {
           "query_id": "quant-dev-004",
@@ -5529,7 +5818,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "corporate-actions"
+          ]
         },
         {
           "query_id": "quant-dev-005",
@@ -5583,7 +5875,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "sec"
+          ]
         },
         {
           "query_id": "quant-dev-006",
@@ -5620,7 +5915,8 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": []
         },
         {
           "query_id": "quant-dev-007",
@@ -5675,7 +5971,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "prices"
+          ]
         },
         {
           "query_id": "quant-dev-008",
@@ -5729,7 +6028,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "corporate-actions"
+          ]
         },
         {
           "query_id": "quant-dev-009",
@@ -5783,7 +6085,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "sec"
+          ]
         },
         {
           "query_id": "quant-dev-010",
@@ -5837,7 +6142,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "fred"
+          ]
         },
         {
           "query_id": "quant-dev-011",
@@ -5890,7 +6198,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "prices"
+          ]
         },
         {
           "query_id": "quant-dev-012",
@@ -5944,7 +6255,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "corporate-actions"
+          ]
         },
         {
           "query_id": "quant-dev-013",
@@ -6003,7 +6317,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "sec"
+          ]
         },
         {
           "query_id": "quant-dev-014",
@@ -6059,7 +6376,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "fred"
+          ]
         },
         {
           "query_id": "quant-dev-015",
@@ -6113,7 +6433,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "prices"
+          ]
         },
         {
           "query_id": "quant-dev-016",
@@ -6150,7 +6473,8 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": []
         },
         {
           "query_id": "quant-dev-017",
@@ -6204,7 +6528,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "sec"
+          ]
         },
         {
           "query_id": "quant-dev-018",
@@ -6258,7 +6585,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "fred"
+          ]
         },
         {
           "query_id": "quant-dev-019",
@@ -6312,7 +6642,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "prices"
+          ]
         },
         {
           "query_id": "quant-dev-020",
@@ -6366,7 +6699,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "corporate-actions"
+          ]
         },
         {
           "query_id": "quant-dev-021",
@@ -6420,7 +6756,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "sec"
+          ]
         },
         {
           "query_id": "quant-dev-022",
@@ -6474,7 +6813,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "fred"
+          ]
         },
         {
           "query_id": "quant-dev-023",
@@ -6533,7 +6875,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "prices"
+          ]
         },
         {
           "query_id": "quant-dev-024",
@@ -6588,7 +6933,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "corporate-actions"
+          ]
         },
         {
           "query_id": "quant-dev-025",
@@ -6642,7 +6990,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "sec"
+          ]
         },
         {
           "query_id": "quant-dev-026",
@@ -6679,7 +7030,8 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": []
         },
         {
           "query_id": "quant-dev-027",
@@ -6733,7 +7085,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "prices"
+          ]
         },
         {
           "query_id": "quant-dev-028",
@@ -6788,7 +7143,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "corporate-actions"
+          ]
         },
         {
           "query_id": "quant-dev-029",
@@ -6842,7 +7200,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "sec"
+          ]
         },
         {
           "query_id": "quant-dev-030",
@@ -6896,7 +7257,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "fred"
+          ]
         },
         {
           "query_id": "quant-dev-031",
@@ -6949,7 +7313,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "prices"
+          ]
         },
         {
           "query_id": "quant-dev-032",
@@ -7003,7 +7370,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "corporate-actions"
+          ]
         },
         {
           "query_id": "quant-dev-033",
@@ -7062,7 +7432,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "sec"
+          ]
         },
         {
           "query_id": "quant-dev-034",
@@ -7117,7 +7490,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "fred"
+          ]
         },
         {
           "query_id": "quant-dev-035",
@@ -7172,7 +7548,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "prices"
+          ]
         },
         {
           "query_id": "quant-dev-036",
@@ -7209,7 +7588,8 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": []
         },
         {
           "query_id": "quant-dev-037",
@@ -7263,7 +7643,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "sec"
+          ]
         },
         {
           "query_id": "quant-dev-038",
@@ -7317,7 +7700,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "fred"
+          ]
         },
         {
           "query_id": "quant-dev-039",
@@ -7371,7 +7757,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "prices"
+          ]
         },
         {
           "query_id": "quant-dev-040",
@@ -7425,7 +7814,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "corporate-actions"
+          ]
         },
         {
           "query_id": "quant-dev-041",
@@ -7478,7 +7870,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "sec"
+          ]
         },
         {
           "query_id": "quant-dev-042",
@@ -7533,7 +7928,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "fred"
+          ]
         },
         {
           "query_id": "quant-dev-043",
@@ -7592,7 +7990,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "prices"
+          ]
         },
         {
           "query_id": "quant-dev-044",
@@ -7647,7 +8048,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "corporate-actions"
+          ]
         },
         {
           "query_id": "quant-dev-045",
@@ -7701,7 +8105,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "sec"
+          ]
         },
         {
           "query_id": "quant-dev-046",
@@ -7738,7 +8145,8 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": []
         },
         {
           "query_id": "quant-dev-047",
@@ -7792,7 +8200,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "prices"
+          ]
         },
         {
           "query_id": "quant-dev-048",
@@ -7846,7 +8257,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "corporate-actions"
+          ]
         },
         {
           "query_id": "quant-dev-049",
@@ -7901,7 +8315,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "sec"
+          ]
         },
         {
           "query_id": "quant-dev-050",
@@ -7955,7 +8372,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "fred"
+          ]
         },
         {
           "query_id": "humanities-dev-001",
@@ -8008,7 +8428,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "gutenberg"
+          ]
         },
         {
           "query_id": "humanities-dev-002",
@@ -8062,7 +8485,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "tei"
+          ]
         },
         {
           "query_id": "humanities-dev-003",
@@ -8121,7 +8547,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "iiif"
+          ]
         },
         {
           "query_id": "humanities-dev-004",
@@ -8176,7 +8605,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "archive-metadata"
+          ]
         },
         {
           "query_id": "humanities-dev-005",
@@ -8230,7 +8662,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "gutenberg"
+          ]
         },
         {
           "query_id": "humanities-dev-006",
@@ -8267,7 +8702,8 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": []
         },
         {
           "query_id": "humanities-dev-007",
@@ -8322,7 +8758,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "iiif"
+          ]
         },
         {
           "query_id": "humanities-dev-008",
@@ -8376,7 +8815,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "archive-metadata"
+          ]
         },
         {
           "query_id": "humanities-dev-009",
@@ -8430,7 +8872,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "gutenberg"
+          ]
         },
         {
           "query_id": "humanities-dev-010",
@@ -8484,7 +8929,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "tei"
+          ]
         },
         {
           "query_id": "humanities-dev-011",
@@ -8537,7 +8985,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "iiif"
+          ]
         },
         {
           "query_id": "humanities-dev-012",
@@ -8591,7 +9042,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "archive-metadata"
+          ]
         },
         {
           "query_id": "humanities-dev-013",
@@ -8650,7 +9104,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "gutenberg"
+          ]
         },
         {
           "query_id": "humanities-dev-014",
@@ -8706,7 +9163,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "tei"
+          ]
         },
         {
           "query_id": "humanities-dev-015",
@@ -8760,7 +9220,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "iiif"
+          ]
         },
         {
           "query_id": "humanities-dev-016",
@@ -8797,7 +9260,8 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": []
         },
         {
           "query_id": "humanities-dev-017",
@@ -8851,7 +9315,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "gutenberg"
+          ]
         },
         {
           "query_id": "humanities-dev-018",
@@ -8905,7 +9372,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "tei"
+          ]
         },
         {
           "query_id": "humanities-dev-019",
@@ -8959,7 +9429,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "iiif"
+          ]
         },
         {
           "query_id": "humanities-dev-020",
@@ -9013,7 +9486,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "archive-metadata"
+          ]
         },
         {
           "query_id": "humanities-dev-021",
@@ -9067,7 +9543,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "gutenberg"
+          ]
         },
         {
           "query_id": "humanities-dev-022",
@@ -9121,7 +9600,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "tei"
+          ]
         },
         {
           "query_id": "humanities-dev-023",
@@ -9180,7 +9662,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "iiif"
+          ]
         },
         {
           "query_id": "humanities-dev-024",
@@ -9235,7 +9720,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "archive-metadata"
+          ]
         },
         {
           "query_id": "humanities-dev-025",
@@ -9289,7 +9777,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "gutenberg"
+          ]
         },
         {
           "query_id": "humanities-dev-026",
@@ -9326,7 +9817,8 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": []
         },
         {
           "query_id": "humanities-dev-027",
@@ -9380,7 +9872,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "iiif"
+          ]
         },
         {
           "query_id": "humanities-dev-028",
@@ -9435,7 +9930,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "archive-metadata"
+          ]
         },
         {
           "query_id": "humanities-dev-029",
@@ -9489,7 +9987,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "gutenberg"
+          ]
         },
         {
           "query_id": "humanities-dev-030",
@@ -9543,7 +10044,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "tei"
+          ]
         },
         {
           "query_id": "humanities-dev-031",
@@ -9596,7 +10100,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "iiif"
+          ]
         },
         {
           "query_id": "humanities-dev-032",
@@ -9650,7 +10157,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "archive-metadata"
+          ]
         },
         {
           "query_id": "humanities-dev-033",
@@ -9709,7 +10219,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "gutenberg"
+          ]
         },
         {
           "query_id": "humanities-dev-034",
@@ -9764,7 +10277,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "tei"
+          ]
         },
         {
           "query_id": "humanities-dev-035",
@@ -9819,7 +10335,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "iiif"
+          ]
         },
         {
           "query_id": "humanities-dev-036",
@@ -9856,7 +10375,8 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": []
         },
         {
           "query_id": "humanities-dev-037",
@@ -9910,7 +10430,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "gutenberg"
+          ]
         },
         {
           "query_id": "humanities-dev-038",
@@ -9964,7 +10487,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "tei"
+          ]
         },
         {
           "query_id": "humanities-dev-039",
@@ -10018,7 +10544,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "iiif"
+          ]
         },
         {
           "query_id": "humanities-dev-040",
@@ -10072,7 +10601,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "archive-metadata"
+          ]
         },
         {
           "query_id": "humanities-dev-041",
@@ -10125,7 +10657,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "gutenberg"
+          ]
         },
         {
           "query_id": "humanities-dev-042",
@@ -10180,7 +10715,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "tei"
+          ]
         },
         {
           "query_id": "humanities-dev-043",
@@ -10239,7 +10777,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "iiif"
+          ]
         },
         {
           "query_id": "humanities-dev-044",
@@ -10294,7 +10835,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "archive-metadata"
+          ]
         },
         {
           "query_id": "humanities-dev-045",
@@ -10348,7 +10892,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "gutenberg"
+          ]
         },
         {
           "query_id": "humanities-dev-046",
@@ -10385,7 +10932,8 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": []
         },
         {
           "query_id": "humanities-dev-047",
@@ -10439,7 +10987,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "iiif"
+          ]
         },
         {
           "query_id": "humanities-dev-048",
@@ -10493,7 +11044,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "archive-metadata"
+          ]
         },
         {
           "query_id": "humanities-dev-049",
@@ -10548,7 +11102,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "gutenberg"
+          ]
         },
         {
           "query_id": "humanities-dev-050",
@@ -10602,7 +11159,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "tei"
+          ]
         },
         {
           "query_id": "privacy-dev-001",
@@ -10655,7 +11215,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "policy-docs"
+          ]
         },
         {
           "query_id": "privacy-dev-002",
@@ -10709,7 +11272,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "standards"
+          ]
         },
         {
           "query_id": "privacy-dev-003",
@@ -10768,7 +11334,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "local-evidence"
+          ]
         },
         {
           "query_id": "privacy-dev-004",
@@ -10823,7 +11392,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "web-capture"
+          ]
         },
         {
           "query_id": "privacy-dev-005",
@@ -10877,7 +11449,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "policy-docs"
+          ]
         },
         {
           "query_id": "privacy-dev-006",
@@ -10914,7 +11489,8 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": []
         },
         {
           "query_id": "privacy-dev-007",
@@ -10969,7 +11545,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "local-evidence"
+          ]
         },
         {
           "query_id": "privacy-dev-008",
@@ -11023,7 +11602,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "web-capture"
+          ]
         },
         {
           "query_id": "privacy-dev-009",
@@ -11077,7 +11659,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "policy-docs"
+          ]
         },
         {
           "query_id": "privacy-dev-010",
@@ -11131,7 +11716,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "standards"
+          ]
         },
         {
           "query_id": "privacy-dev-011",
@@ -11184,7 +11772,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "local-evidence"
+          ]
         },
         {
           "query_id": "privacy-dev-012",
@@ -11238,7 +11829,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "web-capture"
+          ]
         },
         {
           "query_id": "privacy-dev-013",
@@ -11297,7 +11891,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "policy-docs"
+          ]
         },
         {
           "query_id": "privacy-dev-014",
@@ -11353,7 +11950,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "standards"
+          ]
         },
         {
           "query_id": "privacy-dev-015",
@@ -11407,7 +12007,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "local-evidence"
+          ]
         },
         {
           "query_id": "privacy-dev-016",
@@ -11444,7 +12047,8 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": []
         },
         {
           "query_id": "privacy-dev-017",
@@ -11498,7 +12102,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "policy-docs"
+          ]
         },
         {
           "query_id": "privacy-dev-018",
@@ -11552,7 +12159,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "standards"
+          ]
         },
         {
           "query_id": "privacy-dev-019",
@@ -11606,7 +12216,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "local-evidence"
+          ]
         },
         {
           "query_id": "privacy-dev-020",
@@ -11660,7 +12273,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "web-capture"
+          ]
         },
         {
           "query_id": "privacy-dev-021",
@@ -11714,7 +12330,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "policy-docs"
+          ]
         },
         {
           "query_id": "privacy-dev-022",
@@ -11768,7 +12387,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "standards"
+          ]
         },
         {
           "query_id": "privacy-dev-023",
@@ -11827,7 +12449,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "local-evidence"
+          ]
         },
         {
           "query_id": "privacy-dev-024",
@@ -11882,7 +12507,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "web-capture"
+          ]
         },
         {
           "query_id": "privacy-dev-025",
@@ -11936,7 +12564,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "policy-docs"
+          ]
         },
         {
           "query_id": "privacy-dev-026",
@@ -11973,7 +12604,8 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": []
         },
         {
           "query_id": "privacy-dev-027",
@@ -12027,7 +12659,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "local-evidence"
+          ]
         },
         {
           "query_id": "privacy-dev-028",
@@ -12082,7 +12717,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "web-capture"
+          ]
         },
         {
           "query_id": "privacy-dev-029",
@@ -12136,7 +12774,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "policy-docs"
+          ]
         },
         {
           "query_id": "privacy-dev-030",
@@ -12190,7 +12831,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "standards"
+          ]
         },
         {
           "query_id": "privacy-dev-031",
@@ -12243,7 +12887,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "local-evidence"
+          ]
         },
         {
           "query_id": "privacy-dev-032",
@@ -12297,7 +12944,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "web-capture"
+          ]
         },
         {
           "query_id": "privacy-dev-033",
@@ -12356,7 +13006,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "policy-docs"
+          ]
         },
         {
           "query_id": "privacy-dev-034",
@@ -12411,7 +13064,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "standards"
+          ]
         },
         {
           "query_id": "privacy-dev-035",
@@ -12466,7 +13122,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "local-evidence"
+          ]
         },
         {
           "query_id": "privacy-dev-036",
@@ -12503,7 +13162,8 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": []
         },
         {
           "query_id": "privacy-dev-037",
@@ -12557,7 +13217,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "policy-docs"
+          ]
         },
         {
           "query_id": "privacy-dev-038",
@@ -12611,7 +13274,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "standards"
+          ]
         },
         {
           "query_id": "privacy-dev-039",
@@ -12665,7 +13331,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "local-evidence"
+          ]
         },
         {
           "query_id": "privacy-dev-040",
@@ -12719,7 +13388,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "web-capture"
+          ]
         },
         {
           "query_id": "privacy-dev-041",
@@ -12772,7 +13444,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "policy-docs"
+          ]
         },
         {
           "query_id": "privacy-dev-042",
@@ -12827,7 +13502,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "standards"
+          ]
         },
         {
           "query_id": "privacy-dev-043",
@@ -12886,7 +13564,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "local-evidence"
+          ]
         },
         {
           "query_id": "privacy-dev-044",
@@ -12941,7 +13622,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "web-capture"
+          ]
         },
         {
           "query_id": "privacy-dev-045",
@@ -12995,7 +13679,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "policy-docs"
+          ]
         },
         {
           "query_id": "privacy-dev-046",
@@ -13032,7 +13719,8 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": []
         },
         {
           "query_id": "privacy-dev-047",
@@ -13086,7 +13774,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "local-evidence"
+          ]
         },
         {
           "query_id": "privacy-dev-048",
@@ -13140,7 +13831,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "web-capture"
+          ]
         },
         {
           "query_id": "privacy-dev-049",
@@ -13195,7 +13889,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "policy-docs"
+          ]
         },
         {
           "query_id": "privacy-dev-050",
@@ -13249,7 +13946,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "standards"
+          ]
         },
         {
           "query_id": "adversarial-001-bad-router",
@@ -13301,7 +14001,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "synthetic-contract"
+          ]
         },
         {
           "query_id": "adversarial-002-future-revision",
@@ -13353,7 +14056,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "synthetic-contract"
+          ]
         },
         {
           "query_id": "adversarial-003-duplicate-boost",
@@ -13405,7 +14111,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "synthetic-contract"
+          ]
         },
         {
           "query_id": "adversarial-004-wrong-number",
@@ -13462,7 +14171,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "synthetic-contract"
+          ]
         },
         {
           "query_id": "adversarial-005-unsupported-citation",
@@ -13514,7 +14226,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "synthetic-contract"
+          ]
         },
         {
           "query_id": "adversarial-006-private-bridge",
@@ -13567,7 +14282,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "synthetic-contract"
+          ]
         },
         {
           "query_id": "adversarial-007-wrong-edition",
@@ -13619,7 +14337,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "synthetic-contract"
+          ]
         },
         {
           "query_id": "adversarial-008-near-id",
@@ -13670,7 +14391,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "synthetic-contract"
+          ]
         },
         {
           "query_id": "adversarial-009-timed-scan",
@@ -13721,7 +14445,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "synthetic-contract"
+          ]
         },
         {
           "query_id": "adversarial-010-revoked-cache",
@@ -13773,7 +14500,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "synthetic-contract"
+          ]
         },
         {
           "query_id": "adversarial-011-malicious-doc",
@@ -13825,7 +14555,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "synthetic-contract"
+          ]
         },
         {
           "query_id": "adversarial-012-source-correction",
@@ -13877,7 +14610,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "synthetic-contract"
+          ]
         },
         {
           "query_id": "adversarial-013-ticker-reuse",
@@ -13928,7 +14664,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "synthetic-contract"
+          ]
         },
         {
           "query_id": "adversarial-014-graph-time",
@@ -13981,7 +14720,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "synthetic-contract"
+          ]
         },
         {
           "query_id": "adversarial-015-fabricated-graph",
@@ -14034,7 +14776,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "synthetic-contract"
+          ]
         },
         {
           "query_id": "adversarial-016-forbidden-parent",
@@ -14086,7 +14831,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "synthetic-contract"
+          ]
         },
         {
           "query_id": "adversarial-017-replayed-index",
@@ -14138,7 +14886,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "synthetic-contract"
+          ]
         },
         {
           "query_id": "adversarial-018-publish-crash",
@@ -14190,7 +14941,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "synthetic-contract"
+          ]
         },
         {
           "query_id": "adversarial-019-backend-failure",
@@ -14227,7 +14981,8 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": []
         },
         {
           "query_id": "adversarial-020-policy-boundary",
@@ -14279,7 +15034,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "synthetic-contract"
+          ]
         }
       ]
     },
@@ -14349,7 +15107,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "attack"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-002",
@@ -14403,7 +15164,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "cve"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-003",
@@ -14462,7 +15226,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "kev"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-004",
@@ -14517,7 +15284,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "opencti"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-005",
@@ -14571,7 +15341,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "attack"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-006",
@@ -14608,7 +15381,8 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": []
         },
         {
           "query_id": "cybersecurity-dev-007",
@@ -14663,7 +15437,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "kev"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-008",
@@ -14717,7 +15494,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "opencti"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-009",
@@ -14771,7 +15551,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "attack"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-010",
@@ -14825,7 +15608,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "cve"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-011",
@@ -14878,7 +15664,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "kev"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-012",
@@ -14932,7 +15721,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "opencti"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-013",
@@ -14991,7 +15783,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "attack"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-014",
@@ -15047,7 +15842,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "cve"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-015",
@@ -15101,7 +15899,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "kev"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-016",
@@ -15138,7 +15939,8 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": []
         },
         {
           "query_id": "cybersecurity-dev-017",
@@ -15192,7 +15994,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "attack"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-018",
@@ -15246,7 +16051,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "cve"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-019",
@@ -15300,7 +16108,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "kev"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-020",
@@ -15354,7 +16165,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "opencti"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-021",
@@ -15408,7 +16222,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "attack"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-022",
@@ -15462,7 +16279,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "cve"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-023",
@@ -15521,7 +16341,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "kev"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-024",
@@ -15576,7 +16399,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "opencti"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-025",
@@ -15630,7 +16456,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "attack"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-026",
@@ -15667,7 +16496,8 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": []
         },
         {
           "query_id": "cybersecurity-dev-027",
@@ -15721,7 +16551,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "kev"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-028",
@@ -15776,7 +16609,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "opencti"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-029",
@@ -15830,7 +16666,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "attack"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-030",
@@ -15884,7 +16723,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "cve"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-031",
@@ -15937,7 +16779,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "kev"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-032",
@@ -15991,7 +16836,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "opencti"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-033",
@@ -16050,7 +16898,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "attack"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-034",
@@ -16105,7 +16956,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "cve"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-035",
@@ -16160,7 +17014,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "kev"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-036",
@@ -16197,7 +17054,8 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": []
         },
         {
           "query_id": "cybersecurity-dev-037",
@@ -16251,7 +17109,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "attack"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-038",
@@ -16305,7 +17166,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "cve"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-039",
@@ -16359,7 +17223,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "kev"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-040",
@@ -16413,7 +17280,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "opencti"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-041",
@@ -16466,7 +17336,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "attack"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-042",
@@ -16521,7 +17394,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "cve"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-043",
@@ -16580,7 +17456,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "kev"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-044",
@@ -16635,7 +17514,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "opencti"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-045",
@@ -16689,7 +17571,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "attack"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-046",
@@ -16726,7 +17611,8 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": []
         },
         {
           "query_id": "cybersecurity-dev-047",
@@ -16780,7 +17666,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "kev"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-048",
@@ -16834,7 +17723,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "opencti"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-049",
@@ -16889,7 +17781,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "attack"
+          ]
         },
         {
           "query_id": "cybersecurity-dev-050",
@@ -16943,7 +17838,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "cve"
+          ]
         },
         {
           "query_id": "networking-dev-001",
@@ -16996,7 +17894,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "rfc"
+          ]
         },
         {
           "query_id": "networking-dev-002",
@@ -17050,7 +17951,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "bgp"
+          ]
         },
         {
           "query_id": "networking-dev-003",
@@ -17109,7 +18013,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "dns"
+          ]
         },
         {
           "query_id": "networking-dev-004",
@@ -17164,7 +18071,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "rir"
+          ]
         },
         {
           "query_id": "networking-dev-005",
@@ -17218,7 +18128,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "rfc"
+          ]
         },
         {
           "query_id": "networking-dev-006",
@@ -17255,7 +18168,8 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": []
         },
         {
           "query_id": "networking-dev-007",
@@ -17310,7 +18224,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "dns"
+          ]
         },
         {
           "query_id": "networking-dev-008",
@@ -17364,7 +18281,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "rir"
+          ]
         },
         {
           "query_id": "networking-dev-009",
@@ -17418,7 +18338,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "rfc"
+          ]
         },
         {
           "query_id": "networking-dev-010",
@@ -17472,7 +18395,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "bgp"
+          ]
         },
         {
           "query_id": "networking-dev-011",
@@ -17525,7 +18451,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "dns"
+          ]
         },
         {
           "query_id": "networking-dev-012",
@@ -17579,7 +18508,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "rir"
+          ]
         },
         {
           "query_id": "networking-dev-013",
@@ -17638,7 +18570,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "rfc"
+          ]
         },
         {
           "query_id": "networking-dev-014",
@@ -17694,7 +18629,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "bgp"
+          ]
         },
         {
           "query_id": "networking-dev-015",
@@ -17748,7 +18686,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "dns"
+          ]
         },
         {
           "query_id": "networking-dev-016",
@@ -17785,7 +18726,8 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": []
         },
         {
           "query_id": "networking-dev-017",
@@ -17839,7 +18781,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "rfc"
+          ]
         },
         {
           "query_id": "networking-dev-018",
@@ -17893,7 +18838,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "bgp"
+          ]
         },
         {
           "query_id": "networking-dev-019",
@@ -17947,7 +18895,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "dns"
+          ]
         },
         {
           "query_id": "networking-dev-020",
@@ -18001,7 +18952,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "rir"
+          ]
         },
         {
           "query_id": "networking-dev-021",
@@ -18055,7 +19009,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "rfc"
+          ]
         },
         {
           "query_id": "networking-dev-022",
@@ -18109,7 +19066,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "bgp"
+          ]
         },
         {
           "query_id": "networking-dev-023",
@@ -18168,7 +19128,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "dns"
+          ]
         },
         {
           "query_id": "networking-dev-024",
@@ -18223,7 +19186,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "rir"
+          ]
         },
         {
           "query_id": "networking-dev-025",
@@ -18277,7 +19243,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "rfc"
+          ]
         },
         {
           "query_id": "networking-dev-026",
@@ -18314,7 +19283,8 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": []
         },
         {
           "query_id": "networking-dev-027",
@@ -18368,7 +19338,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "dns"
+          ]
         },
         {
           "query_id": "networking-dev-028",
@@ -18423,7 +19396,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "rir"
+          ]
         },
         {
           "query_id": "networking-dev-029",
@@ -18477,7 +19453,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "rfc"
+          ]
         },
         {
           "query_id": "networking-dev-030",
@@ -18531,7 +19510,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "bgp"
+          ]
         },
         {
           "query_id": "networking-dev-031",
@@ -18584,7 +19566,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "dns"
+          ]
         },
         {
           "query_id": "networking-dev-032",
@@ -18638,7 +19623,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "rir"
+          ]
         },
         {
           "query_id": "networking-dev-033",
@@ -18697,7 +19685,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "rfc"
+          ]
         },
         {
           "query_id": "networking-dev-034",
@@ -18752,7 +19743,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "bgp"
+          ]
         },
         {
           "query_id": "networking-dev-035",
@@ -18807,7 +19801,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "dns"
+          ]
         },
         {
           "query_id": "networking-dev-036",
@@ -18844,7 +19841,8 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": []
         },
         {
           "query_id": "networking-dev-037",
@@ -18898,7 +19896,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "rfc"
+          ]
         },
         {
           "query_id": "networking-dev-038",
@@ -18952,7 +19953,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "bgp"
+          ]
         },
         {
           "query_id": "networking-dev-039",
@@ -19006,7 +20010,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "dns"
+          ]
         },
         {
           "query_id": "networking-dev-040",
@@ -19060,7 +20067,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "rir"
+          ]
         },
         {
           "query_id": "networking-dev-041",
@@ -19113,7 +20123,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "rfc"
+          ]
         },
         {
           "query_id": "networking-dev-042",
@@ -19168,7 +20181,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "bgp"
+          ]
         },
         {
           "query_id": "networking-dev-043",
@@ -19227,7 +20243,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "dns"
+          ]
         },
         {
           "query_id": "networking-dev-044",
@@ -19282,7 +20301,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "rir"
+          ]
         },
         {
           "query_id": "networking-dev-045",
@@ -19336,7 +20358,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "rfc"
+          ]
         },
         {
           "query_id": "networking-dev-046",
@@ -19373,7 +20398,8 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": []
         },
         {
           "query_id": "networking-dev-047",
@@ -19427,7 +20453,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "dns"
+          ]
         },
         {
           "query_id": "networking-dev-048",
@@ -19481,7 +20510,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "rir"
+          ]
         },
         {
           "query_id": "networking-dev-049",
@@ -19536,7 +20568,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "rfc"
+          ]
         },
         {
           "query_id": "networking-dev-050",
@@ -19590,7 +20625,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "bgp"
+          ]
         },
         {
           "query_id": "quant-dev-001",
@@ -19643,7 +20681,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "sec"
+          ]
         },
         {
           "query_id": "quant-dev-002",
@@ -19697,7 +20738,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "fred"
+          ]
         },
         {
           "query_id": "quant-dev-003",
@@ -19756,7 +20800,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "prices"
+          ]
         },
         {
           "query_id": "quant-dev-004",
@@ -19811,7 +20858,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "corporate-actions"
+          ]
         },
         {
           "query_id": "quant-dev-005",
@@ -19865,7 +20915,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "sec"
+          ]
         },
         {
           "query_id": "quant-dev-006",
@@ -19902,7 +20955,8 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": []
         },
         {
           "query_id": "quant-dev-007",
@@ -19957,7 +21011,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "prices"
+          ]
         },
         {
           "query_id": "quant-dev-008",
@@ -20011,7 +21068,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "corporate-actions"
+          ]
         },
         {
           "query_id": "quant-dev-009",
@@ -20065,7 +21125,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "sec"
+          ]
         },
         {
           "query_id": "quant-dev-010",
@@ -20119,7 +21182,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "fred"
+          ]
         },
         {
           "query_id": "quant-dev-011",
@@ -20172,7 +21238,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "prices"
+          ]
         },
         {
           "query_id": "quant-dev-012",
@@ -20226,7 +21295,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "corporate-actions"
+          ]
         },
         {
           "query_id": "quant-dev-013",
@@ -20285,7 +21357,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "sec"
+          ]
         },
         {
           "query_id": "quant-dev-014",
@@ -20341,7 +21416,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "fred"
+          ]
         },
         {
           "query_id": "quant-dev-015",
@@ -20395,7 +21473,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "prices"
+          ]
         },
         {
           "query_id": "quant-dev-016",
@@ -20432,7 +21513,8 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": []
         },
         {
           "query_id": "quant-dev-017",
@@ -20486,7 +21568,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "sec"
+          ]
         },
         {
           "query_id": "quant-dev-018",
@@ -20540,7 +21625,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "fred"
+          ]
         },
         {
           "query_id": "quant-dev-019",
@@ -20594,7 +21682,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "prices"
+          ]
         },
         {
           "query_id": "quant-dev-020",
@@ -20648,7 +21739,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "corporate-actions"
+          ]
         },
         {
           "query_id": "quant-dev-021",
@@ -20702,7 +21796,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "sec"
+          ]
         },
         {
           "query_id": "quant-dev-022",
@@ -20756,7 +21853,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "fred"
+          ]
         },
         {
           "query_id": "quant-dev-023",
@@ -20815,7 +21915,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "prices"
+          ]
         },
         {
           "query_id": "quant-dev-024",
@@ -20870,7 +21973,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "corporate-actions"
+          ]
         },
         {
           "query_id": "quant-dev-025",
@@ -20924,7 +22030,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "sec"
+          ]
         },
         {
           "query_id": "quant-dev-026",
@@ -20961,7 +22070,8 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": []
         },
         {
           "query_id": "quant-dev-027",
@@ -21015,7 +22125,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "prices"
+          ]
         },
         {
           "query_id": "quant-dev-028",
@@ -21070,7 +22183,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "corporate-actions"
+          ]
         },
         {
           "query_id": "quant-dev-029",
@@ -21124,7 +22240,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "sec"
+          ]
         },
         {
           "query_id": "quant-dev-030",
@@ -21178,7 +22297,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "fred"
+          ]
         },
         {
           "query_id": "quant-dev-031",
@@ -21231,7 +22353,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "prices"
+          ]
         },
         {
           "query_id": "quant-dev-032",
@@ -21285,7 +22410,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "corporate-actions"
+          ]
         },
         {
           "query_id": "quant-dev-033",
@@ -21344,7 +22472,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "sec"
+          ]
         },
         {
           "query_id": "quant-dev-034",
@@ -21399,7 +22530,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "fred"
+          ]
         },
         {
           "query_id": "quant-dev-035",
@@ -21454,7 +22588,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "prices"
+          ]
         },
         {
           "query_id": "quant-dev-036",
@@ -21491,7 +22628,8 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": []
         },
         {
           "query_id": "quant-dev-037",
@@ -21545,7 +22683,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "sec"
+          ]
         },
         {
           "query_id": "quant-dev-038",
@@ -21599,7 +22740,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "fred"
+          ]
         },
         {
           "query_id": "quant-dev-039",
@@ -21653,7 +22797,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "prices"
+          ]
         },
         {
           "query_id": "quant-dev-040",
@@ -21707,7 +22854,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "corporate-actions"
+          ]
         },
         {
           "query_id": "quant-dev-041",
@@ -21760,7 +22910,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "sec"
+          ]
         },
         {
           "query_id": "quant-dev-042",
@@ -21815,7 +22968,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "fred"
+          ]
         },
         {
           "query_id": "quant-dev-043",
@@ -21874,7 +23030,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "prices"
+          ]
         },
         {
           "query_id": "quant-dev-044",
@@ -21929,7 +23088,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "corporate-actions"
+          ]
         },
         {
           "query_id": "quant-dev-045",
@@ -21983,7 +23145,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "sec"
+          ]
         },
         {
           "query_id": "quant-dev-046",
@@ -22020,7 +23185,8 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": []
         },
         {
           "query_id": "quant-dev-047",
@@ -22074,7 +23240,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "prices"
+          ]
         },
         {
           "query_id": "quant-dev-048",
@@ -22128,7 +23297,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "corporate-actions"
+          ]
         },
         {
           "query_id": "quant-dev-049",
@@ -22183,7 +23355,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "sec"
+          ]
         },
         {
           "query_id": "quant-dev-050",
@@ -22237,7 +23412,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "fred"
+          ]
         },
         {
           "query_id": "humanities-dev-001",
@@ -22290,7 +23468,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "gutenberg"
+          ]
         },
         {
           "query_id": "humanities-dev-002",
@@ -22344,7 +23525,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "tei"
+          ]
         },
         {
           "query_id": "humanities-dev-003",
@@ -22403,7 +23587,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "iiif"
+          ]
         },
         {
           "query_id": "humanities-dev-004",
@@ -22458,7 +23645,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "archive-metadata"
+          ]
         },
         {
           "query_id": "humanities-dev-005",
@@ -22512,7 +23702,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "gutenberg"
+          ]
         },
         {
           "query_id": "humanities-dev-006",
@@ -22549,7 +23742,8 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": []
         },
         {
           "query_id": "humanities-dev-007",
@@ -22604,7 +23798,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "iiif"
+          ]
         },
         {
           "query_id": "humanities-dev-008",
@@ -22658,7 +23855,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "archive-metadata"
+          ]
         },
         {
           "query_id": "humanities-dev-009",
@@ -22712,7 +23912,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "gutenberg"
+          ]
         },
         {
           "query_id": "humanities-dev-010",
@@ -22766,7 +23969,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "tei"
+          ]
         },
         {
           "query_id": "humanities-dev-011",
@@ -22819,7 +24025,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "iiif"
+          ]
         },
         {
           "query_id": "humanities-dev-012",
@@ -22873,7 +24082,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "archive-metadata"
+          ]
         },
         {
           "query_id": "humanities-dev-013",
@@ -22932,7 +24144,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "gutenberg"
+          ]
         },
         {
           "query_id": "humanities-dev-014",
@@ -22988,7 +24203,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "tei"
+          ]
         },
         {
           "query_id": "humanities-dev-015",
@@ -23042,7 +24260,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "iiif"
+          ]
         },
         {
           "query_id": "humanities-dev-016",
@@ -23079,7 +24300,8 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": []
         },
         {
           "query_id": "humanities-dev-017",
@@ -23133,7 +24355,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "gutenberg"
+          ]
         },
         {
           "query_id": "humanities-dev-018",
@@ -23187,7 +24412,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "tei"
+          ]
         },
         {
           "query_id": "humanities-dev-019",
@@ -23241,7 +24469,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "iiif"
+          ]
         },
         {
           "query_id": "humanities-dev-020",
@@ -23295,7 +24526,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "archive-metadata"
+          ]
         },
         {
           "query_id": "humanities-dev-021",
@@ -23349,7 +24583,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "gutenberg"
+          ]
         },
         {
           "query_id": "humanities-dev-022",
@@ -23403,7 +24640,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "tei"
+          ]
         },
         {
           "query_id": "humanities-dev-023",
@@ -23462,7 +24702,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "iiif"
+          ]
         },
         {
           "query_id": "humanities-dev-024",
@@ -23517,7 +24760,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "archive-metadata"
+          ]
         },
         {
           "query_id": "humanities-dev-025",
@@ -23571,7 +24817,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "gutenberg"
+          ]
         },
         {
           "query_id": "humanities-dev-026",
@@ -23608,7 +24857,8 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": []
         },
         {
           "query_id": "humanities-dev-027",
@@ -23662,7 +24912,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "iiif"
+          ]
         },
         {
           "query_id": "humanities-dev-028",
@@ -23717,7 +24970,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "archive-metadata"
+          ]
         },
         {
           "query_id": "humanities-dev-029",
@@ -23771,7 +25027,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "gutenberg"
+          ]
         },
         {
           "query_id": "humanities-dev-030",
@@ -23825,7 +25084,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "tei"
+          ]
         },
         {
           "query_id": "humanities-dev-031",
@@ -23878,7 +25140,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "iiif"
+          ]
         },
         {
           "query_id": "humanities-dev-032",
@@ -23932,7 +25197,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "archive-metadata"
+          ]
         },
         {
           "query_id": "humanities-dev-033",
@@ -23991,7 +25259,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "gutenberg"
+          ]
         },
         {
           "query_id": "humanities-dev-034",
@@ -24046,7 +25317,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "tei"
+          ]
         },
         {
           "query_id": "humanities-dev-035",
@@ -24101,7 +25375,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "iiif"
+          ]
         },
         {
           "query_id": "humanities-dev-036",
@@ -24138,7 +25415,8 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": []
         },
         {
           "query_id": "humanities-dev-037",
@@ -24192,7 +25470,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "gutenberg"
+          ]
         },
         {
           "query_id": "humanities-dev-038",
@@ -24246,7 +25527,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "tei"
+          ]
         },
         {
           "query_id": "humanities-dev-039",
@@ -24300,7 +25584,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "iiif"
+          ]
         },
         {
           "query_id": "humanities-dev-040",
@@ -24354,7 +25641,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "archive-metadata"
+          ]
         },
         {
           "query_id": "humanities-dev-041",
@@ -24407,7 +25697,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "gutenberg"
+          ]
         },
         {
           "query_id": "humanities-dev-042",
@@ -24462,7 +25755,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "tei"
+          ]
         },
         {
           "query_id": "humanities-dev-043",
@@ -24521,7 +25817,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "iiif"
+          ]
         },
         {
           "query_id": "humanities-dev-044",
@@ -24576,7 +25875,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "archive-metadata"
+          ]
         },
         {
           "query_id": "humanities-dev-045",
@@ -24630,7 +25932,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "gutenberg"
+          ]
         },
         {
           "query_id": "humanities-dev-046",
@@ -24667,7 +25972,8 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": []
         },
         {
           "query_id": "humanities-dev-047",
@@ -24721,7 +26027,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "iiif"
+          ]
         },
         {
           "query_id": "humanities-dev-048",
@@ -24775,7 +26084,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "archive-metadata"
+          ]
         },
         {
           "query_id": "humanities-dev-049",
@@ -24830,7 +26142,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "gutenberg"
+          ]
         },
         {
           "query_id": "humanities-dev-050",
@@ -24884,7 +26199,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "tei"
+          ]
         },
         {
           "query_id": "privacy-dev-001",
@@ -24937,7 +26255,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "policy-docs"
+          ]
         },
         {
           "query_id": "privacy-dev-002",
@@ -24991,7 +26312,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "standards"
+          ]
         },
         {
           "query_id": "privacy-dev-003",
@@ -25050,7 +26374,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "local-evidence"
+          ]
         },
         {
           "query_id": "privacy-dev-004",
@@ -25105,7 +26432,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "web-capture"
+          ]
         },
         {
           "query_id": "privacy-dev-005",
@@ -25159,7 +26489,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "policy-docs"
+          ]
         },
         {
           "query_id": "privacy-dev-006",
@@ -25196,7 +26529,8 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": []
         },
         {
           "query_id": "privacy-dev-007",
@@ -25251,7 +26585,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "local-evidence"
+          ]
         },
         {
           "query_id": "privacy-dev-008",
@@ -25305,7 +26642,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "web-capture"
+          ]
         },
         {
           "query_id": "privacy-dev-009",
@@ -25359,7 +26699,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "policy-docs"
+          ]
         },
         {
           "query_id": "privacy-dev-010",
@@ -25413,7 +26756,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "standards"
+          ]
         },
         {
           "query_id": "privacy-dev-011",
@@ -25466,7 +26812,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "local-evidence"
+          ]
         },
         {
           "query_id": "privacy-dev-012",
@@ -25520,7 +26869,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "web-capture"
+          ]
         },
         {
           "query_id": "privacy-dev-013",
@@ -25579,7 +26931,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "policy-docs"
+          ]
         },
         {
           "query_id": "privacy-dev-014",
@@ -25635,7 +26990,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "standards"
+          ]
         },
         {
           "query_id": "privacy-dev-015",
@@ -25689,7 +27047,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "local-evidence"
+          ]
         },
         {
           "query_id": "privacy-dev-016",
@@ -25726,7 +27087,8 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": []
         },
         {
           "query_id": "privacy-dev-017",
@@ -25780,7 +27142,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "policy-docs"
+          ]
         },
         {
           "query_id": "privacy-dev-018",
@@ -25834,7 +27199,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "standards"
+          ]
         },
         {
           "query_id": "privacy-dev-019",
@@ -25888,7 +27256,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "local-evidence"
+          ]
         },
         {
           "query_id": "privacy-dev-020",
@@ -25942,7 +27313,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "web-capture"
+          ]
         },
         {
           "query_id": "privacy-dev-021",
@@ -25996,7 +27370,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "policy-docs"
+          ]
         },
         {
           "query_id": "privacy-dev-022",
@@ -26050,7 +27427,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "standards"
+          ]
         },
         {
           "query_id": "privacy-dev-023",
@@ -26109,7 +27489,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "local-evidence"
+          ]
         },
         {
           "query_id": "privacy-dev-024",
@@ -26164,7 +27547,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "web-capture"
+          ]
         },
         {
           "query_id": "privacy-dev-025",
@@ -26218,7 +27604,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "policy-docs"
+          ]
         },
         {
           "query_id": "privacy-dev-026",
@@ -26255,7 +27644,8 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": []
         },
         {
           "query_id": "privacy-dev-027",
@@ -26309,7 +27699,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "local-evidence"
+          ]
         },
         {
           "query_id": "privacy-dev-028",
@@ -26364,7 +27757,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "web-capture"
+          ]
         },
         {
           "query_id": "privacy-dev-029",
@@ -26418,7 +27814,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "policy-docs"
+          ]
         },
         {
           "query_id": "privacy-dev-030",
@@ -26472,7 +27871,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "standards"
+          ]
         },
         {
           "query_id": "privacy-dev-031",
@@ -26525,7 +27927,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "local-evidence"
+          ]
         },
         {
           "query_id": "privacy-dev-032",
@@ -26579,7 +27984,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "web-capture"
+          ]
         },
         {
           "query_id": "privacy-dev-033",
@@ -26638,7 +28046,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "policy-docs"
+          ]
         },
         {
           "query_id": "privacy-dev-034",
@@ -26693,7 +28104,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "standards"
+          ]
         },
         {
           "query_id": "privacy-dev-035",
@@ -26748,7 +28162,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "local-evidence"
+          ]
         },
         {
           "query_id": "privacy-dev-036",
@@ -26785,7 +28202,8 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": []
         },
         {
           "query_id": "privacy-dev-037",
@@ -26839,7 +28257,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "policy-docs"
+          ]
         },
         {
           "query_id": "privacy-dev-038",
@@ -26893,7 +28314,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "standards"
+          ]
         },
         {
           "query_id": "privacy-dev-039",
@@ -26947,7 +28371,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "local-evidence"
+          ]
         },
         {
           "query_id": "privacy-dev-040",
@@ -27001,7 +28428,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "web-capture"
+          ]
         },
         {
           "query_id": "privacy-dev-041",
@@ -27054,7 +28484,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "policy-docs"
+          ]
         },
         {
           "query_id": "privacy-dev-042",
@@ -27109,7 +28542,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "standards"
+          ]
         },
         {
           "query_id": "privacy-dev-043",
@@ -27168,7 +28604,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "local-evidence"
+          ]
         },
         {
           "query_id": "privacy-dev-044",
@@ -27223,7 +28662,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "web-capture"
+          ]
         },
         {
           "query_id": "privacy-dev-045",
@@ -27277,7 +28719,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "policy-docs"
+          ]
         },
         {
           "query_id": "privacy-dev-046",
@@ -27314,7 +28759,8 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": []
         },
         {
           "query_id": "privacy-dev-047",
@@ -27368,7 +28814,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "local-evidence"
+          ]
         },
         {
           "query_id": "privacy-dev-048",
@@ -27422,7 +28871,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "web-capture"
+          ]
         },
         {
           "query_id": "privacy-dev-049",
@@ -27477,7 +28929,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "policy-docs"
+          ]
         },
         {
           "query_id": "privacy-dev-050",
@@ -27531,7 +28986,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "standards"
+          ]
         },
         {
           "query_id": "adversarial-001-bad-router",
@@ -27583,7 +29041,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "synthetic-contract"
+          ]
         },
         {
           "query_id": "adversarial-002-future-revision",
@@ -27635,7 +29096,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "synthetic-contract"
+          ]
         },
         {
           "query_id": "adversarial-003-duplicate-boost",
@@ -27687,7 +29151,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "synthetic-contract"
+          ]
         },
         {
           "query_id": "adversarial-004-wrong-number",
@@ -27744,7 +29211,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "synthetic-contract"
+          ]
         },
         {
           "query_id": "adversarial-005-unsupported-citation",
@@ -27796,7 +29266,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "synthetic-contract"
+          ]
         },
         {
           "query_id": "adversarial-006-private-bridge",
@@ -27849,7 +29322,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "synthetic-contract"
+          ]
         },
         {
           "query_id": "adversarial-007-wrong-edition",
@@ -27901,7 +29377,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "synthetic-contract"
+          ]
         },
         {
           "query_id": "adversarial-008-near-id",
@@ -27952,7 +29431,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "synthetic-contract"
+          ]
         },
         {
           "query_id": "adversarial-009-timed-scan",
@@ -28003,7 +29485,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "synthetic-contract"
+          ]
         },
         {
           "query_id": "adversarial-010-revoked-cache",
@@ -28055,7 +29540,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "synthetic-contract"
+          ]
         },
         {
           "query_id": "adversarial-011-malicious-doc",
@@ -28107,7 +29595,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "synthetic-contract"
+          ]
         },
         {
           "query_id": "adversarial-012-source-correction",
@@ -28159,7 +29650,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "synthetic-contract"
+          ]
         },
         {
           "query_id": "adversarial-013-ticker-reuse",
@@ -28210,7 +29704,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "synthetic-contract"
+          ]
         },
         {
           "query_id": "adversarial-014-graph-time",
@@ -28263,7 +29760,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "synthetic-contract"
+          ]
         },
         {
           "query_id": "adversarial-015-fabricated-graph",
@@ -28316,7 +29816,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "synthetic-contract"
+          ]
         },
         {
           "query_id": "adversarial-016-forbidden-parent",
@@ -28368,7 +29871,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "synthetic-contract"
+          ]
         },
         {
           "query_id": "adversarial-017-replayed-index",
@@ -28420,7 +29926,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "synthetic-contract"
+          ]
         },
         {
           "query_id": "adversarial-018-publish-crash",
@@ -28472,7 +29981,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "synthetic-contract"
+          ]
         },
         {
           "query_id": "adversarial-019-backend-failure",
@@ -28509,7 +30021,8 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": []
         },
         {
           "query_id": "adversarial-020-policy-boundary",
@@ -28561,7 +30074,10 @@
           "vram_peak_mb": null,
           "backend_failure": false,
           "policy_failure": false,
-          "temporal_failure": false
+          "temporal_failure": false,
+          "returned_source_families": [
+            "synthetic-contract"
+          ]
         }
       ]
     }
