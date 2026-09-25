@@ -44,9 +44,19 @@ def _run_report(config,queries,judgments,run):
     hard=hard_failure_counts(queries,judgments,run.outcomes)
     quality_status="eligible" if run.metadata.model_execution==ModelExecutionKind.REAL_MODEL else "not_run_fake_or_no_model"
     metadata=asdict(run.metadata);metadata["model_execution"]=run.metadata.model_execution.value
+    metrics=aggregate(list(rows.values()));budget_failures=[]
+    latency=metrics.get("latency_ms")
+    if isinstance(latency,dict) and latency.get("p95") is not None and latency["p95"]>config.max_p95_latency_ms:budget_failures.append("p95_latency")
+    ram=metrics.get("ram_peak_mb")
+    if config.max_ram_mb is not None and isinstance(ram,dict) and ram.get("max") is not None and ram["max"]>config.max_ram_mb:budget_failures.append("ram_peak")
+    vram=metrics.get("vram_peak_mb")
+    if config.max_vram_mb is not None:
+        if not isinstance(vram,dict) or vram.get("max") is None:budget_failures.append("vram_not_measured")
+        elif vram["max"]>config.max_vram_mb:budget_failures.append("vram_peak")
     result={
         "baseline":run.metadata.baseline,"definition":BASELINE_DEFINITIONS[run.metadata.baseline],
-        "metadata":metadata,"n":len(rows),"metrics":aggregate(list(rows.values())),
+        "metadata":metadata,"n":len(rows),"metrics":metrics,
+        "budget_status":{"passed":not budget_failures,"failures":budget_failures,"max_p95_latency_ms":config.max_p95_latency_ms,"max_ram_mb":config.max_ram_mb,"max_vram_mb":config.max_vram_mb},
         "slices":_slices(queries,rows),"hard_failures":hard,"hard_gate_pass":all(v==0 for v in hard.values()),
         "semantic_model_metrics_status":quality_status,
         "query_metrics":rows,
@@ -65,6 +75,8 @@ def _paired(config,base,candidate,queries):
             kind,value=key.split(":",1);ids=[q for q in common if getattr(qmap[q],"task_type" if kind=="task" else kind)==value]
             slices[key]=paired_bootstrap([candidate["query_metrics"][q][metric] for q in ids],[base["query_metrics"][q][metric] for q in ids],replicates=config.bootstrap_replicates,confidence=config.confidence,seed=config.seed,min_pairs=config.min_conclusive_pairs,noninferiority_margin=margin)
         comparisons[metric]["slices"]=slices
+        comparisons[metric]["slice_regressions"]=sorted(key for key,value in slices.items() if value["conclusive"] and not value["noninferior"])
+        comparisons[metric]["inconclusive_slices"]=sorted(key for key,value in slices.items() if not value["conclusive"])
     return comparisons
 
 def run_experiment(config:ExperimentConfig,queries,judgments,runs):
