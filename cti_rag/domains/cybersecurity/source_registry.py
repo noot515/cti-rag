@@ -22,6 +22,7 @@ CORE_SOURCE_COVERAGE=(
     SourceCoverageEntry("atlas",SourceAdapterStatus.DEFERRED,"MITRE ATLAS","manifest-only scope; adapter not claimed"),
     SourceCoverageEntry("car",SourceAdapterStatus.DEFERRED,"MITRE CAR","manifest-only scope; adapter not claimed"),
     SourceCoverageEntry("attack-flow",SourceAdapterStatus.DEFERRED,"Attack Flow STIX","manifest-only scope; adapter not claimed"),
+    SourceCoverageEntry("opencti-read",SourceAdapterStatus.FIXTURE_VALIDATED,"OpenCTI STIX 2.1 read API","read-only real-format fixtures validated; live OpenCTI credentials/service not supplied",True,True,None),
     SourceCoverageEntry("misp",SourceAdapterStatus.DEFERRED,"MISP JSON/STIX","requires deployment-specific source contract"),
     SourceCoverageEntry("reports-tram-sightings",SourceAdapterStatus.DEFERRED,"reports/TRAM/sightings","heterogeneous report family; no false shared adapter"),
     SourceCoverageEntry("sigma",SourceAdapterStatus.DEFERRED,"Sigma YAML","code/detection artifacts remain inert evidence"),
