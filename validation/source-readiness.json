@@ -8,7 +8,7 @@
       "adapter_status": "passed",
       "fixture_lifecycle": "passed",
       "live_lifecycle": "blocked",
-      "notes": "fixture validated; live lifecycle not run"
+      "notes": "fixture lifecycle validated; live lifecycle unavailable or not run"
     },
     {
       "source_id": "cve-list-v5",
@@ -17,7 +17,7 @@
       "adapter_status": "passed",
       "fixture_lifecycle": "passed",
       "live_lifecycle": "blocked",
-      "notes": "fixture validated; live lifecycle not run"
+      "notes": "fixture lifecycle validated; live lifecycle unavailable or not run"
     },
     {
       "source_id": "cisa-kev",
@@ -26,7 +26,7 @@
       "adapter_status": "passed",
       "fixture_lifecycle": "passed",
       "live_lifecycle": "blocked",
-      "notes": "fixture validated; live lifecycle not run"
+      "notes": "fixture lifecycle validated; live lifecycle unavailable or not run"
     },
     {
       "source_id": "opencti-read",
@@ -35,7 +35,7 @@
       "adapter_status": "passed",
       "fixture_lifecycle": "passed",
       "live_lifecycle": "blocked",
-      "notes": "optional read-only adapter fixture validated; live credentials/service unavailable"
+      "notes": "fixture lifecycle validated; live lifecycle unavailable or not run"
     },
     {
       "source_id": "nvd",
@@ -44,7 +44,7 @@
       "adapter_status": "blocked",
       "fixture_lifecycle": "not_run",
       "live_lifecycle": "not_run",
-      "notes": "registered/deferred source; no adapter fixture"
+      "notes": "registered/deferred; source manifest/registry entry is not a working adapter"
     },
     {
       "source_id": "ghsa",
@@ -53,7 +53,133 @@
       "adapter_status": "blocked",
       "fixture_lifecycle": "not_run",
       "live_lifecycle": "not_run",
-      "notes": "registered/deferred source; no adapter fixture"
+      "notes": "registered/deferred; source manifest/registry entry is not a working adapter"
+    },
+    {
+      "source_id": "cwe",
+      "domain": "cybersecurity",
+      "manifest_status": "passed",
+      "adapter_status": "blocked",
+      "fixture_lifecycle": "not_run",
+      "live_lifecycle": "not_run",
+      "notes": "registered/deferred; source manifest/registry entry is not a working adapter"
+    },
+    {
+      "source_id": "capec",
+      "domain": "cybersecurity",
+      "manifest_status": "passed",
+      "adapter_status": "blocked",
+      "fixture_lifecycle": "not_run",
+      "live_lifecycle": "not_run",
+      "notes": "registered/deferred; source manifest/registry entry is not a working adapter"
+    },
+    {
+      "source_id": "d3fend",
+      "domain": "cybersecurity",
+      "manifest_status": "passed",
+      "adapter_status": "blocked",
+      "fixture_lifecycle": "not_run",
+      "live_lifecycle": "not_run",
+      "notes": "registered/deferred; source manifest/registry entry is not a working adapter"
+    },
+    {
+      "source_id": "atlas",
+      "domain": "cybersecurity",
+      "manifest_status": "passed",
+      "adapter_status": "blocked",
+      "fixture_lifecycle": "not_run",
+      "live_lifecycle": "not_run",
+      "notes": "registered/deferred; source manifest/registry entry is not a working adapter"
+    },
+    {
+      "source_id": "car",
+      "domain": "cybersecurity",
+      "manifest_status": "passed",
+      "adapter_status": "blocked",
+      "fixture_lifecycle": "not_run",
+      "live_lifecycle": "not_run",
+      "notes": "registered/deferred; source manifest/registry entry is not a working adapter"
+    },
+    {
+      "source_id": "attack-flow",
+      "domain": "cybersecurity",
+      "manifest_status": "passed",
+      "adapter_status": "blocked",
+      "fixture_lifecycle": "not_run",
+      "live_lifecycle": "not_run",
+      "notes": "registered/deferred; source manifest/registry entry is not a working adapter"
+    },
+    {
+      "source_id": "misp",
+      "domain": "cybersecurity",
+      "manifest_status": "passed",
+      "adapter_status": "blocked",
+      "fixture_lifecycle": "not_run",
+      "live_lifecycle": "not_run",
+      "notes": "registered/deferred; source manifest/registry entry is not a working adapter"
+    },
+    {
+      "source_id": "reports-tram-sightings",
+      "domain": "cybersecurity",
+      "manifest_status": "passed",
+      "adapter_status": "blocked",
+      "fixture_lifecycle": "not_run",
+      "live_lifecycle": "not_run",
+      "notes": "registered/deferred; source manifest/registry entry is not a working adapter"
+    },
+    {
+      "source_id": "sigma",
+      "domain": "cybersecurity",
+      "manifest_status": "passed",
+      "adapter_status": "blocked",
+      "fixture_lifecycle": "not_run",
+      "live_lifecycle": "not_run",
+      "notes": "registered/deferred; source manifest/registry entry is not a working adapter"
+    },
+    {
+      "source_id": "atomic-red-team",
+      "domain": "cybersecurity",
+      "manifest_status": "passed",
+      "adapter_status": "blocked",
+      "fixture_lifecycle": "not_run",
+      "live_lifecycle": "not_run",
+      "notes": "registered/deferred; source manifest/registry entry is not a working adapter"
+    },
+    {
+      "source_id": "cvefixes",
+      "domain": "cybersecurity",
+      "manifest_status": "passed",
+      "adapter_status": "blocked",
+      "fixture_lifecycle": "not_run",
+      "live_lifecycle": "not_run",
+      "notes": "registered/deferred; source manifest/registry entry is not a working adapter"
+    },
+    {
+      "source_id": "megavul",
+      "domain": "cybersecurity",
+      "manifest_status": "passed",
+      "adapter_status": "blocked",
+      "fixture_lifecycle": "not_run",
+      "live_lifecycle": "not_run",
+      "notes": "registered/deferred; source manifest/registry entry is not a working adapter"
+    },
+    {
+      "source_id": "poc-metadata",
+      "domain": "cybersecurity",
+      "manifest_status": "passed",
+      "adapter_status": "blocked",
+      "fixture_lifecycle": "not_run",
+      "live_lifecycle": "not_run",
+      "notes": "registered/deferred; source manifest/registry entry is not a working adapter"
+    },
+    {
+      "source_id": "soc-corpora",
+      "domain": "cybersecurity",
+      "manifest_status": "passed",
+      "adapter_status": "blocked",
+      "fixture_lifecycle": "not_run",
+      "live_lifecycle": "not_run",
+      "notes": "registered/deferred; source manifest/registry entry is not a working adapter"
     },
     {
       "source_id": "rfc-editor",
@@ -62,7 +188,7 @@
       "adapter_status": "passed",
       "fixture_lifecycle": "passed",
       "live_lifecycle": "blocked",
-      "notes": "fixture validated; live download reconciliation not run"
+      "notes": "fixture lifecycle validated; live lifecycle unavailable or not run"
     },
     {
       "source_id": "ripe-ris-fixture",
@@ -71,7 +197,7 @@
       "adapter_status": "passed",
       "fixture_lifecycle": "passed",
       "live_lifecycle": "blocked",
-      "notes": "fixture validated; live stream not run"
+      "notes": "fixture lifecycle validated; live lifecycle unavailable or not run"
     },
     {
       "source_id": "rpki-roa-fixture",
@@ -80,7 +206,7 @@
       "adapter_status": "passed",
       "fixture_lifecycle": "passed",
       "live_lifecycle": "blocked",
-      "notes": "fixture validated; live validator lifecycle not run"
+      "notes": "fixture lifecycle validated; live lifecycle unavailable or not run"
     },
     {
       "source_id": "dns-observation-fixture",
@@ -89,7 +215,7 @@
       "adapter_status": "passed",
       "fixture_lifecycle": "passed",
       "live_lifecycle": "not_run",
-      "notes": "synthetic fixture only"
+      "notes": "fixture lifecycle validated; live lifecycle unavailable or not run"
     },
     {
       "source_id": "rdap-registration-fixture",
@@ -98,7 +224,52 @@
       "adapter_status": "passed",
       "fixture_lifecycle": "passed",
       "live_lifecycle": "not_run",
-      "notes": "synthetic fixture only"
+      "notes": "fixture lifecycle validated; live lifecycle unavailable or not run"
+    },
+    {
+      "source_id": "rir-bulk-registration",
+      "domain": "networking",
+      "manifest_status": "passed",
+      "adapter_status": "blocked",
+      "fixture_lifecycle": "not_run",
+      "live_lifecycle": "not_run",
+      "notes": "registered/deferred; no production adapter/lifecycle evidence"
+    },
+    {
+      "source_id": "network-configurations",
+      "domain": "networking",
+      "manifest_status": "passed",
+      "adapter_status": "blocked",
+      "fixture_lifecycle": "not_run",
+      "live_lifecycle": "not_run",
+      "notes": "registered/deferred; no production adapter/lifecycle evidence"
+    },
+    {
+      "source_id": "packet-event-metadata",
+      "domain": "networking",
+      "manifest_status": "passed",
+      "adapter_status": "blocked",
+      "fixture_lifecycle": "not_run",
+      "live_lifecycle": "not_run",
+      "notes": "registered/deferred; no production adapter/lifecycle evidence"
+    },
+    {
+      "source_id": "certificate-observations",
+      "domain": "networking",
+      "manifest_status": "passed",
+      "adapter_status": "blocked",
+      "fixture_lifecycle": "not_run",
+      "live_lifecycle": "not_run",
+      "notes": "registered/deferred; no production adapter/lifecycle evidence"
+    },
+    {
+      "source_id": "network-topology",
+      "domain": "networking",
+      "manifest_status": "passed",
+      "adapter_status": "blocked",
+      "fixture_lifecycle": "not_run",
+      "live_lifecycle": "not_run",
+      "notes": "registered/deferred; no production adapter/lifecycle evidence"
     },
     {
       "source_id": "sec-edgar-fixture",
@@ -107,7 +278,7 @@
       "adapter_status": "passed",
       "fixture_lifecycle": "passed",
       "live_lifecycle": "blocked",
-      "notes": "offline SEC-shaped fixture; live EDGAR lifecycle not run"
+      "notes": "fixture/file semantics validated; live provider/entitlement remains unavailable where applicable"
     },
     {
       "source_id": "fred-alfred-fixture",
@@ -116,7 +287,7 @@
       "adapter_status": "passed",
       "fixture_lifecycle": "passed",
       "live_lifecycle": "blocked",
-      "notes": "offline vintage fixture; live API lifecycle not run"
+      "notes": "fixture/file semantics validated; live provider/entitlement remains unavailable where applicable"
     },
     {
       "source_id": "licensed-price-file-fixture",
@@ -125,7 +296,16 @@
       "adapter_status": "passed",
       "fixture_lifecycle": "passed",
       "live_lifecycle": "blocked",
-      "notes": "file mechanics validated; production entitlement unavailable"
+      "notes": "fixture/file semantics validated; live provider/entitlement remains unavailable where applicable"
+    },
+    {
+      "source_id": "licensed-corporate-action-file-fixture",
+      "domain": "quant",
+      "manifest_status": "passed",
+      "adapter_status": "passed",
+      "fixture_lifecycle": "passed",
+      "live_lifecycle": "blocked",
+      "notes": "fixture/file semantics validated; live provider/entitlement remains unavailable where applicable"
     },
     {
       "source_id": "security-master-fixture",
@@ -134,7 +314,43 @@
       "adapter_status": "passed",
       "fixture_lifecycle": "passed",
       "live_lifecycle": "not_run",
-      "notes": "fixture-only security master"
+      "notes": "fixture/file semantics validated; live provider/entitlement remains unavailable where applicable"
+    },
+    {
+      "source_id": "fundamentals",
+      "domain": "quant",
+      "manifest_status": "passed",
+      "adapter_status": "passed",
+      "fixture_lifecycle": "passed",
+      "live_lifecycle": "blocked",
+      "notes": "fixture/file semantics validated; live provider/entitlement remains unavailable where applicable"
+    },
+    {
+      "source_id": "earnings-material",
+      "domain": "quant",
+      "manifest_status": "passed",
+      "adapter_status": "blocked",
+      "fixture_lifecycle": "not_run",
+      "live_lifecycle": "not_run",
+      "notes": "registered/deferred; no adapter/lifecycle evidence"
+    },
+    {
+      "source_id": "disclosures",
+      "domain": "quant",
+      "manifest_status": "passed",
+      "adapter_status": "passed",
+      "fixture_lifecycle": "passed",
+      "live_lifecycle": "blocked",
+      "notes": "fixture/file semantics validated; live provider/entitlement remains unavailable where applicable"
+    },
+    {
+      "source_id": "research",
+      "domain": "quant",
+      "manifest_status": "passed",
+      "adapter_status": "blocked",
+      "fixture_lifecycle": "not_run",
+      "live_lifecycle": "not_run",
+      "notes": "registered/deferred; no adapter/lifecycle evidence"
     },
     {
       "source_id": "gutenberg-public-domain-fixture",
@@ -143,7 +359,7 @@
       "adapter_status": "passed",
       "fixture_lifecycle": "passed",
       "live_lifecycle": "blocked",
-      "notes": "redistributable fixture; live catalog/update lifecycle not run"
+      "notes": "fixture lifecycle validated; live provider lifecycle unavailable or not run"
     },
     {
       "source_id": "tei-perseus-style-fixture",
@@ -152,7 +368,7 @@
       "adapter_status": "passed",
       "fixture_lifecycle": "passed",
       "live_lifecycle": "not_run",
-      "notes": "synthetic TEI fixture"
+      "notes": "fixture lifecycle validated; live provider lifecycle unavailable or not run"
     },
     {
       "source_id": "chronicling-america-iiif-fixture",
@@ -161,7 +377,16 @@
       "adapter_status": "passed",
       "fixture_lifecycle": "passed",
       "live_lifecycle": "blocked",
-      "notes": "fixture validated; live harvest not run"
+      "notes": "fixture lifecycle validated; live provider lifecycle unavailable or not run"
+    },
+    {
+      "source_id": "biglam",
+      "domain": "humanities",
+      "manifest_status": "passed",
+      "adapter_status": "blocked",
+      "fixture_lifecycle": "not_run",
+      "live_lifecycle": "not_run",
+      "notes": "registered/deferred; source-specific adapter/lifecycle not implemented"
     },
     {
       "source_id": "dpla",
@@ -170,7 +395,7 @@
       "adapter_status": "blocked",
       "fixture_lifecycle": "not_run",
       "live_lifecycle": "not_run",
-      "notes": "registered/deferred source; no adapter fixture"
+      "notes": "registered/deferred; source-specific adapter/lifecycle not implemented"
     },
     {
       "source_id": "europeana",
@@ -179,16 +404,34 @@
       "adapter_status": "blocked",
       "fixture_lifecycle": "not_run",
       "live_lifecycle": "not_run",
-      "notes": "registered/deferred source; no adapter fixture"
+      "notes": "registered/deferred; source-specific adapter/lifecycle not implemented"
     },
     {
-      "source_id": "privacy-core",
-      "domain": "privacy",
+      "source_id": "museums",
+      "domain": "humanities",
       "manifest_status": "passed",
       "adapter_status": "blocked",
       "fixture_lifecycle": "not_run",
       "live_lifecycle": "not_run",
-      "notes": "domain specification exists but no source adapter/lifecycle has been implemented"
+      "notes": "registered/deferred; source-specific adapter/lifecycle not implemented"
+    },
+    {
+      "source_id": "other-archives",
+      "domain": "humanities",
+      "manifest_status": "passed",
+      "adapter_status": "blocked",
+      "fixture_lifecycle": "not_run",
+      "live_lifecycle": "not_run",
+      "notes": "registered/deferred; source-specific adapter/lifecycle not implemented"
+    },
+    {
+      "source_id": "privacy-core",
+      "domain": "privacy",
+      "manifest_status": "blocked",
+      "adapter_status": "blocked",
+      "fixture_lifecycle": "not_run",
+      "live_lifecycle": "not_run",
+      "notes": "privacy domain specification exists, but no source registry/manifest, adapter, or lifecycle comparable to the other four domains is implemented"
     }
   ]
 }
