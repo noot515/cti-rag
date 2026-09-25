@@ -15038,6 +15038,704 @@
           "returned_source_families": [
             "synthetic-contract"
           ]
+        },
+        {
+          "query_id": "cross-domain-001",
+          "returned_uids": [
+            "eval:cross:001:disclosure",
+            "eval:cross:001:network",
+            "eval:cross:001:market"
+          ],
+          "returned_origin_groups": [
+            "origin:sec",
+            "origin:network",
+            "origin:market"
+          ],
+          "router_routes": [
+            "exact",
+            "lexical",
+            "graph",
+            "structured"
+          ],
+          "ann_ids": [
+            "eval:cross:001:disclosure"
+          ],
+          "exhaustive_ann_ids": [
+            "eval:cross:001:disclosure"
+          ],
+          "covered_subquestions": [
+            "legal-disclosure",
+            "network-evidence",
+            "market-effect"
+          ],
+          "covered_graph_edges": [],
+          "structured_values": [],
+          "packed_uids": [
+            "eval:cross:001:disclosure",
+            "eval:cross:001:network",
+            "eval:cross:001:market"
+          ],
+          "citations": [
+            [
+              "eval:cross:001:disclosure",
+              true
+            ],
+            [
+              "eval:cross:001:network",
+              true
+            ]
+          ],
+          "answered": true,
+          "abstained": false,
+          "answer_error": false,
+          "latency_ms": 15,
+          "stage_latency_ms": [
+            [
+              "retrieve",
+              7
+            ],
+            [
+              "pack",
+              2
+            ]
+          ],
+          "ram_peak_mb": 64,
+          "vram_peak_mb": null,
+          "backend_failure": false,
+          "policy_failure": false,
+          "temporal_failure": false,
+          "returned_source_families": [
+            "multi-source"
+          ]
+        },
+        {
+          "query_id": "cross-domain-002",
+          "returned_uids": [
+            "eval:cross:002:disclosure",
+            "eval:cross:002:network",
+            "eval:cross:002:market"
+          ],
+          "returned_origin_groups": [
+            "origin:sec",
+            "origin:network",
+            "origin:market"
+          ],
+          "router_routes": [
+            "exact",
+            "lexical",
+            "graph",
+            "structured"
+          ],
+          "ann_ids": [
+            "eval:cross:002:disclosure"
+          ],
+          "exhaustive_ann_ids": [
+            "eval:cross:002:disclosure"
+          ],
+          "covered_subquestions": [
+            "legal-disclosure",
+            "network-evidence",
+            "market-effect"
+          ],
+          "covered_graph_edges": [],
+          "structured_values": [
+            [
+              "cumulative_abnormal_return",
+              "0.03",
+              "fraction"
+            ]
+          ],
+          "packed_uids": [
+            "eval:cross:002:disclosure",
+            "eval:cross:002:network",
+            "eval:cross:002:market"
+          ],
+          "citations": [
+            [
+              "eval:cross:002:disclosure",
+              true
+            ],
+            [
+              "eval:cross:002:network",
+              true
+            ]
+          ],
+          "answered": true,
+          "abstained": false,
+          "answer_error": false,
+          "latency_ms": 16,
+          "stage_latency_ms": [
+            [
+              "retrieve",
+              7
+            ],
+            [
+              "pack",
+              2
+            ]
+          ],
+          "ram_peak_mb": 64,
+          "vram_peak_mb": null,
+          "backend_failure": false,
+          "policy_failure": false,
+          "temporal_failure": false,
+          "returned_source_families": [
+            "multi-source"
+          ]
+        },
+        {
+          "query_id": "cross-domain-003",
+          "returned_uids": [
+            "eval:cross:003:disclosure",
+            "eval:cross:003:network",
+            "eval:cross:003:market"
+          ],
+          "returned_origin_groups": [
+            "origin:sec",
+            "origin:network",
+            "origin:market"
+          ],
+          "router_routes": [
+            "exact",
+            "lexical",
+            "graph",
+            "structured"
+          ],
+          "ann_ids": [
+            "eval:cross:003:disclosure"
+          ],
+          "exhaustive_ann_ids": [
+            "eval:cross:003:disclosure"
+          ],
+          "covered_subquestions": [
+            "legal-disclosure",
+            "network-evidence",
+            "market-effect"
+          ],
+          "covered_graph_edges": [
+            "edge:cross:3"
+          ],
+          "structured_values": [],
+          "packed_uids": [
+            "eval:cross:003:disclosure",
+            "eval:cross:003:network",
+            "eval:cross:003:market"
+          ],
+          "citations": [
+            [
+              "eval:cross:003:disclosure",
+              true
+            ],
+            [
+              "eval:cross:003:network",
+              true
+            ]
+          ],
+          "answered": true,
+          "abstained": false,
+          "answer_error": false,
+          "latency_ms": 17,
+          "stage_latency_ms": [
+            [
+              "retrieve",
+              7
+            ],
+            [
+              "pack",
+              2
+            ]
+          ],
+          "ram_peak_mb": 64,
+          "vram_peak_mb": null,
+          "backend_failure": false,
+          "policy_failure": false,
+          "temporal_failure": false,
+          "returned_source_families": [
+            "multi-source"
+          ]
+        },
+        {
+          "query_id": "cross-domain-004",
+          "returned_uids": [
+            "eval:cross:004:disclosure",
+            "eval:cross:004:network",
+            "eval:cross:004:market"
+          ],
+          "returned_origin_groups": [
+            "origin:sec",
+            "origin:network",
+            "origin:market"
+          ],
+          "router_routes": [
+            "exact",
+            "lexical",
+            "graph",
+            "structured"
+          ],
+          "ann_ids": [
+            "eval:cross:004:disclosure"
+          ],
+          "exhaustive_ann_ids": [
+            "eval:cross:004:disclosure"
+          ],
+          "covered_subquestions": [
+            "legal-disclosure",
+            "network-evidence",
+            "market-effect"
+          ],
+          "covered_graph_edges": [],
+          "structured_values": [],
+          "packed_uids": [
+            "eval:cross:004:disclosure",
+            "eval:cross:004:network",
+            "eval:cross:004:market"
+          ],
+          "citations": [
+            [
+              "eval:cross:004:disclosure",
+              true
+            ],
+            [
+              "eval:cross:004:network",
+              true
+            ]
+          ],
+          "answered": true,
+          "abstained": false,
+          "answer_error": false,
+          "latency_ms": 18,
+          "stage_latency_ms": [
+            [
+              "retrieve",
+              7
+            ],
+            [
+              "pack",
+              2
+            ]
+          ],
+          "ram_peak_mb": 64,
+          "vram_peak_mb": null,
+          "backend_failure": false,
+          "policy_failure": false,
+          "temporal_failure": false,
+          "returned_source_families": [
+            "multi-source"
+          ]
+        },
+        {
+          "query_id": "cross-domain-005",
+          "returned_uids": [
+            "eval:cross:005:disclosure",
+            "eval:cross:005:network",
+            "eval:cross:005:market"
+          ],
+          "returned_origin_groups": [
+            "origin:sec",
+            "origin:network",
+            "origin:market"
+          ],
+          "router_routes": [
+            "exact",
+            "lexical",
+            "graph",
+            "structured"
+          ],
+          "ann_ids": [
+            "eval:cross:005:disclosure"
+          ],
+          "exhaustive_ann_ids": [
+            "eval:cross:005:disclosure"
+          ],
+          "covered_subquestions": [
+            "legal-disclosure",
+            "network-evidence",
+            "market-effect"
+          ],
+          "covered_graph_edges": [],
+          "structured_values": [],
+          "packed_uids": [
+            "eval:cross:005:disclosure",
+            "eval:cross:005:network",
+            "eval:cross:005:market"
+          ],
+          "citations": [
+            [
+              "eval:cross:005:disclosure",
+              true
+            ],
+            [
+              "eval:cross:005:network",
+              true
+            ]
+          ],
+          "answered": true,
+          "abstained": false,
+          "answer_error": false,
+          "latency_ms": 19,
+          "stage_latency_ms": [
+            [
+              "retrieve",
+              7
+            ],
+            [
+              "pack",
+              2
+            ]
+          ],
+          "ram_peak_mb": 64,
+          "vram_peak_mb": null,
+          "backend_failure": false,
+          "policy_failure": false,
+          "temporal_failure": false,
+          "returned_source_families": [
+            "multi-source"
+          ]
+        },
+        {
+          "query_id": "cross-domain-006",
+          "returned_uids": [
+            "eval:cross:006:disclosure",
+            "eval:cross:006:network",
+            "eval:cross:006:market"
+          ],
+          "returned_origin_groups": [
+            "origin:sec",
+            "origin:network",
+            "origin:market"
+          ],
+          "router_routes": [
+            "exact",
+            "lexical",
+            "graph",
+            "structured"
+          ],
+          "ann_ids": [
+            "eval:cross:006:disclosure"
+          ],
+          "exhaustive_ann_ids": [
+            "eval:cross:006:disclosure"
+          ],
+          "covered_subquestions": [
+            "legal-disclosure",
+            "network-evidence",
+            "market-effect"
+          ],
+          "covered_graph_edges": [],
+          "structured_values": [],
+          "packed_uids": [
+            "eval:cross:006:disclosure",
+            "eval:cross:006:network",
+            "eval:cross:006:market"
+          ],
+          "citations": [
+            [
+              "eval:cross:006:disclosure",
+              true
+            ],
+            [
+              "eval:cross:006:network",
+              true
+            ]
+          ],
+          "answered": true,
+          "abstained": false,
+          "answer_error": false,
+          "latency_ms": 20,
+          "stage_latency_ms": [
+            [
+              "retrieve",
+              7
+            ],
+            [
+              "pack",
+              2
+            ]
+          ],
+          "ram_peak_mb": 64,
+          "vram_peak_mb": null,
+          "backend_failure": false,
+          "policy_failure": false,
+          "temporal_failure": false,
+          "returned_source_families": [
+            "multi-source"
+          ]
+        },
+        {
+          "query_id": "cross-domain-007",
+          "returned_uids": [
+            "eval:cross:007:disclosure",
+            "eval:cross:007:network",
+            "eval:cross:007:market"
+          ],
+          "returned_origin_groups": [
+            "origin:sec",
+            "origin:network",
+            "origin:market"
+          ],
+          "router_routes": [
+            "exact",
+            "lexical",
+            "graph",
+            "structured"
+          ],
+          "ann_ids": [
+            "eval:cross:007:disclosure"
+          ],
+          "exhaustive_ann_ids": [
+            "eval:cross:007:disclosure"
+          ],
+          "covered_subquestions": [
+            "legal-disclosure",
+            "network-evidence",
+            "market-effect"
+          ],
+          "covered_graph_edges": [],
+          "structured_values": [],
+          "packed_uids": [
+            "eval:cross:007:disclosure",
+            "eval:cross:007:network",
+            "eval:cross:007:market"
+          ],
+          "citations": [
+            [
+              "eval:cross:007:disclosure",
+              true
+            ],
+            [
+              "eval:cross:007:network",
+              true
+            ]
+          ],
+          "answered": true,
+          "abstained": false,
+          "answer_error": false,
+          "latency_ms": 21,
+          "stage_latency_ms": [
+            [
+              "retrieve",
+              7
+            ],
+            [
+              "pack",
+              2
+            ]
+          ],
+          "ram_peak_mb": 64,
+          "vram_peak_mb": null,
+          "backend_failure": false,
+          "policy_failure": false,
+          "temporal_failure": false,
+          "returned_source_families": [
+            "multi-source"
+          ]
+        },
+        {
+          "query_id": "cross-domain-008",
+          "returned_uids": [
+            "eval:cross:008:disclosure",
+            "eval:cross:008:network",
+            "eval:cross:008:market"
+          ],
+          "returned_origin_groups": [
+            "origin:sec",
+            "origin:network",
+            "origin:market"
+          ],
+          "router_routes": [
+            "exact",
+            "lexical",
+            "graph",
+            "structured"
+          ],
+          "ann_ids": [
+            "eval:cross:008:disclosure"
+          ],
+          "exhaustive_ann_ids": [
+            "eval:cross:008:disclosure"
+          ],
+          "covered_subquestions": [
+            "legal-disclosure",
+            "network-evidence",
+            "market-effect"
+          ],
+          "covered_graph_edges": [],
+          "structured_values": [],
+          "packed_uids": [
+            "eval:cross:008:disclosure",
+            "eval:cross:008:network",
+            "eval:cross:008:market"
+          ],
+          "citations": [
+            [
+              "eval:cross:008:disclosure",
+              true
+            ],
+            [
+              "eval:cross:008:network",
+              true
+            ]
+          ],
+          "answered": true,
+          "abstained": false,
+          "answer_error": false,
+          "latency_ms": 22,
+          "stage_latency_ms": [
+            [
+              "retrieve",
+              7
+            ],
+            [
+              "pack",
+              2
+            ]
+          ],
+          "ram_peak_mb": 64,
+          "vram_peak_mb": null,
+          "backend_failure": false,
+          "policy_failure": false,
+          "temporal_failure": false,
+          "returned_source_families": [
+            "multi-source"
+          ]
+        },
+        {
+          "query_id": "cross-domain-009",
+          "returned_uids": [
+            "eval:cross:009:disclosure",
+            "eval:cross:009:network",
+            "eval:cross:009:market"
+          ],
+          "returned_origin_groups": [
+            "origin:sec",
+            "origin:network",
+            "origin:market"
+          ],
+          "router_routes": [
+            "exact",
+            "lexical",
+            "graph",
+            "structured"
+          ],
+          "ann_ids": [
+            "eval:cross:009:disclosure"
+          ],
+          "exhaustive_ann_ids": [
+            "eval:cross:009:disclosure"
+          ],
+          "covered_subquestions": [
+            "legal-disclosure",
+            "network-evidence",
+            "market-effect"
+          ],
+          "covered_graph_edges": [],
+          "structured_values": [],
+          "packed_uids": [
+            "eval:cross:009:disclosure",
+            "eval:cross:009:network",
+            "eval:cross:009:market"
+          ],
+          "citations": [
+            [
+              "eval:cross:009:disclosure",
+              true
+            ],
+            [
+              "eval:cross:009:network",
+              true
+            ]
+          ],
+          "answered": true,
+          "abstained": false,
+          "answer_error": false,
+          "latency_ms": 23,
+          "stage_latency_ms": [
+            [
+              "retrieve",
+              7
+            ],
+            [
+              "pack",
+              2
+            ]
+          ],
+          "ram_peak_mb": 64,
+          "vram_peak_mb": null,
+          "backend_failure": false,
+          "policy_failure": false,
+          "temporal_failure": false,
+          "returned_source_families": [
+            "multi-source"
+          ]
+        },
+        {
+          "query_id": "cross-domain-010",
+          "returned_uids": [
+            "eval:cross:010:disclosure",
+            "eval:cross:010:network",
+            "eval:cross:010:market"
+          ],
+          "returned_origin_groups": [
+            "origin:sec",
+            "origin:network",
+            "origin:market"
+          ],
+          "router_routes": [
+            "exact",
+            "lexical",
+            "graph",
+            "structured"
+          ],
+          "ann_ids": [
+            "eval:cross:010:disclosure"
+          ],
+          "exhaustive_ann_ids": [
+            "eval:cross:010:disclosure"
+          ],
+          "covered_subquestions": [
+            "legal-disclosure",
+            "network-evidence",
+            "market-effect"
+          ],
+          "covered_graph_edges": [],
+          "structured_values": [],
+          "packed_uids": [
+            "eval:cross:010:disclosure",
+            "eval:cross:010:network",
+            "eval:cross:010:market"
+          ],
+          "citations": [
+            [
+              "eval:cross:010:disclosure",
+              true
+            ],
+            [
+              "eval:cross:010:network",
+              true
+            ]
+          ],
+          "answered": true,
+          "abstained": false,
+          "answer_error": false,
+          "latency_ms": 24,
+          "stage_latency_ms": [
+            [
+              "retrieve",
+              7
+            ],
+            [
+              "pack",
+              2
+            ]
+          ],
+          "ram_peak_mb": 64,
+          "vram_peak_mb": null,
+          "backend_failure": false,
+          "policy_failure": false,
+          "temporal_failure": false,
+          "returned_source_families": [
+            "multi-source"
+          ]
         }
       ]
     },
@@ -30077,6 +30775,704 @@
           "temporal_failure": false,
           "returned_source_families": [
             "synthetic-contract"
+          ]
+        },
+        {
+          "query_id": "cross-domain-001",
+          "returned_uids": [
+            "eval:cross:001:disclosure",
+            "eval:cross:001:network",
+            "eval:cross:001:market"
+          ],
+          "returned_origin_groups": [
+            "origin:sec",
+            "origin:network",
+            "origin:market"
+          ],
+          "router_routes": [
+            "exact",
+            "lexical",
+            "graph",
+            "structured"
+          ],
+          "ann_ids": [
+            "eval:cross:001:disclosure"
+          ],
+          "exhaustive_ann_ids": [
+            "eval:cross:001:disclosure"
+          ],
+          "covered_subquestions": [
+            "legal-disclosure",
+            "network-evidence",
+            "market-effect"
+          ],
+          "covered_graph_edges": [],
+          "structured_values": [],
+          "packed_uids": [
+            "eval:cross:001:disclosure",
+            "eval:cross:001:network",
+            "eval:cross:001:market"
+          ],
+          "citations": [
+            [
+              "eval:cross:001:disclosure",
+              true
+            ],
+            [
+              "eval:cross:001:network",
+              true
+            ]
+          ],
+          "answered": true,
+          "abstained": false,
+          "answer_error": false,
+          "latency_ms": 14,
+          "stage_latency_ms": [
+            [
+              "retrieve",
+              7
+            ],
+            [
+              "pack",
+              2
+            ]
+          ],
+          "ram_peak_mb": 64,
+          "vram_peak_mb": null,
+          "backend_failure": false,
+          "policy_failure": false,
+          "temporal_failure": false,
+          "returned_source_families": [
+            "multi-source"
+          ]
+        },
+        {
+          "query_id": "cross-domain-002",
+          "returned_uids": [
+            "eval:cross:002:disclosure",
+            "eval:cross:002:network",
+            "eval:cross:002:market"
+          ],
+          "returned_origin_groups": [
+            "origin:sec",
+            "origin:network",
+            "origin:market"
+          ],
+          "router_routes": [
+            "exact",
+            "lexical",
+            "graph",
+            "structured"
+          ],
+          "ann_ids": [
+            "eval:cross:002:disclosure"
+          ],
+          "exhaustive_ann_ids": [
+            "eval:cross:002:disclosure"
+          ],
+          "covered_subquestions": [
+            "legal-disclosure",
+            "network-evidence",
+            "market-effect"
+          ],
+          "covered_graph_edges": [],
+          "structured_values": [
+            [
+              "cumulative_abnormal_return",
+              "0.03",
+              "fraction"
+            ]
+          ],
+          "packed_uids": [
+            "eval:cross:002:disclosure",
+            "eval:cross:002:network",
+            "eval:cross:002:market"
+          ],
+          "citations": [
+            [
+              "eval:cross:002:disclosure",
+              true
+            ],
+            [
+              "eval:cross:002:network",
+              true
+            ]
+          ],
+          "answered": true,
+          "abstained": false,
+          "answer_error": false,
+          "latency_ms": 15,
+          "stage_latency_ms": [
+            [
+              "retrieve",
+              7
+            ],
+            [
+              "pack",
+              2
+            ]
+          ],
+          "ram_peak_mb": 64,
+          "vram_peak_mb": null,
+          "backend_failure": false,
+          "policy_failure": false,
+          "temporal_failure": false,
+          "returned_source_families": [
+            "multi-source"
+          ]
+        },
+        {
+          "query_id": "cross-domain-003",
+          "returned_uids": [
+            "eval:cross:003:disclosure",
+            "eval:cross:003:network",
+            "eval:cross:003:market"
+          ],
+          "returned_origin_groups": [
+            "origin:sec",
+            "origin:network",
+            "origin:market"
+          ],
+          "router_routes": [
+            "exact",
+            "lexical",
+            "graph",
+            "structured"
+          ],
+          "ann_ids": [
+            "eval:cross:003:disclosure"
+          ],
+          "exhaustive_ann_ids": [
+            "eval:cross:003:disclosure"
+          ],
+          "covered_subquestions": [
+            "legal-disclosure",
+            "network-evidence",
+            "market-effect"
+          ],
+          "covered_graph_edges": [
+            "edge:cross:3"
+          ],
+          "structured_values": [],
+          "packed_uids": [
+            "eval:cross:003:disclosure",
+            "eval:cross:003:network",
+            "eval:cross:003:market"
+          ],
+          "citations": [
+            [
+              "eval:cross:003:disclosure",
+              true
+            ],
+            [
+              "eval:cross:003:network",
+              true
+            ]
+          ],
+          "answered": true,
+          "abstained": false,
+          "answer_error": false,
+          "latency_ms": 16,
+          "stage_latency_ms": [
+            [
+              "retrieve",
+              7
+            ],
+            [
+              "pack",
+              2
+            ]
+          ],
+          "ram_peak_mb": 64,
+          "vram_peak_mb": null,
+          "backend_failure": false,
+          "policy_failure": false,
+          "temporal_failure": false,
+          "returned_source_families": [
+            "multi-source"
+          ]
+        },
+        {
+          "query_id": "cross-domain-004",
+          "returned_uids": [
+            "eval:cross:004:disclosure",
+            "eval:cross:004:network",
+            "eval:cross:004:market"
+          ],
+          "returned_origin_groups": [
+            "origin:sec",
+            "origin:network",
+            "origin:market"
+          ],
+          "router_routes": [
+            "exact",
+            "lexical",
+            "graph",
+            "structured"
+          ],
+          "ann_ids": [
+            "eval:cross:004:disclosure"
+          ],
+          "exhaustive_ann_ids": [
+            "eval:cross:004:disclosure"
+          ],
+          "covered_subquestions": [
+            "legal-disclosure",
+            "network-evidence",
+            "market-effect"
+          ],
+          "covered_graph_edges": [],
+          "structured_values": [],
+          "packed_uids": [
+            "eval:cross:004:disclosure",
+            "eval:cross:004:network",
+            "eval:cross:004:market"
+          ],
+          "citations": [
+            [
+              "eval:cross:004:disclosure",
+              true
+            ],
+            [
+              "eval:cross:004:network",
+              true
+            ]
+          ],
+          "answered": true,
+          "abstained": false,
+          "answer_error": false,
+          "latency_ms": 17,
+          "stage_latency_ms": [
+            [
+              "retrieve",
+              7
+            ],
+            [
+              "pack",
+              2
+            ]
+          ],
+          "ram_peak_mb": 64,
+          "vram_peak_mb": null,
+          "backend_failure": false,
+          "policy_failure": false,
+          "temporal_failure": false,
+          "returned_source_families": [
+            "multi-source"
+          ]
+        },
+        {
+          "query_id": "cross-domain-005",
+          "returned_uids": [
+            "eval:cross:005:disclosure",
+            "eval:cross:005:network",
+            "eval:cross:005:market"
+          ],
+          "returned_origin_groups": [
+            "origin:sec",
+            "origin:network",
+            "origin:market"
+          ],
+          "router_routes": [
+            "exact",
+            "lexical",
+            "graph",
+            "structured"
+          ],
+          "ann_ids": [
+            "eval:cross:005:disclosure"
+          ],
+          "exhaustive_ann_ids": [
+            "eval:cross:005:disclosure"
+          ],
+          "covered_subquestions": [
+            "legal-disclosure",
+            "network-evidence",
+            "market-effect"
+          ],
+          "covered_graph_edges": [],
+          "structured_values": [],
+          "packed_uids": [
+            "eval:cross:005:disclosure",
+            "eval:cross:005:network",
+            "eval:cross:005:market"
+          ],
+          "citations": [
+            [
+              "eval:cross:005:disclosure",
+              true
+            ],
+            [
+              "eval:cross:005:network",
+              true
+            ]
+          ],
+          "answered": true,
+          "abstained": false,
+          "answer_error": false,
+          "latency_ms": 18,
+          "stage_latency_ms": [
+            [
+              "retrieve",
+              7
+            ],
+            [
+              "pack",
+              2
+            ]
+          ],
+          "ram_peak_mb": 64,
+          "vram_peak_mb": null,
+          "backend_failure": false,
+          "policy_failure": false,
+          "temporal_failure": false,
+          "returned_source_families": [
+            "multi-source"
+          ]
+        },
+        {
+          "query_id": "cross-domain-006",
+          "returned_uids": [
+            "eval:cross:006:disclosure",
+            "eval:cross:006:network",
+            "eval:cross:006:market"
+          ],
+          "returned_origin_groups": [
+            "origin:sec",
+            "origin:network",
+            "origin:market"
+          ],
+          "router_routes": [
+            "exact",
+            "lexical",
+            "graph",
+            "structured"
+          ],
+          "ann_ids": [
+            "eval:cross:006:disclosure"
+          ],
+          "exhaustive_ann_ids": [
+            "eval:cross:006:disclosure"
+          ],
+          "covered_subquestions": [
+            "legal-disclosure",
+            "network-evidence",
+            "market-effect"
+          ],
+          "covered_graph_edges": [],
+          "structured_values": [],
+          "packed_uids": [
+            "eval:cross:006:disclosure",
+            "eval:cross:006:network",
+            "eval:cross:006:market"
+          ],
+          "citations": [
+            [
+              "eval:cross:006:disclosure",
+              true
+            ],
+            [
+              "eval:cross:006:network",
+              true
+            ]
+          ],
+          "answered": true,
+          "abstained": false,
+          "answer_error": false,
+          "latency_ms": 19,
+          "stage_latency_ms": [
+            [
+              "retrieve",
+              7
+            ],
+            [
+              "pack",
+              2
+            ]
+          ],
+          "ram_peak_mb": 64,
+          "vram_peak_mb": null,
+          "backend_failure": false,
+          "policy_failure": false,
+          "temporal_failure": false,
+          "returned_source_families": [
+            "multi-source"
+          ]
+        },
+        {
+          "query_id": "cross-domain-007",
+          "returned_uids": [
+            "eval:cross:007:disclosure",
+            "eval:cross:007:network",
+            "eval:cross:007:market"
+          ],
+          "returned_origin_groups": [
+            "origin:sec",
+            "origin:network",
+            "origin:market"
+          ],
+          "router_routes": [
+            "exact",
+            "lexical",
+            "graph",
+            "structured"
+          ],
+          "ann_ids": [
+            "eval:cross:007:disclosure"
+          ],
+          "exhaustive_ann_ids": [
+            "eval:cross:007:disclosure"
+          ],
+          "covered_subquestions": [
+            "legal-disclosure",
+            "network-evidence",
+            "market-effect"
+          ],
+          "covered_graph_edges": [],
+          "structured_values": [],
+          "packed_uids": [
+            "eval:cross:007:disclosure",
+            "eval:cross:007:network",
+            "eval:cross:007:market"
+          ],
+          "citations": [
+            [
+              "eval:cross:007:disclosure",
+              true
+            ],
+            [
+              "eval:cross:007:network",
+              true
+            ]
+          ],
+          "answered": true,
+          "abstained": false,
+          "answer_error": false,
+          "latency_ms": 20,
+          "stage_latency_ms": [
+            [
+              "retrieve",
+              7
+            ],
+            [
+              "pack",
+              2
+            ]
+          ],
+          "ram_peak_mb": 64,
+          "vram_peak_mb": null,
+          "backend_failure": false,
+          "policy_failure": false,
+          "temporal_failure": false,
+          "returned_source_families": [
+            "multi-source"
+          ]
+        },
+        {
+          "query_id": "cross-domain-008",
+          "returned_uids": [
+            "eval:cross:008:disclosure",
+            "eval:cross:008:network",
+            "eval:cross:008:market"
+          ],
+          "returned_origin_groups": [
+            "origin:sec",
+            "origin:network",
+            "origin:market"
+          ],
+          "router_routes": [
+            "exact",
+            "lexical",
+            "graph",
+            "structured"
+          ],
+          "ann_ids": [
+            "eval:cross:008:disclosure"
+          ],
+          "exhaustive_ann_ids": [
+            "eval:cross:008:disclosure"
+          ],
+          "covered_subquestions": [
+            "legal-disclosure",
+            "network-evidence",
+            "market-effect"
+          ],
+          "covered_graph_edges": [],
+          "structured_values": [],
+          "packed_uids": [
+            "eval:cross:008:disclosure",
+            "eval:cross:008:network",
+            "eval:cross:008:market"
+          ],
+          "citations": [
+            [
+              "eval:cross:008:disclosure",
+              true
+            ],
+            [
+              "eval:cross:008:network",
+              true
+            ]
+          ],
+          "answered": true,
+          "abstained": false,
+          "answer_error": false,
+          "latency_ms": 21,
+          "stage_latency_ms": [
+            [
+              "retrieve",
+              7
+            ],
+            [
+              "pack",
+              2
+            ]
+          ],
+          "ram_peak_mb": 64,
+          "vram_peak_mb": null,
+          "backend_failure": false,
+          "policy_failure": false,
+          "temporal_failure": false,
+          "returned_source_families": [
+            "multi-source"
+          ]
+        },
+        {
+          "query_id": "cross-domain-009",
+          "returned_uids": [
+            "eval:cross:009:disclosure",
+            "eval:cross:009:network",
+            "eval:cross:009:market"
+          ],
+          "returned_origin_groups": [
+            "origin:sec",
+            "origin:network",
+            "origin:market"
+          ],
+          "router_routes": [
+            "exact",
+            "lexical",
+            "graph",
+            "structured"
+          ],
+          "ann_ids": [
+            "eval:cross:009:disclosure"
+          ],
+          "exhaustive_ann_ids": [
+            "eval:cross:009:disclosure"
+          ],
+          "covered_subquestions": [
+            "legal-disclosure",
+            "network-evidence",
+            "market-effect"
+          ],
+          "covered_graph_edges": [],
+          "structured_values": [],
+          "packed_uids": [
+            "eval:cross:009:disclosure",
+            "eval:cross:009:network",
+            "eval:cross:009:market"
+          ],
+          "citations": [
+            [
+              "eval:cross:009:disclosure",
+              true
+            ],
+            [
+              "eval:cross:009:network",
+              true
+            ]
+          ],
+          "answered": true,
+          "abstained": false,
+          "answer_error": false,
+          "latency_ms": 22,
+          "stage_latency_ms": [
+            [
+              "retrieve",
+              7
+            ],
+            [
+              "pack",
+              2
+            ]
+          ],
+          "ram_peak_mb": 64,
+          "vram_peak_mb": null,
+          "backend_failure": false,
+          "policy_failure": false,
+          "temporal_failure": false,
+          "returned_source_families": [
+            "multi-source"
+          ]
+        },
+        {
+          "query_id": "cross-domain-010",
+          "returned_uids": [
+            "eval:cross:010:disclosure",
+            "eval:cross:010:network",
+            "eval:cross:010:market"
+          ],
+          "returned_origin_groups": [
+            "origin:sec",
+            "origin:network",
+            "origin:market"
+          ],
+          "router_routes": [
+            "exact",
+            "lexical",
+            "graph",
+            "structured"
+          ],
+          "ann_ids": [
+            "eval:cross:010:disclosure"
+          ],
+          "exhaustive_ann_ids": [
+            "eval:cross:010:disclosure"
+          ],
+          "covered_subquestions": [
+            "legal-disclosure",
+            "network-evidence",
+            "market-effect"
+          ],
+          "covered_graph_edges": [],
+          "structured_values": [],
+          "packed_uids": [
+            "eval:cross:010:disclosure",
+            "eval:cross:010:network",
+            "eval:cross:010:market"
+          ],
+          "citations": [
+            [
+              "eval:cross:010:disclosure",
+              true
+            ],
+            [
+              "eval:cross:010:network",
+              true
+            ]
+          ],
+          "answered": true,
+          "abstained": false,
+          "answer_error": false,
+          "latency_ms": 23,
+          "stage_latency_ms": [
+            [
+              "retrieve",
+              7
+            ],
+            [
+              "pack",
+              2
+            ]
+          ],
+          "ram_peak_mb": 64,
+          "vram_peak_mb": null,
+          "backend_failure": false,
+          "policy_failure": false,
+          "temporal_failure": false,
+          "returned_source_families": [
+            "multi-source"
           ]
         }
       ]
