@@ -21,6 +21,7 @@ class DeploymentProfile:
     capability_drop:Tuple[Tuple[str,Tuple[str,...]],...]=()
     optional_components:Tuple[str,...]=()
     compose_services:Tuple[str,...]=()
+    scheduler_limits:Tuple[Tuple[str,int],...]=()
     def __post_init__(self):
         if self.name not in ("fixture","text-mvp","analytical","full-research"):raise ValueError("unknown deployment profile")
         if self.data_root_env!="CTI_RAG_DATA_ROOT":raise ValueError("deployment data root must be configurable through CTI_RAG_DATA_ROOT")
@@ -34,6 +35,8 @@ class DeploymentProfile:
         if any(service not in known for service,_policy in self.service_egress):raise ValueError("per-service egress references unknown component")
         if any(service not in known or not source_env.strip() or not target.startswith("/") for service,source_env,target in self.read_only_mounts):raise ValueError("invalid restricted mount")
         if any(service not in known or not caps for service,caps in self.capability_drop):raise ValueError("invalid capability drop contract")
+        limits=dict(self.scheduler_limits)
+        if set(limits)!={"interactive_capacity","ingestion_capacity","interactive_burst"} or any(int(v)<=0 for v in limits.values()):raise ValueError("deployment profile requires positive bounded scheduler limits")
 
 def load_profile(path):
     row=json.loads(Path(path).read_text(encoding="utf-8"))
@@ -44,5 +47,6 @@ def load_profile(path):
         tuple((str(service),str(policy)) for service,policy in sorted(row.get("service_egress",{}).items())),
         tuple((str(v["service"]),str(v["source_env"]),str(v["target"])) for v in row.get("read_only_mounts",()) if bool(v.get("read_only",False))),
         tuple((str(service),tuple(str(x) for x in caps)) for service,caps in sorted(row.get("capability_drop",{}).items())),
-        tuple(row.get("optional_components",())),tuple(row.get("compose_services",()))
+        tuple(row.get("optional_components",())),tuple(row.get("compose_services",())),
+        tuple((str(k),int(v)) for k,v in sorted(row.get("scheduler",{}).items()))
     )
