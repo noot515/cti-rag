@@ -95,11 +95,30 @@ class Phase21EvaluationTests(unittest.TestCase):
         self.assertEqual("ragchecker",result["adapter"]);self.assertEqual("judge",result["judge_fingerprint"])
 
     def test_cli_writes_same_report_digest(self):
-        expected=run_experiment(config(),self.queries,self.judgments,self.runs)["report_digest"]
+        expected_report=run_experiment(config(),self.queries,self.judgments,self.runs)
         with tempfile.TemporaryDirectory() as td:
             out=Path(td)/"report.json"
             proc=subprocess.run([sys.executable,str(ROOT/"scripts"/"run_phase21_evaluation.py"),"--config",str(DATA/"experiment-config.json"),"--queries",str(DATA/"queries.jsonl"),"--judgments",str(DATA/"judgments.jsonl"),"--runs",str(DATA/"fixture-runs.json"),"--report",str(out)],cwd=ROOT,text=True,capture_output=True)
             self.assertEqual(0,proc.returncode,proc.stderr)
-            self.assertEqual(expected,json.loads(out.read_text())["report_digest"])
+            actual_report=json.loads(out.read_text())
+            if expected_report!=actual_report:
+                def first_diff(a,b,path="$"):
+                    if type(a)!=type(b):return f"{path}: type {type(a).__name__} != {type(b).__name__}"
+                    if isinstance(a,dict):
+                        if set(a)!=set(b):return f"{path}: keys {sorted(set(a)^set(b))[:10]}"
+                        for key in sorted(a):
+                            diff=first_diff(a[key],b[key],path+"."+str(key))
+                            if diff:return diff
+                        return None
+                    if isinstance(a,list):
+                        if len(a)!=len(b):return f"{path}: length {len(a)} != {len(b)}"
+                        for idx,(x,y) in enumerate(zip(a,b)):
+                            diff=first_diff(x,y,f"{path}[{idx}]")
+                            if diff:return diff
+                        return None
+                    if a!=b:return f"{path}: {a!r} != {b!r}"
+                    return None
+                self.fail(first_diff(expected_report,actual_report) or "reports differ without structural diff")
+            self.assertEqual(expected_report["report_digest"],actual_report["report_digest"])
 
 if __name__=="__main__":unittest.main()
