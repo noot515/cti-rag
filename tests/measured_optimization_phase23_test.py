@@ -62,6 +62,14 @@ class Phase23MeasuredOptimizationTests(unittest.TestCase):
         self.assertTrue(b_profile.bulk_evidence_used);self.assertTrue(b_profile.bulk_metadata_used)
         self.assertEqual((40,40),(point_store.point_calls,point_meta.point_calls))
 
+
+    def test_recorded_bottleneck_profile_matches_executed_bulk_fixture(self):
+        row=json.loads((ROOT/"evaluation"/"phase23"/"bottleneck-profile.json").read_text())
+        self.assertEqual("deterministic_fixture_backend_operation_count",row["measurement_kind"])
+        self.assertEqual(80,row["baseline"]["total_backend_calls"])
+        self.assertEqual(6,row["candidate"]["total_backend_calls"])
+        self.assertIn("not a real database/model latency",row["limitations"])
+
     def test_bulk_hydration_is_opt_in_and_point_contract_remains_rollback_path(self):
         store=BulkStore(self.canonical);meta=BulkMetadata(self.metadata)
         hydrator=EvidenceHydrator(store,meta)
