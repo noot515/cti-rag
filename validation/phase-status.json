@@ -1,7 +1,7 @@
 {
   "schema_version": "phase-status/1",
   "baseline_commit": "15f4050a387bf41b8d77daf05e271ccfe9e522da",
-  "latest_code_checkpoint": "595a48eda8b55ea3870ec6a8ab8391f64160853c",
+  "latest_code_checkpoint": "9d916727eeec3e284fb49182965bca96b82538c6",
   "phases": {
     "0": {
       "implementation": "implemented",
@@ -125,8 +125,22 @@
       "acceptance": "blocked_by_phase14_and_external_required_gates"
     },
     "17": {
-      "implementation": "not_started",
-      "acceptance": "not_run"
+      "implementation": "implemented",
+      "own_gate": "passed",
+      "deterministic_grounding_and_abstention": "passed",
+      "bounded_single_followup": "passed",
+      "conflict_origin_preservation": "passed",
+      "evaluated_semantic_judge": "blocked",
+      "acceptance": "blocked_by_phase14_and_external_required_gates"
+    },
+    "18": {
+      "implementation": "implemented",
+      "own_gate": "passed",
+      "hardened_fetch_and_overlay_fixtures": "passed",
+      "offline_network_independence": "passed",
+      "live_provider_egress": "blocked",
+      "web_overlay_default_enabled": false,
+      "acceptance": "blocked_by_phase14_and_external_required_gates"
     }
   },
   "new_retrieval_enabled": false
