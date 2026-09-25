@@ -270,7 +270,7 @@
       "id": "phase21-frozen-fixture-report",
       "phase": 21,
       "required": true,
-      "command": "python scripts/run_phase21_evaluation.py --config evaluation/phase21/dev-v1/experiment-config.json --queries evaluation/phase21/dev-v1/queries.jsonl --judgments evaluation/phase21/dev-v1/judgments.jsonl --runs evaluation/phase21/dev-v1/fixture-runs.json --report /tmp/phase21-fixture-report.json"
+      "command": "python scripts/run_phase21_evaluation.py --config evaluation/phase21/dev-v1/experiment-config.json --corpus evaluation/phase21/dev-v1/corpus.jsonl --queries evaluation/phase21/dev-v1/queries.jsonl --judgments evaluation/phase21/dev-v1/judgments.jsonl --runs evaluation/phase21/dev-v1/fixture-runs.json --report /tmp/phase21-fixture-report.json"
     },
     {
       "id": "phase21-real-embedding-quality",
@@ -305,7 +305,7 @@
       "phase": 21,
       "required": true,
       "status_override": "blocked",
-      "reason": "The committed development set contains 250 machine_generated_unreviewed judgments and 20 synthetic_contract cases, with zero human-reviewed pooled judgments. Human-reviewed coverage remains a separate required gate."
+      "reason": "The committed development set contains 260 machine_generated_unreviewed judgments and 20 synthetic_contract cases, with zero human-reviewed pooled judgments. Human-reviewed coverage remains a separate required gate."
     },
     {
       "id": "phase22-operations-recovery-invariants",
