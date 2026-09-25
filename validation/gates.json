@@ -267,6 +267,12 @@
       "command": "python -m unittest tests.evaluation_phase21_test -v"
     },
     {
+      "id": "phase21-frozen-fixture-report",
+      "phase": 21,
+      "required": true,
+      "command": "python scripts/run_phase21_evaluation.py --config evaluation/phase21/dev-v1/experiment-config.json --queries evaluation/phase21/dev-v1/queries.jsonl --judgments evaluation/phase21/dev-v1/judgments.jsonl --runs evaluation/phase21/dev-v1/fixture-runs.json --report /tmp/phase21-fixture-report.json"
+    },
+    {
       "id": "phase21-real-embedding-quality",
       "phase": 21,
       "required": true,
