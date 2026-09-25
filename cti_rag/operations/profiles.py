@@ -50,3 +50,12 @@ def load_profile(path):
         tuple(row.get("optional_components",())),tuple(row.get("compose_services",())),
         tuple((str(k),int(v)) for k,v in sorted(row.get("scheduler",{}).items()))
     )
+
+def scheduler_from_profile(profile:DeploymentProfile):
+    from .scheduler import BoundedScheduler
+    limits=dict(profile.scheduler_limits)
+    return BoundedScheduler(
+        interactive_capacity=limits["interactive_capacity"],
+        ingestion_capacity=limits["ingestion_capacity"],
+        interactive_burst=limits["interactive_burst"],
+    )
