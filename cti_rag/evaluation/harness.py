@@ -42,9 +42,10 @@ def _run_report(config,queries,judgments,run):
     _validate_conditions(config,run);rows=_rows(queries,judgments,run)
     hard=hard_failure_counts(queries,judgments,run.outcomes)
     quality_status="eligible" if run.metadata.model_execution==ModelExecutionKind.REAL_MODEL else "not_run_fake_or_no_model"
+    metadata=asdict(run.metadata);metadata["model_execution"]=run.metadata.model_execution.value
     result={
         "baseline":run.metadata.baseline,"definition":BASELINE_DEFINITIONS[run.metadata.baseline],
-        "metadata":asdict(run.metadata),"n":len(rows),"metrics":aggregate(list(rows.values())),
+        "metadata":metadata,"n":len(rows),"metrics":aggregate(list(rows.values())),
         "slices":_slices(queries,rows),"hard_failures":hard,"hard_gate_pass":all(v==0 for v in hard.values()),
         "semantic_model_metrics_status":quality_status,
         "query_metrics":rows,
