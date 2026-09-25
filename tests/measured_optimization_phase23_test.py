@@ -88,6 +88,8 @@ class Phase23MeasuredOptimizationTests(unittest.TestCase):
         self.assertIn("graph_recall_noninferiority",by_id["text-only"].reasons)
         heldout={o.config_id for o in observations if o.split=="holdout"}
         self.assertEqual({"baseline-v1","bulk-hydration-32"},heldout)
+        self.assertEqual(130,raw["partition_counts"]["tuning"]);self.assertEqual(150,raw["partition_counts"]["holdout"])
+        self.assertFalse(set(raw["tuning_query_splits"]) & set(raw["holdout_query_splits"]))
 
     def test_optimization_cli_keeps_production_baseline_without_real_runtime_claim(self):
         with tempfile.TemporaryDirectory() as td:
@@ -96,7 +98,8 @@ class Phase23MeasuredOptimizationTests(unittest.TestCase):
             self.assertEqual(0,proc.returncode,proc.stderr);report=json.loads(out.read_text())
             self.assertEqual("bulk-hydration-32",report["decision"]["tuning_choice"])
             self.assertEqual("baseline-v1",report["decision"]["production_choice"])
-            self.assertFalse(report["performance_claim_allowed"])
+            self.assertFalse(report["performance_claim_allowed"]);self.assertEqual(2,len(report["slice_evidence"]))
+            self.assertIn("cybersecurity",report["slice_evidence"][0]["domains"])
             selected=json.loads((ROOT/"config"/"retrieval-optimization-selected.json").read_text())
             self.assertEqual(report["decision"]["production_choice"],selected["config_id"])
 
