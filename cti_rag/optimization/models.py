@@ -46,6 +46,7 @@ class OptimizationObservation:
     ram_peak_mb:float
     index_bytes:int
     backend_read_ops:int
+    ingestion_cost_units:float
     hard_gate_pass:bool
     exact_structured_pass:bool
     critical_slice_noninferior:bool
@@ -54,7 +55,7 @@ class OptimizationObservation:
         if not self.config_id.strip() or self.split not in ("tuning","holdout"):raise ValueError("optimization observation identity invalid")
         for value in (self.ndcg_at_10,self.recall_at_50,self.ann_recall,self.graph_required_edge_recall):
             if not 0<=float(value)<=1:raise ValueError("quality metrics must be in [0,1]")
-        if min(self.p50_latency_ms,self.p95_latency_ms,self.ram_peak_mb,self.index_bytes,self.backend_read_ops)<0:raise ValueError("resource metrics cannot be negative")
+        if min(self.p50_latency_ms,self.p95_latency_ms,self.ram_peak_mb,self.index_bytes,self.backend_read_ops,self.ingestion_cost_units)<0:raise ValueError("resource metrics cannot be negative")
         if self.p50_latency_ms>self.p95_latency_ms:raise ValueError("p50 latency cannot exceed p95")
 
 @dataclass(frozen=True)
@@ -65,10 +66,12 @@ class OptimizationPlan:
     recall50_noninferiority_margin:float=.01
     max_p95_latency_ms:float=5000.0
     max_ram_mb:Optional[float]=None
+    ann_recall_noninferiority_margin:float=.01
+    graph_recall_noninferiority_margin:float=.01
     require_real_runtime_for_promotion:bool=True
     def __post_init__(self):
         if not self.plan_id.strip() or not self.baseline_config_id.strip():raise ValueError("optimization plan identity required")
-        if min(self.ndcg_noninferiority_margin,self.recall50_noninferiority_margin)<0 or self.max_p95_latency_ms<=0:raise ValueError("invalid optimization margins/budgets")
+        if min(self.ndcg_noninferiority_margin,self.recall50_noninferiority_margin,self.ann_recall_noninferiority_margin,self.graph_recall_noninferiority_margin)<0 or self.max_p95_latency_ms<=0:raise ValueError("invalid optimization margins/budgets")
 
 @dataclass(frozen=True)
 class CandidateDecision:
@@ -77,6 +80,8 @@ class CandidateDecision:
     reasons:Tuple[str,...]
     latency_delta_ms:float
     backend_read_delta:int
+    index_bytes_delta:int
+    ingestion_cost_delta:float
 
 @dataclass(frozen=True)
 class OptimizationDecision:
