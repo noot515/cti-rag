@@ -19,5 +19,20 @@
   "index_exclusion": "judgments.jsonl and answer keys are evaluation-only and must never be indexed.",
   "human_review_gate": "blocked_until_reviewers_are_recorded",
   "notes": "Development set contains domain-specific machine-generated cases grounded in repository fixture semantics plus explicit cross-domain and synthetic adversarial slices. Judgments remain unreviewed and are not gold.",
-  "cross_domain_count": 10
+  "cross_domain_count": 10,
+  "corpus_count": 779,
+  "corpus_file": "corpus.jsonl",
+  "query_file": "queries.jsonl",
+  "judgment_file": "judgments.jsonl",
+  "split_file": "splits.json",
+  "index_inputs": [
+    "corpus.jsonl"
+  ],
+  "index_exclusions": [
+    "queries.jsonl",
+    "judgments.jsonl",
+    "fixture-runs.json",
+    "splits.json",
+    "experiment-config.json"
+  ]
 }
