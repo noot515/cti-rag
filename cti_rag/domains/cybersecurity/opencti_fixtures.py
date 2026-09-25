@@ -1,0 +1,30 @@
+"""Small OpenCTI-shaped read fixtures; no external service or write is involved."""
+OPENCTI_OBJECT_METADATA={
+    "id":"opencti--fixture-attack-pattern",
+    "standard_id":"attack-pattern--00000000-0000-4000-8000-000000000101",
+    "entity_type":"Attack-Pattern","spec_version":"2.1",
+    "created_at":"2026-01-01T00:00:00.000Z","updated_at":"2026-01-02T00:00:00.000Z","revoked":False,
+    "objectMarking":[{"id":"marking-clear","standard_id":"marking-definition--clear","definition_type":"TLP","definition":"TLP:CLEAR","created":"2026-01-01T00:00:00.000Z","modified":"2026-01-01T00:00:00.000Z"}],
+    "externalReferences":{"edges":[{"node":{"id":"ref-1","standard_id":"external-reference--fixture","source_name":"mitre-attack","description":None,"url":"https://attack.mitre.org/techniques/T9001/","external_id":"T9001","created":"2026-01-01T00:00:00.000Z","modified":"2026-01-01T00:00:00.000Z"}}]},
+    "createdBy":None,
+}
+OPENCTI_OBJECT_STIX={
+    "type":"attack-pattern","spec_version":"2.1","id":"attack-pattern--00000000-0000-4000-8000-000000000101",
+    "created":"2026-01-01T00:00:00.000Z","modified":"2026-01-02T00:00:00.000Z",
+    "name":"Fixture Script Interpreter","description":"Fictitious ATT&CK-format technique used only for parser tests.",
+    "external_references":[{"source_name":"mitre-attack","external_id":"T9001","url":"https://attack.mitre.org/techniques/T9001/"}],
+    "x_mitre_version":"1.0","x_mitre_deprecated":False,"revoked":False,
+}
+OPENCTI_RELATION_METADATA={
+    "id":"opencti--fixture-relationship","standard_id":"relationship--00000000-0000-4000-8000-000000000201",
+    "entity_type":"stix-core-relationship","spec_version":"2.1",
+    "created_at":"2026-01-01T00:00:00.000Z","updated_at":"2026-01-02T00:00:00.000Z","relationship_type":"related-to",
+    "objectMarking":[{"id":"marking-red","standard_id":"marking-definition--red","definition_type":"TLP","definition":"TLP:RED","created":"2026-01-01T00:00:00.000Z","modified":"2026-01-01T00:00:00.000Z"}],
+    "from":{"id":"a","standard_id":"attack-pattern--00000000-0000-4000-8000-000000000101","entity_type":"Attack-Pattern"},
+    "to":{"id":"b","standard_id":"malware--00000000-0000-4000-8000-000000000301","entity_type":"Malware"},
+}
+OPENCTI_RELATION_STIX={
+    "type":"relationship","spec_version":"2.1","id":"relationship--00000000-0000-4000-8000-000000000201",
+    "created":"2026-01-01T00:00:00.000Z","modified":"2026-01-02T00:00:00.000Z","relationship_type":"related-to",
+    "source_ref":"attack-pattern--00000000-0000-4000-8000-000000000101","target_ref":"malware--00000000-0000-4000-8000-000000000301",
+}
