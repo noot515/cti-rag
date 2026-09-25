@@ -16,7 +16,7 @@ jobs:
         with:
           python-version: "3.13"
       - name: Install narrow validation dependencies
-        run: python -m pip install "duckdb>=1.4,<2" pytest "git+https://github.com/noot515/existential.git@a8d809c07c808dd0519e0cef4dd923d11b996799#subdirectory=packages/respectful-runtime"
+        run: python -m pip install "duckdb>=1.4,<2" pytest
       - name: Compile side-effect-free runtime and chained gate modules
         run: |
           python -m compileall -q cti_rag scripts
@@ -76,6 +76,7 @@ jobs:
               "phase15-live-humanities-source-lifecycle",
               "phase17-evaluated-semantic-judge",
               "phase18-live-provider-egress",
+              "phase19-canonical-runtime-client-package",
               "phase19-live-runtimepolicy-broker",
               "phase20-live-opencti-read-lifecycle",
           ):
