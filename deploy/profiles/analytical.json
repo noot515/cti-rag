@@ -44,5 +44,39 @@
   "optional_components": [
     "reranker",
     "generator"
-  ]
+  ],
+  "service_egress": {
+    "api": "internal_only",
+    "worker": "internal_only",
+    "mysql-metadata": "internal_only",
+    "file-object-store": "internal_only",
+    "lexical": "internal_only",
+    "dense": "internal_only",
+    "redis": "internal_only",
+    "rabbitmq": "internal_only",
+    "duckdb": "internal_only",
+    "neo4j": "internal_only"
+  },
+  "read_only_mounts": [
+    {
+      "service": "api",
+      "source_env": "CTI_RAG_CONFIG_FILE",
+      "target": "/etc/cti-rag/config.yaml",
+      "read_only": true
+    },
+    {
+      "service": "worker",
+      "source_env": "CTI_RAG_CONFIG_FILE",
+      "target": "/etc/cti-rag/config.yaml",
+      "read_only": true
+    }
+  ],
+  "capability_drop": {
+    "api": [
+      "ALL"
+    ],
+    "worker": [
+      "ALL"
+    ]
+  }
 }
