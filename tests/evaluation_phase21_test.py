@@ -43,6 +43,9 @@ class Phase21EvaluationTests(unittest.TestCase):
         report=run_experiment(config(),self.queries,self.judgments,self.runs)
         self.assertEqual({"B0","B8"},set(report["runs"]))
         self.assertEqual(config().scope_hash,report["runs"]["B0"]["metadata"]["scope_hash"])
+        self.assertEqual(1.0,report["runs"]["B0"]["metrics"]["relevant_source_recall"])
+        self.assertEqual(1.0,report["runs"]["B0"]["metrics"]["citation_support_precision"])
+        self.assertEqual(1.0,report["runs"]["B0"]["metrics"]["citation_support_recall"])
         bad=EvaluationRun(replace(self.runs[0].metadata,candidate_budget=config().candidate_budget+1),self.runs[0].outcomes)
         with self.assertRaisesRegex(ValueError,"conditions differ"):run_experiment(config(),self.queries,self.judgments,(bad,))
 
