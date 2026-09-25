@@ -93,5 +93,10 @@
     "ollama",
     "threatrag",
     "threatrag-worker"
-  ]
+  ],
+  "scheduler": {
+    "interactive_capacity": 32,
+    "ingestion_capacity": 64,
+    "interactive_burst": 4
+  }
 }
