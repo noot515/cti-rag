@@ -50,8 +50,12 @@ class AdvancedRetrievalService:
                     gaps.append(PlanGap(item.kind,item.reason or item.status.value,item.subquestion_id))
             if denied:gaps.append(PlanGap("authorization","candidate denied during canonical hydration"))
             if invalid:gaps.append(PlanGap("provenance","candidate failed canonical hydration"))
-            # Final policy epoch/scope revalidation. It may narrow evidence after a long request.
-            final_scope=self.policy.authorize(principal,client_scope)
+            # Final policy/revision revalidation. External providers must re-check
+            # the exact original admission; local providers issue a fresh local scope.
+            if hasattr(self.policy,"revalidate_for_response"):
+                final_scope=self.policy.revalidate_for_response(scope,principal,client_scope)
+            else:
+                final_scope=self.policy.authorize(principal,client_scope)
             passages=tuple(p for p in pack.passages if p.evidence.labels.tenant_id in (final_scope.tenant_id,"public") and p.evidence.labels.access_label in final_scope.access_labels and p.evidence.labels.processing_class in final_scope.processing_classes)
             if len(passages)!=len(pack.passages):gaps.append(PlanGap("authorization","evidence revoked by final response policy"))
             exact=pack.exact_obligations;structured=pack.structured_obligations
