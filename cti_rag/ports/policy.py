@@ -22,7 +22,6 @@ class ClientScopeRequest:
     access_labels: Tuple[AccessLabel,...] = (AccessLabel.PUBLIC,)
     @classmethod
     def from_payload(cls, payload: Mapping[str, object]):
-        # Deliberately whitelist only narrowing fields. Client principal/tenant/clearance fields are ignored.
         domains=tuple(str(v) for v in payload.get("domains", ()) if str(v).strip())
         sources=tuple(str(v) for v in payload.get("source_ids", ()) if str(v).strip())
         labels=[]
@@ -52,6 +51,15 @@ class ProcessingDestination:
     def __post_init__(self):
         if not self.name.strip(): raise ValueError("destination name required")
 
+@dataclass(frozen=True)
+class NetworkDestination:
+    name: str
+    endpoint: str
+    remote: bool = True
+    def __post_init__(self):
+        if not self.name.strip() or not self.endpoint.strip(): raise ValueError("network destination fields required")
+
 class PolicyPort(Protocol):
     def authorize(self, principal: AuthenticatedPrincipal, requested: ClientScopeRequest) -> EffectiveScope: ...
     def authorize_model(self, scope: EffectiveScope, labels: PolicyLabels, operation: str, destination: ProcessingDestination) -> None: ...
+    def authorize_network(self, scope: EffectiveScope, labels: PolicyLabels, purpose: str, destination: NetworkDestination) -> None: ...
