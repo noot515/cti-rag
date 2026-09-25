@@ -1,6 +1,6 @@
 from __future__ import annotations
 from dataclasses import replace
-import json,subprocess,sys,tempfile,unittest
+import hashlib,json,subprocess,sys,tempfile,unittest
 from pathlib import Path
 
 from cti_rag.evaluation import (
@@ -112,7 +112,9 @@ class Phase21EvaluationTests(unittest.TestCase):
         self.assertEqual("ragchecker",result["adapter"]);self.assertEqual("judge",result["judge_fingerprint"])
 
     def test_cli_writes_same_report_digest(self):
-        expected_report=run_experiment(config(),self.queries,self.judgments,self.runs);expected_report["dataset"]["corpus_count"]=len(self.corpus)
+        paths={"config":DATA/"experiment-config.json","corpus":DATA/"corpus.jsonl","queries":DATA/"queries.jsonl","judgments":DATA/"judgments.jsonl","runs":DATA/"fixture-runs.json"}
+        fingerprints={name:hashlib.sha256(path.read_bytes()).hexdigest() for name,path in paths.items()}
+        expected_report=run_experiment(config(),self.queries,self.judgments,self.runs,corpus_count=len(self.corpus),input_fingerprints=fingerprints)
         expected_normalized=json.loads(json.dumps(expected_report,sort_keys=True))
         with tempfile.TemporaryDirectory() as td:
             out=Path(td)/"report.json"
