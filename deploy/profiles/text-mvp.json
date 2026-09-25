@@ -82,5 +82,16 @@
     "worker": [
       "ALL"
     ]
-  }
+  },
+  "compose_services": [
+    "mysql",
+    "redis",
+    "rabbitmq",
+    "etcd",
+    "minio",
+    "milvus-standalone",
+    "ollama",
+    "threatrag",
+    "threatrag-worker"
+  ]
 }
