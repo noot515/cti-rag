@@ -1,0 +1,24 @@
+{
+  "schema_version": "phase23-bottleneck-profile/1",
+  "measurement_kind": "deterministic_fixture_backend_operation_count",
+  "code_path": "cti_rag/context/hydration.py:EvidenceHydrator",
+  "workload": {
+    "candidate_count": 40
+  },
+  "baseline": {
+    "mode": "point_hydration",
+    "evidence_backend_calls": 40,
+    "metadata_backend_calls": 40,
+    "total_backend_calls": 80
+  },
+  "candidate": {
+    "mode": "bulk_hydration",
+    "batch_size": 16,
+    "evidence_backend_calls": 3,
+    "metadata_backend_calls": 3,
+    "total_backend_calls": 6
+  },
+  "finding": "The pre-optimization hydration topology performs one evidence read and one metadata read per candidate when providers expose only point APIs. The opt-in bulk capability can reduce backend operations while preserving the same canonical validation path.",
+  "limitations": "This is a deterministic operation-count profile, not a real database/model latency or throughput benchmark. It does not authorize a production speedup claim.",
+  "production_action": "Keep baseline-v1 selected until comparable real-runtime holdout latency/resource evidence is available."
+}
