@@ -1,7 +1,7 @@
 {
   "schema_version": "phase-status/1",
   "baseline_commit": "15f4050a387bf41b8d77daf05e271ccfe9e522da",
-  "latest_code_checkpoint": "9d916727eeec3e284fb49182965bca96b82538c6",
+  "latest_code_checkpoint": "10f59b356be07d85d88f605472a4a6e2e9399c9f",
   "phases": {
     "0": {
       "implementation": "implemented",
@@ -140,6 +140,26 @@
       "offline_network_independence": "passed",
       "live_provider_egress": "blocked",
       "web_overlay_default_enabled": false,
+      "acceptance": "blocked_by_phase14_and_external_required_gates"
+    },
+    "19": {
+      "implementation": "implemented",
+      "own_gate": "passed",
+      "recorded_wire_unix_broker_conformance": "passed",
+      "exact_scope_destination_revision_revalidation": "passed",
+      "canonical_runtime_client_package": "blocked",
+      "live_runtimepolicy_broker": "blocked",
+      "local_public_mode_separate": true,
+      "acceptance": "blocked_by_phase14_and_external_required_gates"
+    },
+    "20": {
+      "implementation": "implemented",
+      "own_gate": "passed",
+      "read_only_opencti_fixture_lifecycle": "passed",
+      "marking_and_provenance_preservation": "passed",
+      "replay_update_tombstone_semantics": "passed",
+      "minimal_startup_without_pycti": "passed",
+      "live_opencti_read_lifecycle": "blocked",
       "acceptance": "blocked_by_phase14_and_external_required_gates"
     }
   },
