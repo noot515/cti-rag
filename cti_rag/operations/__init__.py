@@ -3,3 +3,4 @@ from .scheduler import *
 from .telemetry import *
 from .profiles import *
 from .recovery import *
+from .secrets import *
