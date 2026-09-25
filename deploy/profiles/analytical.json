@@ -78,5 +78,17 @@
     "worker": [
       "ALL"
     ]
-  }
+  },
+  "compose_services": [
+    "mysql",
+    "redis",
+    "rabbitmq",
+    "neo4j",
+    "etcd",
+    "minio",
+    "milvus-standalone",
+    "ollama",
+    "threatrag",
+    "threatrag-worker"
+  ]
 }
