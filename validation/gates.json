@@ -340,6 +340,51 @@
       "required": true,
       "status_override": "blocked",
       "reason": "The memory probe supports concurrent generation/reranking measurements when a GPU/runtime sampler exists, but no approved live concurrent model runtime was present in CI."
+    },
+    {
+      "id": "phase23-measured-optimization-invariants",
+      "phase": 23,
+      "required": true,
+      "command": "python -m unittest tests.measured_optimization_phase23_test -v"
+    },
+    {
+      "id": "phase23-frozen-optimization-report",
+      "phase": 23,
+      "required": true,
+      "command": "python scripts/run_phase23_optimization.py --grid evaluation/phase23/optimization-grid.json --observations evaluation/phase23/fixture-observations.json --report /tmp/phase23-optimization.json"
+    },
+    {
+      "id": "phase23-real-runtime-performance",
+      "phase": 23,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "The frozen tuning/holdout observations are deterministic fixture mechanics. No approved comparable real backend/model runtime was available, so the production configuration remains baseline-v1 and no speedup is claimed."
+    },
+    {
+      "id": "phase24-release-conformance-invariants",
+      "phase": 24,
+      "required": true,
+      "command": "python -m unittest tests.release_conformance_phase24_test -v"
+    },
+    {
+      "id": "phase24-conformance-report",
+      "phase": 24,
+      "required": true,
+      "command": "python scripts/run_phase24_conformance.py --report /tmp/phase24-conformance.json"
+    },
+    {
+      "id": "phase24-privacy-source-lifecycle",
+      "phase": 24,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "The privacy domain has a specification but no source registry/manifest, adapter, or fixture lifecycle comparable to the other four domains. The five-domain release milestone remains blocked."
+    },
+    {
+      "id": "phase24-release-readiness",
+      "phase": 24,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "Full release readiness is blocked by inherited mandatory real-service/model/human-review gates, the missing Phase 14 prerequisite, real-runtime Phase 23 performance evidence, and the privacy source lifecycle gap."
     }
   ]
 }
