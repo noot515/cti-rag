@@ -76,6 +76,9 @@ def run_experiment(config:ExperimentConfig,queries,judgments,runs):
     if "B0" in run_reports:
         for name in sorted(run_reports):
             if name!="B0":comparisons[f"B0->{name}"]=_paired(config,run_reports["B0"],run_reports[name],queries)
+    for base,candidate in PAIRWISE_ABLATIONS:
+        if base in run_reports and candidate in run_reports:
+            comparisons[f"{base}->{candidate}"]=_paired(config,run_reports[base],run_reports[candidate],queries)
     report={
         "schema_version":"multidomain-evaluation-report/1","experiment":asdict(config),
         "dataset":{"query_count":len(queries),"judgment_count":len(judgments),"human_reviewed":sum(j.status==JudgmentStatus.HUMAN_REVIEWED for j in judgments),"machine_generated_unreviewed":sum(j.status==JudgmentStatus.MACHINE_GENERATED_UNREVIEWED for j in judgments),"synthetic_contract":sum(j.status==JudgmentStatus.SYNTHETIC_CONTRACT for j in judgments)},
