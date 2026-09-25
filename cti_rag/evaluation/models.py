@@ -118,6 +118,18 @@ class ExperimentConfig:
     max_ram_mb:Optional[float]=None
     max_vram_mb:Optional[float]=None
     def __post_init__(self):
+        object.__setattr__(self,"seed",int(self.seed))
+        object.__setattr__(self,"candidate_budget",int(self.candidate_budget))
+        object.__setattr__(self,"recall_ks",tuple(int(v) for v in self.recall_ks))
+        object.__setattr__(self,"ndcg_k",int(self.ndcg_k))
+        object.__setattr__(self,"bootstrap_replicates",int(self.bootstrap_replicates))
+        object.__setattr__(self,"confidence",float(self.confidence))
+        object.__setattr__(self,"min_conclusive_pairs",int(self.min_conclusive_pairs))
+        object.__setattr__(self,"ndcg_noninferiority_margin",float(self.ndcg_noninferiority_margin))
+        object.__setattr__(self,"recall50_noninferiority_margin",float(self.recall50_noninferiority_margin))
+        object.__setattr__(self,"max_p95_latency_ms",float(self.max_p95_latency_ms))
+        object.__setattr__(self,"max_ram_mb",None if self.max_ram_mb is None else float(self.max_ram_mb))
+        object.__setattr__(self,"max_vram_mb",None if self.max_vram_mb is None else float(self.max_vram_mb))
         if not self.experiment_id.strip() or not self.baselines or self.candidate_budget<=0:raise ValueError("invalid experiment config")
         if any(k<=0 for k in self.recall_ks) or self.ndcg_k<=0 or self.bootstrap_replicates<=0:raise ValueError("invalid metric configuration")
         if not 0<self.confidence<1 or self.min_conclusive_pairs<=0:raise ValueError("invalid inference configuration")
