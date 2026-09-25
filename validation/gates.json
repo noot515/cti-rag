@@ -200,6 +200,32 @@
       "phase": 16,
       "required": true,
       "command": "python -m unittest tests.cross_domain_phase16_test -v"
+    },
+    {
+      "id": "phase17-claim-grounding-abstention-invariants",
+      "phase": 17,
+      "required": true,
+      "command": "python -m unittest tests.claim_grounding_phase17_test -v"
+    },
+    {
+      "id": "phase17-evaluated-semantic-judge",
+      "phase": 17,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "Deterministic fixtures validate exact grounding, abstention, optional judge plumbing, and judge-error separation. No pinned semantic judge with an evaluated error profile was supplied, so model-based entailment quality is not reported as passed."
+    },
+    {
+      "id": "phase18-hardened-web-overlay-invariants",
+      "phase": 18,
+      "required": true,
+      "command": "python -m unittest tests.hardened_web_overlay_phase18_test -v"
+    },
+    {
+      "id": "phase18-live-provider-egress",
+      "phase": 18,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "SearXNG/Tavily adapter contracts and hardened fetch mechanics are validated with deterministic spies/transports. No approved live provider endpoint, credentials, or separately attested production proxy egress was supplied, so live external-search readiness is not reported as passed."
     }
   ]
 }
