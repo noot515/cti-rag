@@ -47,7 +47,7 @@ class Phase22OperationsRecoveryTest(unittest.TestCase):
         self.assertEqual("allowlist",loaded["full-research"].egress_policy)
         self.assertIn("opencti",loaded["full-research"].egress_allowlist)
         compose=(ROOT/"docker-compose.yml").read_text(encoding="utf-8")
-        service_names=set(re.findall(r"^  ([A-Za-z0-9_.-]+):\\s*$",compose,re.MULTILINE))
+        service_names=set(re.findall(r"^  ([A-Za-z0-9_.-]+):\s*$",compose,re.MULTILINE))
         for name,profile in loaded.items():
             self.assertTrue(set(profile.compose_services).issubset(service_names),name)
         self.assertEqual((),loaded["fixture"].compose_services)
