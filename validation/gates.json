@@ -270,7 +270,7 @@
       "id": "phase21-frozen-fixture-report",
       "phase": 21,
       "required": true,
-      "command": "python scripts/run_phase21_evaluation.py --config evaluation/phase21/dev-v1/experiment-config.json --corpus evaluation/phase21/dev-v1/corpus.jsonl --queries evaluation/phase21/dev-v1/queries.jsonl --judgments evaluation/phase21/dev-v1/judgments.jsonl --runs evaluation/phase21/dev-v1/fixture-runs.json --report /tmp/phase21-fixture-report.json"
+      "command": "python scripts/run_phase21_evaluation.py --config evaluation/phase21/dev-v1/experiment-config.json --corpus evaluation/phase21/dev-v1/corpus.jsonl --queries evaluation/phase21/dev-v1/queries.jsonl --judgments evaluation/phase21/dev-v1/judgments.jsonl --runs evaluation/phase21/dev-v1/fixture-runs.json --report /tmp/phase21-fixture-report.json --require-hard-gates --require-budgets"
     },
     {
       "id": "phase21-real-embedding-quality",
