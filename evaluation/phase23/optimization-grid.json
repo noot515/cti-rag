@@ -306,5 +306,18 @@
         "backend_bulk_read_contract_required"
       ]
     }
-  ]
+  ],
+  "tuning_query_splits": [
+    "dev_source_family"
+  ],
+  "holdout_query_splits": [
+    "dev_duplicate_holdout",
+    "dev_time_holdout",
+    "cross_domain",
+    "adversarial"
+  ],
+  "partition_counts": {
+    "tuning": 130,
+    "holdout": 150
+  }
 }
