@@ -8,6 +8,23 @@ def _lines(path):
     for line in Path(path).read_text(encoding="utf-8").splitlines():
         if line.strip():yield json.loads(line)
 
+def load_corpus(path):
+    return tuple(EvaluationCorpusRecord(
+        row["record_uid"],row["domain"],row["source_family"],row["duplicate_group"],row["origin_group"],row["temporal_bucket"],
+        row["available_at"],row["access_label"],bool(row["indexable"]),row["text"]
+    ) for row in _lines(path))
+
+def validate_dataset(corpus,queries,judgments):
+    corpus=tuple(corpus);queries=tuple(queries);judgments=tuple(judgments)
+    cuids=[v.record_uid for v in corpus];qids=[v.query_id for v in queries];jids=[v.query_id for v in judgments]
+    if len(cuids)!=len(set(cuids)):raise ValueError("evaluation corpus record_uids must be unique")
+    if len(qids)!=len(set(qids)) or len(jids)!=len(set(jids)) or set(qids)!=set(jids):raise ValueError("query/judgment identities must be unique and complete")
+    available=set(cuids)
+    for judgment in judgments:
+        missing={uid for uid,_grade in judgment.relevance if uid not in available}|{uid for uid in judgment.expected_citations if uid not in available}
+        if missing:raise ValueError("judgment references evidence outside frozen corpus: "+",".join(sorted(missing)[:5]))
+    return {"corpus_count":len(corpus),"query_count":len(queries),"judgment_count":len(judgments)}
+
 def load_queries(path):
     return tuple(EvaluationQuery(
         row["query_id"],row["domain"],row["text"],row["task_type"],row["source_family"],row["duplicate_group"],row["split"],row["temporal_bucket"],bool(row["answerable"]),
