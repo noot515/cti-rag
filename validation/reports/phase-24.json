@@ -1,0 +1,71 @@
+{
+  "schema_version": "phase-report/1",
+  "phase": 24,
+  "status": "blocked",
+  "own_gate": "passed",
+  "parent_report_ids": [
+    "phase-23"
+  ],
+  "baseline_commit": "760197338e46c9c4d03e7da086ed2bf539c68515",
+  "code_checkpoint": "4a62bc06d64204ccfb72c9fcd55d7b086cb799a3",
+  "milestones": {
+    "fixture_core": "passed",
+    "text_mvp": "blocked",
+    "five_domain": "blocked",
+    "full_release": "blocked"
+  },
+  "conformance": {
+    "sections_accounted": 25,
+    "source_inventory": 48,
+    "adapter_fixture_lifecycles_passed": 19,
+    "live_source_lifecycles_passed": 0,
+    "privacy_source_lifecycle": "blocked"
+  },
+  "migration": {
+    "legacy_query": "passed",
+    "new_generation_query": "passed",
+    "feature_flag_switch": "passed",
+    "rollback": "passed",
+    "tombstone_deletion": "passed",
+    "backup_restore": "passed",
+    "optional_integrations_disabled": "passed",
+    "private_placeholder_rejected": "passed"
+  },
+  "ci": {
+    "run_id": 36134108297,
+    "job_id": 108067939377,
+    "python": "3.13.15",
+    "cumulative_unittests_passed": 203,
+    "cumulative_seconds": 31.308,
+    "phase_tests_passed": 5,
+    "phase_seconds": 0.208,
+    "legacy_regressions_passed": 8,
+    "registry_verification": "passed_fail_closed"
+  },
+  "fingerprints": {
+    "conformance_matrix": "15451b121559b7a63ed6e546b1690b610ff6ee4a",
+    "source_readiness": "359ad811491d0d998ad670bd74426ab195859a95",
+    "conformance_code": "c3a5b5464fbff52b1c9adeb9aa40708687c85da4",
+    "migration_rehearsal": "b5efad8010a06b4cebbc7ab744b8e4c98179affe",
+    "phase_tests": "3c7e54538f8a1dc7fbfcd3ed38bf3a86324c9701",
+    "registry": "19dc755d9171da6c06872ef0674c691c506c14bb",
+    "workflow": "6f92365b0538c8bd962a4b27a5ab26d9b6ca14c7"
+  },
+  "blocked_by": [
+    "phase14-required-prerequisite",
+    "phase24-privacy-source-lifecycle",
+    "phase23-real-runtime-performance",
+    "phase21-real-embedding-quality",
+    "phase21-real-reranker-quality",
+    "phase21-real-generator-grounding-quality",
+    "phase21-human-reviewed-judgments",
+    "phase22-text-mvp-live-profile",
+    "phase22-analytical-live-profile",
+    "phase22-full-research-live-profile",
+    "phase19-live-runtimepolicy-broker",
+    "phase20-live-opencti-read-lifecycle",
+    "phase18-live-provider-egress",
+    "phase24-release-readiness"
+  ],
+  "new_retrieval_enabled": false
+}

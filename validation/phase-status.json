@@ -1,7 +1,7 @@
 {
   "schema_version": "phase-status/1",
   "baseline_commit": "15f4050a387bf41b8d77daf05e271ccfe9e522da",
-  "latest_code_checkpoint": "7ce8fe6f3a6d5948725eea9750e035a68069770f",
+  "latest_code_checkpoint": "4a62bc06d64204ccfb72c9fcd55d7b086cb799a3",
   "phases": {
     "0": {
       "implementation": "implemented",
@@ -191,6 +191,29 @@
       "full_research_live_profile": "blocked",
       "live_concurrent_model_memory": "blocked",
       "acceptance": "blocked_by_phase14_and_external_required_gates"
+    },
+    "23": {
+      "implementation": "implemented",
+      "own_gate": "passed",
+      "bottleneck_profile": "passed",
+      "tuning_choice": "bulk-hydration-32",
+      "production_config": "baseline-v1",
+      "real_runtime_performance": "blocked",
+      "performance_claim_allowed": false,
+      "acceptance": "blocked_by_real_runtime_and_cumulative_required_gates"
+    },
+    "24": {
+      "implementation": "implemented",
+      "own_gate": "passed",
+      "sections_accounted": 25,
+      "source_inventory": 48,
+      "fixture_core": "passed",
+      "text_mvp": "blocked",
+      "five_domain": "blocked",
+      "full_release": "blocked",
+      "privacy_source_lifecycle": "blocked",
+      "migration_rehearsal": "passed",
+      "acceptance": "blocked_by_required_release_gates"
     }
   },
   "new_retrieval_enabled": false
