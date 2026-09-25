@@ -2,7 +2,7 @@
 from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime,timezone
-import hashlib,json,resource,time
+import hashlib,json,resource,time,sys
 from collections import deque
 
 def digest_text(value):return hashlib.sha256(str(value).encode("utf-8")).hexdigest()
@@ -18,7 +18,7 @@ class MemoryProbe:
     def __init__(self,gpu_sampler=None):self.gpu_sampler=gpu_sampler
     def sample(self):
         usage=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
-        rss=float(usage)/(1024 if usage>1024*1024 else 1)
+        rss=float(usage)/(1024*1024 if sys.platform=="darwin" else 1024)
         if self.gpu_sampler is None:return MemorySample(rss,None,"not_available")
         value=self.gpu_sampler();return MemorySample(rss,float(value),"available")
 
