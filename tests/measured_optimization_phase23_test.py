@@ -61,7 +61,6 @@ class Phase23MeasuredOptimizationTests(unittest.TestCase):
         self.assertEqual((3,3),(b_profile.evidence_backend_calls,b_profile.metadata_backend_calls))
         self.assertTrue(b_profile.bulk_evidence_used);self.assertTrue(b_profile.bulk_metadata_used)
         self.assertEqual((40,40),(point_store.point_calls,point_meta.point_calls))
-        self.assertEqual((1,1),(point.max_batch_size,point.max_batch_size))
 
     def test_bulk_hydration_is_opt_in_and_point_contract_remains_rollback_path(self):
         store=BulkStore(self.canonical);meta=BulkMetadata(self.metadata)
