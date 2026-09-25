@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from __future__ import annotations
-import argparse,json,sys
+import argparse,hashlib,json,sys
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:sys.path.insert(0,str(ROOT))
@@ -14,6 +14,8 @@ def main(argv=None):
         tuple(c.get("recall_ks",(20,50,100))),int(c.get("ndcg_k",10)),int(c.get("bootstrap_replicates",1000)),float(c.get("confidence",.95)),int(c.get("min_conclusive_pairs",30)),float(c.get("ndcg_noninferiority_margin",.01)),float(c.get("recall50_noninferiority_margin",.01)),float(c.get("max_p95_latency_ms",5000)),c.get("max_ram_mb"),c.get("max_vram_mb")
     )
     corpus=load_corpus(args.corpus);queries=load_queries(args.queries);judgments=load_judgments(args.judgments);validate_dataset(corpus,queries,judgments)
-    report=run_experiment(config,queries,judgments,load_runs(args.runs));report["dataset"]["corpus_count"]=len(corpus)
+    paths={"config":args.config,"corpus":args.corpus,"queries":args.queries,"judgments":args.judgments,"runs":args.runs}
+    fingerprints={name:hashlib.sha256(Path(path).read_bytes()).hexdigest() for name,path in paths.items()}
+    report=run_experiment(config,queries,judgments,load_runs(args.runs),corpus_count=len(corpus),input_fingerprints=fingerprints)
     Path(args.report).write_text(json.dumps(report,sort_keys=True,indent=2)+"\n",encoding="utf-8");print(json.dumps({"report":args.report,"digest":report["report_digest"],"runs":sorted(report["runs"])},sort_keys=True))
 if __name__=="__main__":raise SystemExit(main())
