@@ -26,11 +26,12 @@ class Phase21EvaluationTests(unittest.TestCase):
         cls.queries=load_queries(DATA/"queries.jsonl");cls.judgments=load_judgments(DATA/"judgments.jsonl");cls.runs=load_runs(DATA/"fixture-runs.json")
 
     def test_dataset_counts_labels_and_duplicate_split_integrity(self):
-        self.assertEqual(270,len(self.queries));self.assertEqual(270,len(self.judgments))
+        self.assertEqual(280,len(self.queries));self.assertEqual(280,len(self.judgments))
         for domain in ("cybersecurity","networking","quant","humanities","privacy"):
             self.assertEqual(50,sum(q.domain==domain and q.split!="adversarial" for q in self.queries))
-        self.assertEqual(250,sum(j.status==JudgmentStatus.MACHINE_GENERATED_UNREVIEWED for j in self.judgments))
+        self.assertEqual(260,sum(j.status==JudgmentStatus.MACHINE_GENERATED_UNREVIEWED for j in self.judgments))
         self.assertEqual(20,sum(j.status==JudgmentStatus.SYNTHETIC_CONTRACT for j in self.judgments))
+        self.assertEqual(10,sum(q.domain=="cross-domain" for q in self.queries))
         self.assertEqual(0,sum(j.status==JudgmentStatus.HUMAN_REVIEWED for j in self.judgments))
         groups={}
         for q in self.queries:
