@@ -43,5 +43,10 @@
       "ALL"
     ]
   },
-  "compose_services": []
+  "compose_services": [],
+  "scheduler": {
+    "interactive_capacity": 8,
+    "ingestion_capacity": 8,
+    "interactive_burst": 2
+  }
 }
