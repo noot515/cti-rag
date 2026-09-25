@@ -61,7 +61,7 @@ def _paired(config,base,candidate,queries):
         comparisons[metric]=paired_bootstrap(c,b,replicates=config.bootstrap_replicates,confidence=config.confidence,seed=config.seed,min_pairs=config.min_conclusive_pairs,noninferiority_margin=margin)
         slices={}
         for key in sorted({f"domain:{qmap[q].domain}" for q in common}|{f"task:{qmap[q].task_type}" for q in common}):
-            kind,value=key.split(":",1);ids=[q for q in common if getattr(qmap[q],kind)==value]
+            kind,value=key.split(":",1);ids=[q for q in common if getattr(qmap[q],"task_type" if kind=="task" else kind)==value]
             slices[key]=paired_bootstrap([candidate["query_metrics"][q][metric] for q in ids],[base["query_metrics"][q][metric] for q in ids],replicates=config.bootstrap_replicates,confidence=config.confidence,seed=config.seed,min_pairs=config.min_conclusive_pairs,noninferiority_margin=margin)
         comparisons[metric]["slices"]=slices
     return comparisons
