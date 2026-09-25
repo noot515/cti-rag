@@ -1,0 +1,103 @@
+name: Evidence runtime foundation
+on:
+  push:
+    branches:
+      - feat/evidence-runtime-phase0-phase1-20260922
+  pull_request:
+    branches:
+      - main
+jobs:
+  deterministic-evidence-runtime:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install narrow validation dependencies
+        run: python -m pip install "duckdb>=1.4,<2" pytest
+      - name: Compile side-effect-free runtime and chained gate modules
+        run: |
+          python -m compileall -q cti_rag scripts
+          python -m py_compile tests/contracts_phase1_test.py tests/validation_runner_test.py tests/ports_policy_phase2_test.py tests/canonical_ingestion_phase3_test.py tests/snapshot_publication_phase4_test.py tests/exact_lexical_phase5_test.py tests/dense_phase6_test.py tests/query_dag_fusion_phase7_test.py tests/rerank_context_api_phase8_test.py tests/structured_temporal_phase9_test.py tests/graph_assertion_phase10_test.py tests/cyber_sources_phase11_test.py tests/networking_domain_phase12_test.py tests/quant_domain_phase13_test.py tests/humanities_domain_phase15_test.py tests/cross_domain_phase16_test.py tests/claim_grounding_phase17_test.py tests/hardened_web_overlay_phase18_test.py tests/runtimepolicy_adapter_phase19_test.py tests/opencti_phase20_test.py tests/evaluation_phase21_test.py tests/operations_recovery_phase22_test.py tests/measured_optimization_phase23_test.py tests/release_conformance_phase24_test.py tests/actual_dense_integrations_phase6_test.py tests/actual_graph_integrations_phase10_test.py
+      - name: Run cumulative deterministic gates
+        run: |
+          python -m unittest tests.contracts_phase1_test tests.validation_runner_test tests.ports_policy_phase2_test tests.canonical_ingestion_phase3_test tests.snapshot_publication_phase4_test tests.exact_lexical_phase5_test tests.dense_phase6_test tests.query_dag_fusion_phase7_test tests.rerank_context_api_phase8_test tests.structured_temporal_phase9_test tests.graph_assertion_phase10_test tests.cyber_sources_phase11_test tests.networking_domain_phase12_test tests.quant_domain_phase13_test tests.humanities_domain_phase15_test tests.cross_domain_phase16_test tests.claim_grounding_phase17_test tests.hardened_web_overlay_phase18_test tests.runtimepolicy_adapter_phase19_test tests.opencti_phase20_test tests.evaluation_phase21_test tests.operations_recovery_phase22_test tests.measured_optimization_phase23_test tests.release_conformance_phase24_test -v
+      - name: Run affected legacy API regression tests
+        run: python -m pytest -q tests/chat_api_router_task5_test.py tests/dockerfile_api_requirements_split_test.py
+      - name: Verify cumulative registry remains fail-closed
+        run: |
+          set +e
+          python scripts/validate_phases.py --through-phase 24 --report /tmp/cumulative-phase24.json
+          rc=$?
+          set -e
+          test "$rc" -eq 1
+          python - <<'PY'
+          import json
+          with open("/tmp/cumulative-phase24.json", "r", encoding="utf-8") as handle:
+              report = json.load(handle)
+          states = {gate["id"]: gate["status"] for gate in report["gates"]}
+          assert report["status"] == "fail"
+          for gate in (
+              "phase4-snapshot-publication-invariants",
+              "phase5-exact-independent-lexical-invariants",
+              "phase6-dense-representation-invariants",
+              "phase7-query-dag-fusion-invariants",
+              "phase8-rerank-context-api-invariants",
+              "phase8-legacy-api-regression",
+              "phase9-structured-temporal-duckdb-invariants",
+              "phase10-graph-assertion-invariants",
+              "phase11-core-cyber-source-fixtures",
+              "phase12-networking-domain-invariants",
+              "phase13-quant-domain-invariants",
+              "phase15-humanities-domain-invariants",
+              "phase16-cross-domain-dag-invariants",
+              "phase17-claim-grounding-abstention-invariants",
+              "phase18-hardened-web-overlay-invariants",
+              "phase19-runtimepolicy-adapter-conformance",
+              "phase20-opencti-read-adapter-invariants",
+              "phase21-evaluation-harness-invariants",
+              "phase21-frozen-fixture-report",
+              "phase22-operations-recovery-invariants",
+              "phase23-measured-optimization-invariants",
+              "phase23-frozen-optimization-report",
+              "phase24-release-conformance-invariants",
+              "phase24-conformance-report",
+          ):
+              assert states[gate] == "pass", (gate, states[gate])
+          for gate in (
+              "phase0-legacy-fast-suite",
+              "phase0-b0-offline-benchmark",
+              "phase5-mysql-fulltext-real-service",
+              "phase6-actual-embedding-model",
+              "phase6-milvus-real-lifecycle",
+              "phase8-actual-reranker-model",
+              "phase8-actual-generator-tokenizer",
+              "phase10-real-neo4j-restart-lifecycle",
+              "phase11-live-core-source-lifecycle",
+              "phase12-live-network-source-lifecycle",
+              "phase13-live-sec-fred-lifecycle",
+              "phase13-licensed-market-data-entitlement",
+              "phase14-required-prerequisite",
+              "phase15-live-humanities-source-lifecycle",
+              "phase17-evaluated-semantic-judge",
+              "phase18-live-provider-egress",
+              "phase19-canonical-runtime-client-package",
+              "phase19-live-runtimepolicy-broker",
+              "phase20-live-opencti-read-lifecycle",
+              "phase21-real-embedding-quality",
+              "phase21-real-reranker-quality",
+              "phase21-real-generator-grounding-quality",
+              "phase21-gpu-concurrent-resource-profile",
+              "phase21-human-reviewed-judgments",
+              "phase22-text-mvp-live-profile",
+              "phase22-analytical-live-profile",
+              "phase22-full-research-live-profile",
+              "phase22-live-concurrent-model-memory",
+              "phase23-real-runtime-performance",
+              "phase24-privacy-source-lifecycle",
+              "phase24-release-readiness",
+          ):
+              assert states[gate] == "blocked", (gate, states[gate])
+          PY

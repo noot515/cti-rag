@@ -1,0 +1,29 @@
+{
+  "schema_version":"phase-report/1",
+  "phase":11,
+  "status":"blocked",
+  "own_gate":"passed",
+  "core_source_fixture_lifecycle":"passed",
+  "live_core_source_lifecycle":"blocked",
+  "baseline_commit":"15f4050a387bf41b8d77daf05e271ccfe9e522da",
+  "code_checkpoint":"d3395d26d9df72c60cea57e9d593b2b4901e68bc",
+  "parent_report_ids":["phase-10"],
+  "fingerprints":{
+    "sources_blob":"0610c019de6c44b04a51c91512ad58a1731bfec6",
+    "projections_blob":"8dd612944ca59848e873567dd479830c7a6b7b2d",
+    "structured_blob":"908e3f589b604bfe2bea2f9d185494632a2a9544",
+    "coverage_registry_blob":"2e5d7799b6ca490e364cea51997840320a5198d0",
+    "fixtures_blob":"5a7abd1e88ba274ffc7b7f459d7dec7c51c2d394",
+    "lifecycle_blob":"b08cde23173baa1c3f19f715d0d8741df4e7586b",
+    "benchmark_blob":"827fc037ea169fe46d2aa116e9c9c363f601e3cc",
+    "commands_blob":"8dc85e3e520c9fdc3f6c5fa0f35b0469ab6e9f29",
+    "phase_test_blob":"abe478a0f57b5e725ad3b32b64b4fbd41f46c732",
+    "ingestion_contract_blob":"70838fc611f52f464d9917c973860e8514eda503",
+    "ingestion_pipeline_blob":"c224a1890b6881cc177101e7d66d67674a3517f3",
+    "canonical_metadata_blob":"a2fc616ca1e3f6026e3776eb819634658c75d4f7"
+  },
+  "ci":{"run_id":35843384373,"job_id":107123568293,"python":"3.13.15","cumulative_unittests_passed":114,"phase_gate_tests_passed":7,"legacy_regression_tests_passed":8,"cumulative_seconds":4.884,"phase_seconds":0.387},
+  "blocked_by":["phase0-legacy-fast-suite","phase0-b0-offline-benchmark","phase5-mysql-fulltext-real-service","phase6-actual-embedding-model","phase6-milvus-real-lifecycle","phase8-actual-reranker-model","phase8-actual-generator-tokenizer","phase10-real-neo4j-restart-lifecycle","phase11-live-core-source-lifecycle"],
+  "extended_sources_status":"deferred",
+  "new_retrieval_enabled":false
+}

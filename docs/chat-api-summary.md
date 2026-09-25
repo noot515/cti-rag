@@ -300,3 +300,15 @@ ThreatRAG 聊天系统提供了 **灵活且强大** 的 API：
 - ✅ **文档完善**: 详细的使用示例和最佳实践
 
 选择适合您场景的方式，开始使用吧！🚀
+
+## Evidence-runtime release note
+
+The multidomain evidence runtime is still feature-gated during release conformance.
+
+- `CTI_RAG_ADVANCED_RETRIEVAL_ENABLED` defaults to disabled. Existing chat/session endpoints remain the compatibility path unless an operator explicitly enables the advanced retrieval composition.
+- Enabling the advanced-retrieval flag does **not** grant private evidence, web egress, OpenCTI access, external RuntimePolicy authority, or remote-model permission. Those remain separate policy/integration decisions.
+- Optional web/OpenCTI/RuntimePolicy components may be absent in the local fixture profile.
+- The current release-conformance matrix is `validation/revised-plan-conformance.json`; blocked mandatory gates mean the corresponding milestone is not release-ready.
+- A reproducible local fixture/migration/rollback example is documented in `docs/operators/local-fixture-example.md`.
+
+Clients should not infer universal correctness, privacy, freshness, or latency guarantees from a successful fixture response. Response evidence remains bound to its pinned snapshot/current revocations and the effective authorization scope.

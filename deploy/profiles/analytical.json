@@ -1,0 +1,99 @@
+{
+  "name": "analytical",
+  "components": [
+    "api",
+    "worker",
+    "mysql-metadata",
+    "file-object-store",
+    "lexical",
+    "dense",
+    "redis",
+    "rabbitmq",
+    "duckdb",
+    "neo4j"
+  ],
+  "exposed_ports": [
+    "api:8000"
+  ],
+  "secret_names": [
+    "MYSQL_PASSWORD",
+    "NEO4J_PASSWORD",
+    "RABBITMQ_PASSWORD"
+  ],
+  "internal_network": true,
+  "egress_policy": "deny_by_default",
+  "egress_allowlist": [],
+  "data_root_env": "CTI_RAG_DATA_ROOT",
+  "resource_limits": [
+    {
+      "service": "api",
+      "cpu": "2",
+      "memory": "4GiB"
+    },
+    {
+      "service": "worker",
+      "cpu": "6",
+      "memory": "12GiB"
+    },
+    {
+      "service": "neo4j",
+      "cpu": "4",
+      "memory": "8GiB"
+    }
+  ],
+  "optional_components": [
+    "reranker",
+    "generator"
+  ],
+  "service_egress": {
+    "api": "internal_only",
+    "worker": "internal_only",
+    "mysql-metadata": "internal_only",
+    "file-object-store": "internal_only",
+    "lexical": "internal_only",
+    "dense": "internal_only",
+    "redis": "internal_only",
+    "rabbitmq": "internal_only",
+    "duckdb": "internal_only",
+    "neo4j": "internal_only"
+  },
+  "read_only_mounts": [
+    {
+      "service": "api",
+      "source_env": "CTI_RAG_CONFIG_FILE",
+      "target": "/etc/cti-rag/config.yaml",
+      "read_only": true
+    },
+    {
+      "service": "worker",
+      "source_env": "CTI_RAG_CONFIG_FILE",
+      "target": "/etc/cti-rag/config.yaml",
+      "read_only": true
+    }
+  ],
+  "capability_drop": {
+    "api": [
+      "ALL"
+    ],
+    "worker": [
+      "ALL"
+    ]
+  },
+  "compose_services": [
+    "mysql",
+    "redis",
+    "rabbitmq",
+    "neo4j",
+    "etcd",
+    "minio",
+    "milvus-standalone",
+    "ollama",
+    "threatrag",
+    "threatrag-worker"
+  ],
+  "scheduler": {
+    "interactive_capacity": 32,
+    "ingestion_capacity": 64,
+    "interactive_burst": 4
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "schema_version": "phase-report/1",
+  "phase": 1,
+  "status": "blocked",
+  "baseline_commit": "15f4050a387bf41b8d77daf05e271ccfe9e522da",
+  "parent_report_ids": ["phase-00"],
+  "contract_gate": {"status": "passed", "tests": 12},
+  "cumulative_gate": {"status": "failed", "reason": "required Phase 0 gates remain blocked"},
+  "new_retrieval_enabled": false,
+  "rollback": "additive files only; revert branch commit; no live schema/index mutation"
+}

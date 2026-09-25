@@ -1,0 +1,323 @@
+{
+  "schema_version": "phase23-optimization-grid/1",
+  "plan": {
+    "plan_id": "phase23-frozen-dev-v1",
+    "baseline_config_id": "baseline-v1",
+    "ndcg_noninferiority_margin": 0.01,
+    "recall50_noninferiority_margin": 0.01,
+    "ann_recall_noninferiority_margin": 0.01,
+    "graph_recall_noninferiority_margin": 0.01,
+    "max_p95_latency_ms": 5000,
+    "max_ram_mb": 2048,
+    "require_real_runtime_for_promotion": true
+  },
+  "frozen_inputs": {
+    "corpus": "evaluation/phase21/dev-v1/corpus.jsonl",
+    "queries": "evaluation/phase21/dev-v1/queries.jsonl",
+    "judgments": "evaluation/phase21/dev-v1/judgments.jsonl",
+    "split_manifest": "evaluation/phase21/dev-v1/splits.json"
+  },
+  "tuning_policy": "all parameter candidates are compared only on the declared development/tuning partition; only the selected tuning candidate may be evaluated on holdout",
+  "fixed_controls": [
+    "policy_scope",
+    "snapshot",
+    "current_revocations",
+    "hard_identifier_obligations",
+    "structured_numerical_verification"
+  ],
+  "configs": [
+    {
+      "config_id": "baseline-v1",
+      "passage_tokens": 350,
+      "overlap_tokens": 50,
+      "context_prefix_mode": "deterministic",
+      "analyzer": "unicode61",
+      "lexical_window": 50,
+      "dense_window": 50,
+      "ann_probe": 16,
+      "rerank_candidates": 60,
+      "context_tokens": 8000,
+      "graph_cap": 20,
+      "routing_fallback_domains": 2,
+      "bulk_hydration": false,
+      "hydration_batch_size": 1,
+      "dependencies": [],
+      "semantic_risks": []
+    },
+    {
+      "config_id": "passage-250",
+      "passage_tokens": 250,
+      "overlap_tokens": 40,
+      "context_prefix_mode": "deterministic",
+      "analyzer": "unicode61",
+      "lexical_window": 50,
+      "dense_window": 50,
+      "ann_probe": 16,
+      "rerank_candidates": 60,
+      "context_tokens": 8000,
+      "graph_cap": 20,
+      "routing_fallback_domains": 2,
+      "bulk_hydration": false,
+      "hydration_batch_size": 1,
+      "dependencies": [],
+      "semantic_risks": [
+        "more_passage_boundaries"
+      ]
+    },
+    {
+      "config_id": "passage-500",
+      "passage_tokens": 500,
+      "overlap_tokens": 80,
+      "context_prefix_mode": "deterministic",
+      "analyzer": "unicode61",
+      "lexical_window": 50,
+      "dense_window": 50,
+      "ann_probe": 16,
+      "rerank_candidates": 60,
+      "context_tokens": 8000,
+      "graph_cap": 20,
+      "routing_fallback_domains": 2,
+      "bulk_hydration": false,
+      "hydration_batch_size": 1,
+      "dependencies": [],
+      "semantic_risks": [
+        "less_granular_retrieval"
+      ]
+    },
+    {
+      "config_id": "prefix-none",
+      "passage_tokens": 350,
+      "overlap_tokens": 50,
+      "context_prefix_mode": "none",
+      "analyzer": "unicode61",
+      "lexical_window": 50,
+      "dense_window": 50,
+      "ann_probe": 16,
+      "rerank_candidates": 60,
+      "context_tokens": 8000,
+      "graph_cap": 20,
+      "routing_fallback_domains": 2,
+      "bulk_hydration": false,
+      "hydration_batch_size": 1,
+      "dependencies": [],
+      "semantic_risks": [
+        "short_passages_lose_document_context"
+      ]
+    },
+    {
+      "config_id": "analyzer-porter",
+      "passage_tokens": 350,
+      "overlap_tokens": 50,
+      "context_prefix_mode": "deterministic",
+      "analyzer": "english_porter",
+      "lexical_window": 50,
+      "dense_window": 50,
+      "ann_probe": 16,
+      "rerank_candidates": 60,
+      "context_tokens": 8000,
+      "graph_cap": 20,
+      "routing_fallback_domains": 2,
+      "bulk_hydration": false,
+      "hydration_batch_size": 1,
+      "dependencies": [
+        "porter_analyzer"
+      ],
+      "semantic_risks": [
+        "identifier_stemming_or_language_mismatch"
+      ]
+    },
+    {
+      "config_id": "lexical-window-20",
+      "passage_tokens": 350,
+      "overlap_tokens": 50,
+      "context_prefix_mode": "deterministic",
+      "analyzer": "unicode61",
+      "lexical_window": 20,
+      "dense_window": 50,
+      "ann_probe": 16,
+      "rerank_candidates": 60,
+      "context_tokens": 8000,
+      "graph_cap": 20,
+      "routing_fallback_domains": 2,
+      "bulk_hydration": false,
+      "hydration_batch_size": 1,
+      "dependencies": [],
+      "semantic_risks": [
+        "lexical_recall_loss"
+      ]
+    },
+    {
+      "config_id": "dense-window-25",
+      "passage_tokens": 350,
+      "overlap_tokens": 50,
+      "context_prefix_mode": "deterministic",
+      "analyzer": "unicode61",
+      "lexical_window": 50,
+      "dense_window": 25,
+      "ann_probe": 16,
+      "rerank_candidates": 60,
+      "context_tokens": 8000,
+      "graph_cap": 20,
+      "routing_fallback_domains": 2,
+      "bulk_hydration": false,
+      "hydration_batch_size": 1,
+      "dependencies": [],
+      "semantic_risks": [
+        "dense_recall_loss"
+      ]
+    },
+    {
+      "config_id": "ann-probe-8",
+      "passage_tokens": 350,
+      "overlap_tokens": 50,
+      "context_prefix_mode": "deterministic",
+      "analyzer": "unicode61",
+      "lexical_window": 50,
+      "dense_window": 50,
+      "ann_probe": 8,
+      "rerank_candidates": 60,
+      "context_tokens": 8000,
+      "graph_cap": 20,
+      "routing_fallback_domains": 2,
+      "bulk_hydration": false,
+      "hydration_batch_size": 1,
+      "dependencies": [],
+      "semantic_risks": [
+        "approximate_neighbor_recall_loss"
+      ]
+    },
+    {
+      "config_id": "rerank-30",
+      "passage_tokens": 350,
+      "overlap_tokens": 50,
+      "context_prefix_mode": "deterministic",
+      "analyzer": "unicode61",
+      "lexical_window": 50,
+      "dense_window": 50,
+      "ann_probe": 16,
+      "rerank_candidates": 30,
+      "context_tokens": 8000,
+      "graph_cap": 20,
+      "routing_fallback_domains": 2,
+      "bulk_hydration": false,
+      "hydration_batch_size": 1,
+      "dependencies": [],
+      "semantic_risks": [
+        "rerank_candidate_recall_loss"
+      ]
+    },
+    {
+      "config_id": "context-4000",
+      "passage_tokens": 350,
+      "overlap_tokens": 50,
+      "context_prefix_mode": "deterministic",
+      "analyzer": "unicode61",
+      "lexical_window": 50,
+      "dense_window": 50,
+      "ann_probe": 16,
+      "rerank_candidates": 60,
+      "context_tokens": 4000,
+      "graph_cap": 20,
+      "routing_fallback_domains": 2,
+      "bulk_hydration": false,
+      "hydration_batch_size": 1,
+      "dependencies": [],
+      "semantic_risks": [
+        "packing_support_loss"
+      ]
+    },
+    {
+      "config_id": "graph-cap-8",
+      "passage_tokens": 350,
+      "overlap_tokens": 50,
+      "context_prefix_mode": "deterministic",
+      "analyzer": "unicode61",
+      "lexical_window": 50,
+      "dense_window": 50,
+      "ann_probe": 16,
+      "rerank_candidates": 60,
+      "context_tokens": 8000,
+      "graph_cap": 8,
+      "routing_fallback_domains": 2,
+      "bulk_hydration": false,
+      "hydration_batch_size": 1,
+      "dependencies": [],
+      "semantic_risks": [
+        "required_edge_truncation"
+      ]
+    },
+    {
+      "config_id": "text-only",
+      "passage_tokens": 350,
+      "overlap_tokens": 50,
+      "context_prefix_mode": "deterministic",
+      "analyzer": "unicode61",
+      "lexical_window": 50,
+      "dense_window": 50,
+      "ann_probe": 16,
+      "rerank_candidates": 60,
+      "context_tokens": 8000,
+      "graph_cap": 0,
+      "routing_fallback_domains": 2,
+      "bulk_hydration": false,
+      "hydration_batch_size": 1,
+      "dependencies": [],
+      "semantic_risks": [
+        "relation_questions_lose_graph_support"
+      ]
+    },
+    {
+      "config_id": "fallback-1",
+      "passage_tokens": 350,
+      "overlap_tokens": 50,
+      "context_prefix_mode": "deterministic",
+      "analyzer": "unicode61",
+      "lexical_window": 50,
+      "dense_window": 50,
+      "ann_probe": 16,
+      "rerank_candidates": 60,
+      "context_tokens": 8000,
+      "graph_cap": 20,
+      "routing_fallback_domains": 1,
+      "bulk_hydration": false,
+      "hydration_batch_size": 1,
+      "dependencies": [],
+      "semantic_risks": [
+        "router_miss_on_ambiguous_queries"
+      ]
+    },
+    {
+      "config_id": "bulk-hydration-32",
+      "passage_tokens": 350,
+      "overlap_tokens": 50,
+      "context_prefix_mode": "deterministic",
+      "analyzer": "unicode61",
+      "lexical_window": 50,
+      "dense_window": 50,
+      "ann_probe": 16,
+      "rerank_candidates": 60,
+      "context_tokens": 8000,
+      "graph_cap": 20,
+      "routing_fallback_domains": 2,
+      "bulk_hydration": true,
+      "hydration_batch_size": 32,
+      "dependencies": [],
+      "semantic_risks": [
+        "backend_bulk_read_contract_required"
+      ]
+    }
+  ],
+  "tuning_query_splits": [
+    "dev_source_family"
+  ],
+  "holdout_query_splits": [
+    "dev_duplicate_holdout",
+    "dev_time_holdout",
+    "cross_domain",
+    "adversarial"
+  ],
+  "partition_counts": {
+    "tuning": 130,
+    "holdout": 150
+  }
+}

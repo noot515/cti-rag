@@ -1,0 +1,21 @@
+{
+  "schema_version":"phase-report/1",
+  "phase":9,
+  "status":"blocked",
+  "own_gate":"passed",
+  "actual_duckdb_profile":"passed_preloaded_tables",
+  "baseline_commit":"15f4050a387bf41b8d77daf05e271ccfe9e522da",
+  "code_checkpoint":"6c0e5b0f53ddedf15b4da5f4bcbfb87d04fdbc6f",
+  "parent_report_ids":["phase-08"],
+  "fingerprints":{
+    "structured_contracts_blob":"874361de0ec836d2f00b1fe0ec4d86b42307564e",
+    "compiler_blob":"fdb1e5c9508ed90c84244a797415e51ce35aeac8",
+    "duckdb_port_blob":"c3b0299f1c2a88fc66e0aed7b664873ba7ad3793",
+    "fixtures_blob":"307693089fb4c0013fac726cd8365517ae96b90b",
+    "candidate_contract_blob":"c342094b455527a9ee702d3c574ca5d9a80bc610",
+    "phase_test_blob":"4c9df33efc4a9f1acb7afbd81da2a6c68008ca5f"
+  },
+  "ci":{"run_id":35839225054,"job_id":107110015621,"python":"3.13.15","cumulative_unittests_passed":98,"phase_gate_tests_passed":11,"legacy_regression_tests_passed":8,"cumulative_seconds":4.228,"phase_seconds":3.115},
+  "blocked_by":["phase0-legacy-fast-suite","phase0-b0-offline-benchmark","phase5-mysql-fulltext-real-service","phase6-actual-embedding-model","phase6-milvus-real-lifecycle","phase8-actual-reranker-model","phase8-actual-generator-tokenizer"],
+  "new_retrieval_enabled":false
+}

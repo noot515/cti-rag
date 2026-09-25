@@ -1,0 +1,18 @@
+{
+  "schema_version": "phase-report/1",
+  "phase": 0,
+  "status": "blocked",
+  "baseline_commit": "15f4050a387bf41b8d77daf05e271ccfe9e522da",
+  "parent_report_ids": [],
+  "fingerprints": {
+    "config_blob": "a90848b9f9884c344d3fe2cc10cd6ec8c13da591",
+    "benchmark_dataset_blob": "5820fa64bed3db3147d52d632975a21101893bff",
+    "model_blob": "b06a0a7f5e5209553993045009c4e878b54a6435",
+    "docker_compose_blob": "d38dc805c375598165a7cffdd0642b76e015f1b9"
+  },
+  "executed": [
+    {"command": "python -m unittest tests.contracts_phase1_test tests.validation_runner_test -v", "status": "passed", "tests": 17}
+  ],
+  "blocked": ["phase0-legacy-fast-suite", "phase0-b0-offline-benchmark"],
+  "new_retrieval_enabled": false
+}

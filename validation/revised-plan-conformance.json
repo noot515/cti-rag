@@ -1,0 +1,519 @@
+{
+  "schema_version": "revised-plan-conformance/1",
+  "architecture": "docs/architecture/cti-rag-plan-v2.md",
+  "code_checkpoint": "pending-phase24-validation",
+  "status_semantics": "passed means the mapped requirement has executed evidence; blocked means required evidence remains unavailable or an implementation gap exists; optional/deferred items do not silently promote a milestone.",
+  "sections": [
+    {
+      "section": 1,
+      "title": "Main findings and decisions",
+      "requirements": [
+        {
+          "id": "section-1-primary",
+          "group": "foundation",
+          "status": "passed",
+          "code_refs": [
+            "docs/architecture/cti-rag-plan-v2.md"
+          ],
+          "test_refs": [
+            "tests/contracts_phase1_test.py"
+          ],
+          "reason": "Executed deterministic/fixture evidence exists for the mapped core requirement."
+        }
+      ]
+    },
+    {
+      "section": 2,
+      "title": "System boundaries and architecture",
+      "requirements": [
+        {
+          "id": "section-2-primary",
+          "group": "foundation",
+          "status": "passed",
+          "code_refs": [
+            "cti_rag/ports/__init__.py"
+          ],
+          "test_refs": [
+            "tests/ports_policy_phase2_test.py"
+          ],
+          "reason": "Executed deterministic/fixture evidence exists for the mapped core requirement."
+        }
+      ]
+    },
+    {
+      "section": 3,
+      "title": "Repository organization and migration map",
+      "requirements": [
+        {
+          "id": "section-3-primary",
+          "group": "foundation",
+          "status": "passed",
+          "code_refs": [
+            "docs/architecture/cti-rag-plan-v2.md"
+          ],
+          "test_refs": [
+            "tests/validation_runner_test.py"
+          ],
+          "reason": "Executed deterministic/fixture evidence exists for the mapped core requirement."
+        }
+      ]
+    },
+    {
+      "section": 4,
+      "title": "Small interfaces and capability negotiation",
+      "requirements": [
+        {
+          "id": "section-4-primary",
+          "group": "foundation",
+          "status": "passed",
+          "code_refs": [
+            "cti_rag/ports/policy.py"
+          ],
+          "test_refs": [
+            "tests/runtimepolicy_adapter_phase19_test.py"
+          ],
+          "reason": "Executed deterministic/fixture evidence exists for the mapped core requirement."
+        }
+      ]
+    },
+    {
+      "section": 5,
+      "title": "Canonical evidence and identity",
+      "requirements": [
+        {
+          "id": "section-5-primary",
+          "group": "foundation",
+          "status": "passed",
+          "code_refs": [
+            "cti_rag/contracts/evidence.py"
+          ],
+          "test_refs": [
+            "tests/canonical_ingestion_phase3_test.py"
+          ],
+          "reason": "Executed deterministic/fixture evidence exists for the mapped core requirement."
+        }
+      ]
+    },
+    {
+      "section": 6,
+      "title": "Temporal correctness and revisions",
+      "requirements": [
+        {
+          "id": "section-6-primary",
+          "group": "foundation",
+          "status": "passed",
+          "code_refs": [
+            "cti_rag/contracts/temporal.py"
+          ],
+          "test_refs": [
+            "tests/structured_temporal_phase9_test.py"
+          ],
+          "reason": "Executed deterministic/fixture evidence exists for the mapped core requirement."
+        }
+      ]
+    },
+    {
+      "section": 7,
+      "title": "Ingestion, consistency, deletion, and recovery",
+      "requirements": [
+        {
+          "id": "section-7-primary",
+          "group": "foundation",
+          "status": "passed",
+          "code_refs": [
+            "cti_rag/operations/recovery.py"
+          ],
+          "test_refs": [
+            "tests/operations_recovery_phase22_test.py"
+          ],
+          "reason": "Executed deterministic/fixture evidence exists for the mapped core requirement."
+        }
+      ]
+    },
+    {
+      "section": 8,
+      "title": "Index layout and backend decisions",
+      "requirements": [
+        {
+          "id": "section-8-primary",
+          "group": "text_mvp",
+          "status": "passed",
+          "code_refs": [
+            "cti_rag/retrieval/__init__.py"
+          ],
+          "test_refs": [
+            "tests/exact_lexical_phase5_test.py"
+          ],
+          "reason": "Executed deterministic/fixture evidence exists for the mapped core requirement."
+        }
+      ]
+    },
+    {
+      "section": 9,
+      "title": "Parsing, chunking, and representation quality",
+      "requirements": [
+        {
+          "id": "section-9-primary",
+          "group": "text_mvp",
+          "status": "passed",
+          "code_refs": [
+            "cti_rag/context/packer.py"
+          ],
+          "test_refs": [
+            "tests/rerank_context_api_phase8_test.py"
+          ],
+          "reason": "Executed deterministic/fixture evidence exists for the mapped core requirement."
+        }
+      ]
+    },
+    {
+      "section": 10,
+      "title": "Query planning as a bounded DAG",
+      "requirements": [
+        {
+          "id": "section-10-primary",
+          "group": "text_mvp",
+          "status": "passed",
+          "code_refs": [
+            "cti_rag/planning/compiler.py"
+          ],
+          "test_refs": [
+            "tests/query_dag_fusion_phase7_test.py"
+          ],
+          "reason": "Executed deterministic/fixture evidence exists for the mapped core requirement."
+        }
+      ]
+    },
+    {
+      "section": 11,
+      "title": "Exact and structured retrieval",
+      "requirements": [
+        {
+          "id": "section-11-primary",
+          "group": "text_mvp",
+          "status": "passed",
+          "code_refs": [
+            "cti_rag/retrieval/exact.py"
+          ],
+          "test_refs": [
+            "tests/structured_temporal_phase9_test.py"
+          ],
+          "reason": "Executed deterministic/fixture evidence exists for the mapped core requirement."
+        }
+      ]
+    },
+    {
+      "section": 12,
+      "title": "Hybrid retrieval and fusion",
+      "requirements": [
+        {
+          "id": "section-12-primary",
+          "group": "text_mvp",
+          "status": "passed",
+          "code_refs": [
+            "cti_rag/planning/fusion.py"
+          ],
+          "test_refs": [
+            "tests/query_dag_fusion_phase7_test.py"
+          ],
+          "reason": "Executed deterministic/fixture evidence exists for the mapped core requirement."
+        }
+      ]
+    },
+    {
+      "section": 13,
+      "title": "Graph retrieval and entity resolution",
+      "requirements": [
+        {
+          "id": "section-13-primary",
+          "group": "five_domain",
+          "status": "passed",
+          "code_refs": [
+            "cti_rag/graph/__init__.py"
+          ],
+          "test_refs": [
+            "tests/graph_assertion_phase10_test.py"
+          ],
+          "reason": "Executed deterministic/fixture evidence exists for the mapped core requirement."
+        }
+      ]
+    },
+    {
+      "section": 14,
+      "title": "Reranking, evidence selection, and context packing",
+      "requirements": [
+        {
+          "id": "section-14-primary",
+          "group": "text_mvp",
+          "status": "passed",
+          "code_refs": [
+            "cti_rag/context/rerank.py"
+          ],
+          "test_refs": [
+            "tests/rerank_context_api_phase8_test.py"
+          ],
+          "reason": "Executed deterministic/fixture evidence exists for the mapped core requirement."
+        }
+      ]
+    },
+    {
+      "section": 15,
+      "title": "Claim grounding, contradiction search, and abstention",
+      "requirements": [
+        {
+          "id": "section-15-primary",
+          "group": "five_domain",
+          "status": "passed",
+          "code_refs": [
+            "cti_rag/grounding/__init__.py"
+          ],
+          "test_refs": [
+            "tests/claim_grounding_phase17_test.py"
+          ],
+          "reason": "Executed deterministic/fixture evidence exists for the mapped core requirement."
+        }
+      ]
+    },
+    {
+      "section": 16,
+      "title": "Authorization, privacy, and RuntimePolicy integration",
+      "requirements": [
+        {
+          "id": "section-16-primary",
+          "group": "foundation",
+          "status": "blocked",
+          "code_refs": [
+            "cti_rag/policy/local.py"
+          ],
+          "test_refs": [
+            "tests/runtimepolicy_adapter_phase19_test.py"
+          ],
+          "reason": "Local/public and conformance behavior pass, but live canonical RuntimePolicy package/broker gates remain blocked."
+        }
+      ]
+    },
+    {
+      "section": 17,
+      "title": "Web and external integration",
+      "requirements": [
+        {
+          "id": "section-17-primary",
+          "group": "optional_integration",
+          "status": "blocked",
+          "code_refs": [
+            "cti_rag/infrastructure/opencti.py"
+          ],
+          "test_refs": [
+            "tests/hardened_web_overlay_phase18_test.py"
+          ],
+          "reason": "Offline hardened web/OpenCTI boundaries exist, but live provider/OpenCTI validation remains blocked and optional."
+        }
+      ]
+    },
+    {
+      "section": 18,
+      "title": "Domain specifications and preserved source scope",
+      "requirements": [
+        {
+          "id": "section-18-primary",
+          "group": "five_domain",
+          "status": "blocked",
+          "code_refs": [
+            "cti_rag/domains/privacy/spec.py"
+          ],
+          "test_refs": [
+            "tests/cross_domain_phase16_test.py"
+          ],
+          "reason": "Cybersecurity/networking/quant/humanities fixture lifecycles pass; privacy has only a domain spec and no source adapter/lifecycle, and live source lifecycles remain blocked."
+        }
+      ]
+    },
+    {
+      "section": 19,
+      "title": "Latency, memory, caching, and cost",
+      "requirements": [
+        {
+          "id": "section-19-primary",
+          "group": "text_mvp",
+          "status": "blocked",
+          "code_refs": [
+            "cti_rag/operations/cache.py"
+          ],
+          "test_refs": [
+            "tests/measured_optimization_phase23_test.py"
+          ],
+          "reason": "Deterministic optimization mechanics pass; real-runtime latency/resource measurements required for a performance claim are blocked."
+        }
+      ]
+    },
+    {
+      "section": 20,
+      "title": "API and deployment contracts",
+      "requirements": [
+        {
+          "id": "section-20-primary",
+          "group": "text_mvp",
+          "status": "blocked",
+          "code_refs": [
+            "cti_rag/composition/feature_flags.py"
+          ],
+          "test_refs": [
+            "tests/operations_recovery_phase22_test.py"
+          ],
+          "reason": "Fixture/profile-contract deployment passes; live text-MVP/analytical/full-research staging profiles are blocked."
+        }
+      ]
+    },
+    {
+      "section": 21,
+      "title": "Evaluation design and promotion gates",
+      "requirements": [
+        {
+          "id": "section-21-primary",
+          "group": "release",
+          "status": "blocked",
+          "code_refs": [
+            "cti_rag/evaluation/harness.py"
+          ],
+          "test_refs": [
+            "tests/evaluation_phase21_test.py"
+          ],
+          "reason": "Deterministic evaluation passes; real embedding/reranker/generator/GPU and human-reviewed judgment gates are blocked."
+        }
+      ]
+    },
+    {
+      "section": 22,
+      "title": "Failure semantics and adversarial fixtures",
+      "requirements": [
+        {
+          "id": "section-22-primary",
+          "group": "release",
+          "status": "passed",
+          "code_refs": [
+            "cti_rag/evaluation/metrics.py"
+          ],
+          "test_refs": [
+            "tests/evaluation_phase21_test.py"
+          ],
+          "reason": "Executed deterministic/fixture evidence exists for the mapped core requirement."
+        }
+      ]
+    },
+    {
+      "section": 23,
+      "title": "Implementation sequence and chained validation",
+      "requirements": [
+        {
+          "id": "section-23-primary",
+          "group": "release",
+          "status": "passed",
+          "code_refs": [
+            "scripts/validate_phases.py"
+          ],
+          "test_refs": [
+            "tests/validation_runner_test.py"
+          ],
+          "reason": "Executed deterministic/fixture evidence exists for the mapped core requirement."
+        }
+      ]
+    },
+    {
+      "section": 24,
+      "title": "Research options after the baseline",
+      "requirements": [
+        {
+          "id": "section-24-primary",
+          "group": "deferred_research",
+          "status": "passed",
+          "code_refs": [
+            "docs/architecture/cti-rag-plan-v2.md"
+          ],
+          "test_refs": [
+            "tests/measured_optimization_phase23_test.py"
+          ],
+          "reason": "Executed deterministic/fixture evidence exists for the mapped core requirement."
+        }
+      ]
+    },
+    {
+      "section": 25,
+      "title": "Definition of done and first action",
+      "requirements": [
+        {
+          "id": "section-25-primary",
+          "group": "release",
+          "status": "blocked",
+          "code_refs": [
+            "validation/phase-status.json"
+          ],
+          "test_refs": [
+            "tests/operations_recovery_phase22_test.py"
+          ],
+          "reason": "Core fixture work is reproducible, but mandatory release gates including Phase 14, live services/models and human review remain blocked."
+        }
+      ]
+    }
+  ],
+  "milestone_requirements": {
+    "fixture_core": [
+      "section-1-primary",
+      "section-2-primary",
+      "section-4-primary",
+      "section-5-primary",
+      "section-6-primary",
+      "section-7-primary",
+      "section-8-primary",
+      "section-10-primary",
+      "section-11-primary",
+      "section-12-primary",
+      "section-14-primary",
+      "section-22-primary",
+      "section-23-primary"
+    ],
+    "text_mvp": [
+      "section-8-primary",
+      "section-9-primary",
+      "section-10-primary",
+      "section-11-primary",
+      "section-12-primary",
+      "section-14-primary",
+      "section-19-primary",
+      "section-20-primary",
+      "section-21-primary"
+    ],
+    "five_domain": [
+      "section-13-primary",
+      "section-15-primary",
+      "section-16-primary",
+      "section-18-primary",
+      "section-21-primary"
+    ],
+    "full_release": [
+      "section-1-primary",
+      "section-2-primary",
+      "section-3-primary",
+      "section-4-primary",
+      "section-5-primary",
+      "section-6-primary",
+      "section-7-primary",
+      "section-8-primary",
+      "section-9-primary",
+      "section-10-primary",
+      "section-11-primary",
+      "section-12-primary",
+      "section-13-primary",
+      "section-14-primary",
+      "section-15-primary",
+      "section-16-primary",
+      "section-17-primary",
+      "section-18-primary",
+      "section-19-primary",
+      "section-20-primary",
+      "section-21-primary",
+      "section-22-primary",
+      "section-23-primary",
+      "section-25-primary"
+    ]
+  }
+}

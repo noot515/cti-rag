@@ -1,0 +1,20 @@
+{
+  "schema_version":"phase-report/1",
+  "phase":7,
+  "status":"blocked",
+  "own_gate":"passed",
+  "baseline_commit":"15f4050a387bf41b8d77daf05e271ccfe9e522da",
+  "code_checkpoint":"ef78b24217b7aa56a2085a6da820528dfc622701",
+  "parent_report_ids":["phase-06"],
+  "fingerprints":{
+    "plan_contracts_blob":"7caaa6791ebb181a28ad3e974033f13682b4e026",
+    "compiler_blob":"eb5860fcc3852ab3f2298726446c0776cd259b03",
+    "executor_blob":"c142502f565f4d8f07cff030c44b4bb0013a22bb",
+    "fusion_blob":"900c9386dccc6ffe8cccb7506a69d17f8a29fb3b",
+    "benchmark_blob":"e0c434275455ec4412eeeb663e6e3b39a40cad37",
+    "phase_test_blob":"c079d5d410725c972ec786cf6389f16932203257"
+  },
+  "ci":{"run_id":35783030376,"job_id":106932955092,"python":"3.13.15","cumulative_tests_passed":81,"phase_gate_tests_passed":15,"seconds":1.978},
+  "blocked_by":["phase0-legacy-fast-suite","phase0-b0-offline-benchmark","phase5-mysql-fulltext-real-service","phase6-actual-embedding-model","phase6-milvus-real-lifecycle"],
+  "new_retrieval_enabled":false
+}

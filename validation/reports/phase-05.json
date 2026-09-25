@@ -1,0 +1,24 @@
+{
+  "schema_version": "phase-report/1",
+  "phase": 5,
+  "status": "blocked",
+  "own_gate": "passed",
+  "actual_lexical_backend_integration": "passed_sqlite_fts5",
+  "production_lexical_backend": "mysql_fulltext",
+  "production_lexical_backend_gate": "blocked",
+  "baseline_commit": "15f4050a387bf41b8d77daf05e271ccfe9e522da",
+  "code_checkpoint": "9c67c4012c4e8810ef4087d3eeb6b928f0b0165b",
+  "parent_report_ids": ["phase-04"],
+  "fingerprints": {
+    "config_blob": "a90848b9f9884c344d3fe2cc10cd6ec8c13da591",
+    "baseline_corpus_blob": "5820fa64bed3db3147d52d632975a21101893bff",
+    "baseline_model_blob": "b06a0a7f5e5209553993045009c4e878b54a6435",
+    "exact_blob": "d75a94c74ccbfd2afbc48da3a35d888d64c009af",
+    "sqlite_fts5_blob": "cc93b56164df9b84e7909374f2f66cc691bd1a62",
+    "mysql_fulltext_blob": "7ef3a1f7c3be68f3c2e58210179bfd1e4ff678e0",
+    "phase_test_blob": "b96a15e0484a87b450604e601d45c82b2fa85e2b"
+  },
+  "ci": {"run_id": 35740638328, "job_id": 106789187458, "python": "3.13.15", "cumulative_tests_passed": 55, "phase_gate_tests_passed": 11, "seconds": 1.037},
+  "blocked_by": ["phase0-legacy-fast-suite", "phase0-b0-offline-benchmark", "phase5-mysql-fulltext-real-service"],
+  "new_retrieval_enabled": false
+}

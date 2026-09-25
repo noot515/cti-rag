@@ -1,0 +1,220 @@
+{
+  "schema_version": "phase-status/1",
+  "baseline_commit": "15f4050a387bf41b8d77daf05e271ccfe9e522da",
+  "latest_code_checkpoint": "4a62bc06d64204ccfb72c9fcd55d7b086cb799a3",
+  "phases": {
+    "0": {
+      "implementation": "implemented",
+      "acceptance": "blocked"
+    },
+    "1": {
+      "implementation": "implemented",
+      "own_gate": "passed",
+      "acceptance": "blocked_by_phase_0_required_gates"
+    },
+    "2": {
+      "implementation": "implemented",
+      "own_gate": "passed",
+      "acceptance": "blocked_by_phase_0_required_gates"
+    },
+    "3": {
+      "implementation": "implemented",
+      "own_gate": "passed",
+      "acceptance": "blocked_by_phase_0_required_gates"
+    },
+    "4": {
+      "implementation": "implemented",
+      "own_gate": "passed",
+      "acceptance": "blocked_by_phase_0_required_gates"
+    },
+    "5": {
+      "implementation": "implemented",
+      "own_gate": "passed",
+      "actual_lexical_backend_integration": "passed_sqlite_fts5",
+      "acceptance": "blocked_by_phase_0_and_mysql_service_gate"
+    },
+    "6": {
+      "implementation": "implemented",
+      "own_gate": "passed",
+      "deterministic_dense_mechanics": "passed",
+      "actual_embedding_model": "blocked",
+      "real_milvus_lifecycle": "blocked",
+      "acceptance": "blocked_by_external_required_gates"
+    },
+    "7": {
+      "implementation": "implemented",
+      "own_gate": "passed",
+      "query_dag_fusion_mechanics": "passed",
+      "acceptance": "blocked_by_cumulative_required_gates"
+    },
+    "8": {
+      "implementation": "implemented",
+      "own_gate": "passed",
+      "synthetic_end_to_end": "passed",
+      "legacy_api_regression": "passed",
+      "actual_reranker_model": "blocked",
+      "actual_generator_tokenizer": "blocked",
+      "advanced_api_default_enabled": false,
+      "acceptance": "blocked_by_cumulative_required_gates"
+    },
+    "9": {
+      "implementation": "implemented",
+      "own_gate": "passed",
+      "actual_duckdb_preloaded_profile": "passed",
+      "acceptance": "blocked_by_cumulative_required_gates"
+    },
+    "10": {
+      "implementation": "implemented",
+      "own_gate": "passed",
+      "reference_graph": "passed",
+      "query_dag_typed_graph": "passed",
+      "real_neo4j_restart_lifecycle": "blocked",
+      "acceptance": "blocked_by_external_required_gates"
+    },
+    "11": {
+      "implementation": "implemented",
+      "own_gate": "passed",
+      "attack_cve_kev_fixture_lifecycle": "passed",
+      "live_core_source_lifecycle": "blocked",
+      "extended_sources": "deferred",
+      "acceptance": "blocked_by_external_required_gates"
+    },
+    "12": {
+      "implementation": "implemented",
+      "own_gate": "passed",
+      "networking_fixture_lifecycle": "passed",
+      "ipv4_ipv6_structured_semantics": "passed",
+      "rfc_section_citations": "passed",
+      "live_network_source_lifecycle": "blocked",
+      "acceptance": "blocked_by_external_required_gates"
+    },
+    "13": {
+      "implementation": "implemented",
+      "own_gate": "passed",
+      "point_in_time_finance_fixtures": "passed",
+      "returns_event_study_fixture": "passed",
+      "live_sec_fred_lifecycle": "blocked",
+      "licensed_market_data_entitlement": "blocked",
+      "acceptance": "blocked_by_external_required_gates"
+    },
+    "14": {
+      "implementation": "not_started",
+      "own_gate": "not_run",
+      "acceptance": "blocked_required_prerequisite"
+    },
+    "15": {
+      "implementation": "implemented",
+      "own_gate": "passed",
+      "humanities_fixture_lifecycle": "passed",
+      "work_edition_passage_identity": "passed",
+      "ocr_original_quote_alignment": "passed",
+      "tei_iiif_provenance": "passed",
+      "uncertain_date_intervals": "passed",
+      "translation_witness_separation": "passed",
+      "live_humanities_source_lifecycle": "blocked",
+      "acceptance": "blocked_by_phase14_and_external_required_gates"
+    },
+    "16": {
+      "implementation": "implemented",
+      "own_gate": "passed",
+      "cross_domain_e2e_fixture": "passed",
+      "typed_join_ambiguity_and_time_gates": "passed",
+      "missing_numeric_evidence": "passed",
+      "global_budget_and_fair_packing": "passed",
+      "obligation_coverage_and_replay_lineage": "passed",
+      "acceptance": "blocked_by_phase14_and_external_required_gates"
+    },
+    "17": {
+      "implementation": "implemented",
+      "own_gate": "passed",
+      "deterministic_grounding_and_abstention": "passed",
+      "bounded_single_followup": "passed",
+      "conflict_origin_preservation": "passed",
+      "evaluated_semantic_judge": "blocked",
+      "acceptance": "blocked_by_phase14_and_external_required_gates"
+    },
+    "18": {
+      "implementation": "implemented",
+      "own_gate": "passed",
+      "hardened_fetch_and_overlay_fixtures": "passed",
+      "offline_network_independence": "passed",
+      "live_provider_egress": "blocked",
+      "web_overlay_default_enabled": false,
+      "acceptance": "blocked_by_phase14_and_external_required_gates"
+    },
+    "19": {
+      "implementation": "implemented",
+      "own_gate": "passed",
+      "recorded_wire_unix_broker_conformance": "passed",
+      "exact_scope_destination_revision_revalidation": "passed",
+      "canonical_runtime_client_package": "blocked",
+      "live_runtimepolicy_broker": "blocked",
+      "local_public_mode_separate": true,
+      "acceptance": "blocked_by_phase14_and_external_required_gates"
+    },
+    "20": {
+      "implementation": "implemented",
+      "own_gate": "passed",
+      "read_only_opencti_fixture_lifecycle": "passed",
+      "marking_and_provenance_preservation": "passed",
+      "replay_update_tombstone_semantics": "passed",
+      "minimal_startup_without_pycti": "passed",
+      "live_opencti_read_lifecycle": "blocked",
+      "acceptance": "blocked_by_phase14_and_external_required_gates"
+    },
+    "21": {
+      "implementation": "implemented",
+      "own_gate": "passed",
+      "frozen_fixture_report": "passed",
+      "frozen_report_digest": "0792ec472861f1e8a9ad343c0ffa6e351b46c198f6eaee0236dfe24a25a5d14e",
+      "corpus_records": 779,
+      "queries": 280,
+      "human_reviewed_judgments": 0,
+      "real_embedding_quality": "blocked",
+      "real_reranker_quality": "blocked",
+      "real_generator_grounding_quality": "blocked",
+      "gpu_concurrent_resource_profile": "blocked",
+      "acceptance": "blocked_by_phase14_and_external_required_gates"
+    },
+    "22": {
+      "implementation": "implemented",
+      "own_gate": "passed",
+      "fixture_profile_smoke": "passed",
+      "text_mvp_profile_contract_smoke": "passed",
+      "safe_cache_and_revocation": "passed",
+      "bounded_scheduler_and_cancellation": "passed",
+      "sanitized_telemetry": "passed",
+      "backup_restore_rebuild_rollback": "passed",
+      "mounted_file_secrets": "passed",
+      "text_mvp_live_profile": "blocked",
+      "analytical_live_profile": "blocked",
+      "full_research_live_profile": "blocked",
+      "live_concurrent_model_memory": "blocked",
+      "acceptance": "blocked_by_phase14_and_external_required_gates"
+    },
+    "23": {
+      "implementation": "implemented",
+      "own_gate": "passed",
+      "bottleneck_profile": "passed",
+      "tuning_choice": "bulk-hydration-32",
+      "production_config": "baseline-v1",
+      "real_runtime_performance": "blocked",
+      "performance_claim_allowed": false,
+      "acceptance": "blocked_by_real_runtime_and_cumulative_required_gates"
+    },
+    "24": {
+      "implementation": "implemented",
+      "own_gate": "passed",
+      "sections_accounted": 25,
+      "source_inventory": 48,
+      "fixture_core": "passed",
+      "text_mvp": "blocked",
+      "five_domain": "blocked",
+      "full_release": "blocked",
+      "privacy_source_lifecycle": "blocked",
+      "migration_rehearsal": "passed",
+      "acceptance": "blocked_by_required_release_gates"
+    }
+  },
+  "new_retrieval_enabled": false
+}

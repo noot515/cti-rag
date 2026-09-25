@@ -108,6 +108,22 @@ def _load_chat_api_module():
     dotenv_module = types.ModuleType("dotenv")
     dotenv_module.load_dotenv = lambda: None
 
+    requests_module = types.ModuleType("requests")
+    requests_module.post = lambda *args, **kwargs: None
+    requests_module.get = lambda *args, **kwargs: None
+
+    slowapi_module = types.ModuleType("slowapi")
+    slowapi_util_module = types.ModuleType("slowapi.util")
+    class _Limiter:
+        def __init__(self, *args, **kwargs):
+            pass
+        def limit(self, *args, **kwargs):
+            def _decorator(func):
+                return func
+            return _decorator
+    slowapi_module.Limiter = _Limiter
+    slowapi_util_module.get_remote_address = lambda request=None: "127.0.0.1"
+
     rag_module = types.ModuleType("rag")
     rag_module.__path__ = [str(ROOT / "rag")]
 
@@ -177,6 +193,7 @@ def _load_chat_api_module():
     fastapi_module.Depends = _identity
     fastapi_module.HTTPException = _HTTPException
     fastapi_module.Header = _identity
+    fastapi_module.Request = type("Request", (), {})
 
     fastapi_responses_module = types.ModuleType("fastapi.responses")
 
@@ -211,6 +228,9 @@ def _load_chat_api_module():
     sys.modules["packages.manager.chat_session_manager"] = chat_session_module
     sys.modules["rag.utils.coroutine_pool"] = coroutine_pool_module
     sys.modules["dotenv"] = dotenv_module
+    sys.modules["requests"] = requests_module
+    sys.modules["slowapi"] = slowapi_module
+    sys.modules["slowapi.util"] = slowapi_util_module
     sys.modules["fastapi"] = fastapi_module
     sys.modules["fastapi.responses"] = fastapi_responses_module
     sys.modules["langchain_core.messages"] = langchain_messages_module
@@ -251,6 +271,7 @@ def test_temporary_chat_stream_contains_actual_model_metadata_from_router():
 
     async def _run():
         response = await chat_api.temporary_chat(
+            request=object(),
             query="hello router",
             meta={"model_provider": "deepseek", "model_name": "deepseek-chat"},
         )
@@ -383,6 +404,7 @@ def test_stream_retrieval_gating_still_respects_use_web_without_db_id():
 
     async def _run():
         response = await chat_api.chat_post(
+            request=object(),
             query="hello",
             user_id=1,
             thread_id="thread-1",

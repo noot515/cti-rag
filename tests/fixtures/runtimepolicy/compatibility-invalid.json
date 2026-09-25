@@ -1,0 +1,15 @@
+{
+  "contract_version": "9.9.9",
+  "runtime_version": "1.4.0",
+  "broker_protocol_version": 3,
+  "default_broker_protocol_version": 1,
+  "supported_broker_protocol_versions": [
+    1,
+    2,
+    3
+  ],
+  "capabilities": [
+    "broker_epoch_v1"
+  ],
+  "broker_epoch": "fixture-epoch"
+}

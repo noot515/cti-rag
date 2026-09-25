@@ -1,0 +1,1179 @@
+{
+  "schema_version": "phase23-optimization-observations/1",
+  "measurement_notice": "All observations are deterministic fixture mechanics. They exercise selection/rejection logic and backend-operation accounting, not real model/backend performance.",
+  "holdout_access": "Only baseline-v1 and the tuning-selected bulk-hydration-32 candidate are present on holdout.",
+  "observations": [
+    {
+      "config_id": "baseline-v1",
+      "split": "tuning",
+      "measurement_kind": "deterministic_fixture",
+      "ndcg_at_10": 1,
+      "recall_at_50": 1,
+      "ann_recall": 1,
+      "graph_required_edge_recall": 1,
+      "p50_latency_ms": 10,
+      "p95_latency_ms": 14,
+      "ram_peak_mb": 64,
+      "index_bytes": 100000,
+      "backend_read_ops": 100,
+      "ingestion_cost_units": 1,
+      "hard_gate_pass": true,
+      "exact_structured_pass": true,
+      "critical_slice_noninferior": true,
+      "notes": "Deterministic fixture mechanics only; not a real-runtime speed or semantic-quality measurement.",
+      "slice_evidence": {
+        "domains": {
+          "cybersecurity": {
+            "n": 26,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          },
+          "networking": {
+            "n": 26,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          },
+          "quant": {
+            "n": 26,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          },
+          "humanities": {
+            "n": 26,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          },
+          "privacy": {
+            "n": 26,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          }
+        },
+        "tasks": {
+          "structured": {
+            "n": 15,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          },
+          "graph": {
+            "n": 15,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          },
+          "citation": {
+            "n": 20,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          },
+          "abstention": {
+            "n": 20,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          },
+          "routing": {
+            "n": 15,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          },
+          "packing": {
+            "n": 15,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          },
+          "historical": {
+            "n": 15,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          },
+          "duplicate": {
+            "n": 15,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          }
+        },
+        "measurement_kind": "deterministic_fixture_equivalence"
+      }
+    },
+    {
+      "config_id": "passage-250",
+      "split": "tuning",
+      "measurement_kind": "deterministic_fixture",
+      "ndcg_at_10": 1,
+      "recall_at_50": 1,
+      "ann_recall": 1,
+      "graph_required_edge_recall": 1,
+      "p50_latency_ms": 10,
+      "p95_latency_ms": 13.8,
+      "ram_peak_mb": 64,
+      "index_bytes": 118000,
+      "backend_read_ops": 100,
+      "ingestion_cost_units": 1.25,
+      "hard_gate_pass": true,
+      "exact_structured_pass": true,
+      "critical_slice_noninferior": true,
+      "notes": "Deterministic fixture mechanics only; not a real-runtime speed or semantic-quality measurement."
+    },
+    {
+      "config_id": "passage-500",
+      "split": "tuning",
+      "measurement_kind": "deterministic_fixture",
+      "ndcg_at_10": 1,
+      "recall_at_50": 1,
+      "ann_recall": 1,
+      "graph_required_edge_recall": 1,
+      "p50_latency_ms": 10,
+      "p95_latency_ms": 13.5,
+      "ram_peak_mb": 64,
+      "index_bytes": 90000,
+      "backend_read_ops": 100,
+      "ingestion_cost_units": 0.9,
+      "hard_gate_pass": true,
+      "exact_structured_pass": true,
+      "critical_slice_noninferior": true,
+      "notes": "Deterministic fixture mechanics only; not a real-runtime speed or semantic-quality measurement."
+    },
+    {
+      "config_id": "prefix-none",
+      "split": "tuning",
+      "measurement_kind": "deterministic_fixture",
+      "ndcg_at_10": 0.985,
+      "recall_at_50": 1,
+      "ann_recall": 1,
+      "graph_required_edge_recall": 1,
+      "p50_latency_ms": 10,
+      "p95_latency_ms": 13.2,
+      "ram_peak_mb": 64,
+      "index_bytes": 100000,
+      "backend_read_ops": 100,
+      "ingestion_cost_units": 1,
+      "hard_gate_pass": true,
+      "exact_structured_pass": true,
+      "critical_slice_noninferior": false,
+      "notes": "Deterministic fixture mechanics only; not a real-runtime speed or semantic-quality measurement."
+    },
+    {
+      "config_id": "analyzer-porter",
+      "split": "tuning",
+      "measurement_kind": "deterministic_fixture",
+      "ndcg_at_10": 1,
+      "recall_at_50": 0.985,
+      "ann_recall": 1,
+      "graph_required_edge_recall": 1,
+      "p50_latency_ms": 10,
+      "p95_latency_ms": 14,
+      "ram_peak_mb": 64,
+      "index_bytes": 103000,
+      "backend_read_ops": 100,
+      "ingestion_cost_units": 1.1,
+      "hard_gate_pass": true,
+      "exact_structured_pass": true,
+      "critical_slice_noninferior": false,
+      "notes": "Deterministic fixture mechanics only; not a real-runtime speed or semantic-quality measurement."
+    },
+    {
+      "config_id": "lexical-window-20",
+      "split": "tuning",
+      "measurement_kind": "deterministic_fixture",
+      "ndcg_at_10": 1,
+      "recall_at_50": 0.94,
+      "ann_recall": 1,
+      "graph_required_edge_recall": 1,
+      "p50_latency_ms": 10,
+      "p95_latency_ms": 11,
+      "ram_peak_mb": 64,
+      "index_bytes": 100000,
+      "backend_read_ops": 100,
+      "ingestion_cost_units": 1,
+      "hard_gate_pass": true,
+      "exact_structured_pass": true,
+      "critical_slice_noninferior": false,
+      "notes": "Deterministic fixture mechanics only; not a real-runtime speed or semantic-quality measurement."
+    },
+    {
+      "config_id": "dense-window-25",
+      "split": "tuning",
+      "measurement_kind": "deterministic_fixture",
+      "ndcg_at_10": 1,
+      "recall_at_50": 0.98,
+      "ann_recall": 1,
+      "graph_required_edge_recall": 1,
+      "p50_latency_ms": 10,
+      "p95_latency_ms": 12,
+      "ram_peak_mb": 64,
+      "index_bytes": 100000,
+      "backend_read_ops": 100,
+      "ingestion_cost_units": 1,
+      "hard_gate_pass": true,
+      "exact_structured_pass": true,
+      "critical_slice_noninferior": false,
+      "notes": "Deterministic fixture mechanics only; not a real-runtime speed or semantic-quality measurement."
+    },
+    {
+      "config_id": "ann-probe-8",
+      "split": "tuning",
+      "measurement_kind": "deterministic_fixture",
+      "ndcg_at_10": 1,
+      "recall_at_50": 1,
+      "ann_recall": 0.94,
+      "graph_required_edge_recall": 1,
+      "p50_latency_ms": 10,
+      "p95_latency_ms": 11.5,
+      "ram_peak_mb": 64,
+      "index_bytes": 100000,
+      "backend_read_ops": 100,
+      "ingestion_cost_units": 1,
+      "hard_gate_pass": true,
+      "exact_structured_pass": true,
+      "critical_slice_noninferior": true,
+      "notes": "Deterministic fixture mechanics only; not a real-runtime speed or semantic-quality measurement."
+    },
+    {
+      "config_id": "rerank-30",
+      "split": "tuning",
+      "measurement_kind": "deterministic_fixture",
+      "ndcg_at_10": 0.98,
+      "recall_at_50": 1,
+      "ann_recall": 1,
+      "graph_required_edge_recall": 1,
+      "p50_latency_ms": 10,
+      "p95_latency_ms": 12,
+      "ram_peak_mb": 64,
+      "index_bytes": 100000,
+      "backend_read_ops": 100,
+      "ingestion_cost_units": 1,
+      "hard_gate_pass": true,
+      "exact_structured_pass": true,
+      "critical_slice_noninferior": false,
+      "notes": "Deterministic fixture mechanics only; not a real-runtime speed or semantic-quality measurement."
+    },
+    {
+      "config_id": "context-4000",
+      "split": "tuning",
+      "measurement_kind": "deterministic_fixture",
+      "ndcg_at_10": 0.99,
+      "recall_at_50": 1,
+      "ann_recall": 1,
+      "graph_required_edge_recall": 1,
+      "p50_latency_ms": 10,
+      "p95_latency_ms": 12.5,
+      "ram_peak_mb": 64,
+      "index_bytes": 100000,
+      "backend_read_ops": 100,
+      "ingestion_cost_units": 1,
+      "hard_gate_pass": true,
+      "exact_structured_pass": true,
+      "critical_slice_noninferior": true,
+      "notes": "Deterministic fixture mechanics only; not a real-runtime speed or semantic-quality measurement."
+    },
+    {
+      "config_id": "graph-cap-8",
+      "split": "tuning",
+      "measurement_kind": "deterministic_fixture",
+      "ndcg_at_10": 1,
+      "recall_at_50": 1,
+      "ann_recall": 1,
+      "graph_required_edge_recall": 0.98,
+      "p50_latency_ms": 10,
+      "p95_latency_ms": 13,
+      "ram_peak_mb": 64,
+      "index_bytes": 100000,
+      "backend_read_ops": 100,
+      "ingestion_cost_units": 1,
+      "hard_gate_pass": true,
+      "exact_structured_pass": true,
+      "critical_slice_noninferior": false,
+      "notes": "Deterministic fixture mechanics only; not a real-runtime speed or semantic-quality measurement."
+    },
+    {
+      "config_id": "text-only",
+      "split": "tuning",
+      "measurement_kind": "deterministic_fixture",
+      "ndcg_at_10": 1,
+      "recall_at_50": 1,
+      "ann_recall": 1,
+      "graph_required_edge_recall": 0,
+      "p50_latency_ms": 10,
+      "p95_latency_ms": 11,
+      "ram_peak_mb": 64,
+      "index_bytes": 100000,
+      "backend_read_ops": 100,
+      "ingestion_cost_units": 1,
+      "hard_gate_pass": true,
+      "exact_structured_pass": true,
+      "critical_slice_noninferior": false,
+      "notes": "Deterministic fixture mechanics only; not a real-runtime speed or semantic-quality measurement."
+    },
+    {
+      "config_id": "fallback-1",
+      "split": "tuning",
+      "measurement_kind": "deterministic_fixture",
+      "ndcg_at_10": 1,
+      "recall_at_50": 0.98,
+      "ann_recall": 1,
+      "graph_required_edge_recall": 1,
+      "p50_latency_ms": 10,
+      "p95_latency_ms": 12,
+      "ram_peak_mb": 64,
+      "index_bytes": 100000,
+      "backend_read_ops": 100,
+      "ingestion_cost_units": 1,
+      "hard_gate_pass": true,
+      "exact_structured_pass": true,
+      "critical_slice_noninferior": false,
+      "notes": "Deterministic fixture mechanics only; not a real-runtime speed or semantic-quality measurement."
+    },
+    {
+      "config_id": "bulk-hydration-32",
+      "split": "tuning",
+      "measurement_kind": "deterministic_fixture",
+      "ndcg_at_10": 1,
+      "recall_at_50": 1,
+      "ann_recall": 1,
+      "graph_required_edge_recall": 1,
+      "p50_latency_ms": 8.5,
+      "p95_latency_ms": 11.8,
+      "ram_peak_mb": 64,
+      "index_bytes": 100000,
+      "backend_read_ops": 8,
+      "ingestion_cost_units": 1,
+      "hard_gate_pass": true,
+      "exact_structured_pass": true,
+      "critical_slice_noninferior": true,
+      "notes": "Deterministic fixture mechanics only; not a real-runtime speed or semantic-quality measurement.",
+      "slice_evidence": {
+        "domains": {
+          "cybersecurity": {
+            "n": 26,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          },
+          "networking": {
+            "n": 26,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          },
+          "quant": {
+            "n": 26,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          },
+          "humanities": {
+            "n": 26,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          },
+          "privacy": {
+            "n": 26,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          }
+        },
+        "tasks": {
+          "structured": {
+            "n": 15,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          },
+          "graph": {
+            "n": 15,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          },
+          "citation": {
+            "n": 20,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          },
+          "abstention": {
+            "n": 20,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          },
+          "routing": {
+            "n": 15,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          },
+          "packing": {
+            "n": 15,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          },
+          "historical": {
+            "n": 15,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          },
+          "duplicate": {
+            "n": 15,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          }
+        },
+        "measurement_kind": "deterministic_fixture_equivalence"
+      }
+    },
+    {
+      "config_id": "baseline-v1",
+      "split": "holdout",
+      "measurement_kind": "deterministic_fixture",
+      "ndcg_at_10": 1,
+      "recall_at_50": 1,
+      "ann_recall": 1,
+      "graph_required_edge_recall": 1,
+      "p50_latency_ms": 10.2,
+      "p95_latency_ms": 14.2,
+      "ram_peak_mb": 64,
+      "index_bytes": 100000,
+      "backend_read_ops": 100,
+      "ingestion_cost_units": 1,
+      "hard_gate_pass": true,
+      "exact_structured_pass": true,
+      "critical_slice_noninferior": true,
+      "notes": "Deterministic fixture mechanics only; not a real-runtime speed or semantic-quality measurement.",
+      "slice_evidence": {
+        "domains": {
+          "cybersecurity": {
+            "n": 29,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          },
+          "networking": {
+            "n": 27,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          },
+          "quant": {
+            "n": 28,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          },
+          "humanities": {
+            "n": 27,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          },
+          "privacy": {
+            "n": 29,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          },
+          "cross-domain": {
+            "n": 10,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          }
+        },
+        "tasks": {
+          "exact": {
+            "n": 27,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          },
+          "paraphrase": {
+            "n": 25,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          },
+          "historical": {
+            "n": 12,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          },
+          "duplicate": {
+            "n": 11,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          },
+          "structured": {
+            "n": 12,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          },
+          "graph": {
+            "n": 13,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          },
+          "routing": {
+            "n": 15,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          },
+          "packing": {
+            "n": 11,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          },
+          "citation": {
+            "n": 9,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          },
+          "abstention": {
+            "n": 5,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          },
+          "cross-domain": {
+            "n": 10,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          }
+        },
+        "measurement_kind": "deterministic_fixture_equivalence"
+      }
+    },
+    {
+      "config_id": "bulk-hydration-32",
+      "split": "holdout",
+      "measurement_kind": "deterministic_fixture",
+      "ndcg_at_10": 1,
+      "recall_at_50": 1,
+      "ann_recall": 1,
+      "graph_required_edge_recall": 1,
+      "p50_latency_ms": 8.8,
+      "p95_latency_ms": 12,
+      "ram_peak_mb": 64,
+      "index_bytes": 100000,
+      "backend_read_ops": 8,
+      "ingestion_cost_units": 1,
+      "hard_gate_pass": true,
+      "exact_structured_pass": true,
+      "critical_slice_noninferior": true,
+      "notes": "Deterministic fixture mechanics only; not a real-runtime speed or semantic-quality measurement.",
+      "slice_evidence": {
+        "domains": {
+          "cybersecurity": {
+            "n": 29,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          },
+          "networking": {
+            "n": 27,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          },
+          "quant": {
+            "n": 28,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          },
+          "humanities": {
+            "n": 27,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          },
+          "privacy": {
+            "n": 29,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          },
+          "cross-domain": {
+            "n": 10,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          }
+        },
+        "tasks": {
+          "exact": {
+            "n": 27,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          },
+          "paraphrase": {
+            "n": 25,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          },
+          "historical": {
+            "n": 12,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          },
+          "duplicate": {
+            "n": 11,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          },
+          "structured": {
+            "n": 12,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          },
+          "graph": {
+            "n": 13,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          },
+          "routing": {
+            "n": 15,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          },
+          "packing": {
+            "n": 11,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          },
+          "citation": {
+            "n": 9,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          },
+          "abstention": {
+            "n": 5,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          },
+          "cross-domain": {
+            "n": 10,
+            "ndcg_at_10": 1,
+            "recall_at_50": 1,
+            "paired_ndcg_delta_ci": [
+              0,
+              0
+            ],
+            "paired_recall50_delta_ci": [
+              0,
+              0
+            ],
+            "noninferior": true
+          }
+        },
+        "measurement_kind": "deterministic_fixture_equivalence"
+      }
+    }
+  ]
+}

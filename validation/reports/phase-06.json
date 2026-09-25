@@ -1,0 +1,21 @@
+{
+  "schema_version":"phase-report/1",
+  "phase":6,
+  "status":"blocked",
+  "own_gate":"passed",
+  "baseline_commit":"15f4050a387bf41b8d77daf05e271ccfe9e522da",
+  "code_checkpoint":"ef78b24217b7aa56a2085a6da820528dfc622701",
+  "parent_report_ids":["phase-05"],
+  "fingerprints":{
+    "config_blob":"a90848b9f9884c344d3fe2cc10cd6ec8c13da591",
+    "baseline_corpus_blob":"5820fa64bed3db3147d52d632975a21101893bff",
+    "baseline_model_blob":"b06a0a7f5e5209553993045009c4e878b54a6435",
+    "dense_contracts_blob":"86513fcca7f8a8d285cf112be450ed37d872d81a",
+    "embedding_runtime_blob":"cb93991d1c0b1d315f7cc31bc733e155a421b3ba",
+    "milvus_adapter_blob":"8e77215a66fdd911bb31c5c12fb67398166ad3ee",
+    "phase_test_blob":"75845eb649351949a27132905b52e45776cc992b"
+  },
+  "ci":{"run_id":35783030376,"job_id":106932955092,"python":"3.13.15","cumulative_tests_passed":81,"phase_gate_tests_passed":11,"seconds":1.978},
+  "blocked_by":["phase0-legacy-fast-suite","phase0-b0-offline-benchmark","phase5-mysql-fulltext-real-service","phase6-actual-embedding-model","phase6-milvus-real-lifecycle"],
+  "new_retrieval_enabled":false
+}

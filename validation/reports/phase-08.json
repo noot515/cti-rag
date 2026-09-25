@@ -1,0 +1,27 @@
+{
+  "schema_version":"phase-report/1",
+  "phase":8,
+  "status":"blocked",
+  "own_gate":"passed",
+  "legacy_api_regression":"passed",
+  "synthetic_end_to_end":"passed",
+  "baseline_commit":"15f4050a387bf41b8d77daf05e271ccfe9e522da",
+  "code_checkpoint":"6c0e5b0f53ddedf15b4da5f4bcbfb87d04fdbc6f",
+  "parent_report_ids":["phase-07"],
+  "fingerprints":{
+    "config_blob":"a90848b9f9884c344d3fe2cc10cd6ec8c13da591",
+    "baseline_corpus_blob":"5820fa64bed3db3147d52d632975a21101893bff",
+    "baseline_model_blob":"b06a0a7f5e5209553993045009c4e878b54a6435",
+    "context_contracts_blob":"11e255f68b0073ddd860ab3a720907386a56972c",
+    "reranker_blob":"d0a24e8cf245fdf3ef213f220a2653b40cb51025",
+    "packer_blob":"faafbb6e8280617423c8d9efa882658a6738a7d5",
+    "citation_blob":"1506636fdbc095a3b3700b31d97335255eb2617c",
+    "hydration_blob":"0d69d509429121063d6a3cd073cbd96bbd5884f5",
+    "service_blob":"e39e6c2497590310a3710f599eccd230b9f5a20f",
+    "api_router_blob":"b6fd10839bee3990d220381f2e09e26603af7dd3",
+    "phase_test_blob":"ea827489822218ca54b845fe00602912da451b21"
+  },
+  "ci":{"run_id":35839225054,"job_id":107110015621,"python":"3.13.15","cumulative_unittests_passed":98,"phase_gate_tests_passed":6,"legacy_regression_tests_passed":8,"cumulative_seconds":4.228,"phase_seconds":0.075},
+  "blocked_by":["phase0-legacy-fast-suite","phase0-b0-offline-benchmark","phase5-mysql-fulltext-real-service","phase6-actual-embedding-model","phase6-milvus-real-lifecycle","phase8-actual-reranker-model","phase8-actual-generator-tokenizer"],
+  "advanced_api_default_enabled":false
+}

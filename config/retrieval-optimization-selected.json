@@ -1,0 +1,26 @@
+{
+  "schema_version": "retrieval-optimization-config/1",
+  "config_id": "baseline-v1",
+  "source_grid": "phase23-frozen-dev-v1",
+  "status": "retained_pending_real_runtime_measurement",
+  "reason": "bulk-hydration-32 passed deterministic mechanics but real-runtime latency/resource evidence is unavailable; baseline remains selected for production",
+  "rollback_config_id": "baseline-v1",
+  "configuration": {
+    "config_id": "baseline-v1",
+    "passage_tokens": 350,
+    "overlap_tokens": 50,
+    "context_prefix_mode": "deterministic",
+    "analyzer": "unicode61",
+    "lexical_window": 50,
+    "dense_window": 50,
+    "ann_probe": 16,
+    "rerank_candidates": 60,
+    "context_tokens": 8000,
+    "graph_cap": 20,
+    "routing_fallback_domains": 2,
+    "bulk_hydration": false,
+    "hydration_batch_size": 1,
+    "dependencies": [],
+    "semantic_risks": []
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "schema_version": "runtimepolicy-pin/1",
+  "source_repository": "noot515/existential",
+  "source_commit": "a8d809c07c808dd0519e0cef4dd923d11b996799",
+  "observed_main_commit": "8fa9a456b1e611a77f7348bf16f018e259c6e188",
+  "note": "The pinned and observed-main respectful-runtime package blobs are byte-identical for the integration files listed below.",
+  "contract": {
+    "runtime_version": "1.4.0",
+    "wire_version": "1.0.0",
+    "broker_protocol_version": 3,
+    "supported_broker_protocol_versions": [
+      1,
+      2,
+      3
+    ]
+  },
+  "blobs": {
+    "pyproject": "e26c838c5436ccd74dcb8d30445960fa66dff6ce",
+    "contract": "c45198ecae16e05e2fe9faab3730781bdbb3cab5",
+    "protocol": "c8111351fc19a4855e40004ed52054f82e2209ce",
+    "broker_client": "79926b0101f6dfde32eaa5cc79d3a64a3b7c9114",
+    "authority": "8199a1fe9c7c3f865c6170adaa78f1f46103cbf5",
+    "trusted_assessor": "24b88ec5a887705485e233d14252fce97aa547f3"
+  }
+}

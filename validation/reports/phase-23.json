@@ -1,0 +1,69 @@
+{
+  "schema_version": "phase-report/1",
+  "phase": 23,
+  "status": "blocked",
+  "own_gate": "passed",
+  "parent_report_ids": [
+    "phase-22"
+  ],
+  "baseline_commit": "760197338e46c9c4d03e7da086ed2bf539c68515",
+  "code_checkpoint": "4a62bc06d64204ccfb72c9fcd55d7b086cb799a3",
+  "config": {
+    "production": "baseline-v1",
+    "tuning_choice": "bulk-hydration-32",
+    "rollback": "baseline-v1",
+    "tuning_queries": 130,
+    "holdout_queries": 150,
+    "performance_claim_allowed": false
+  },
+  "bottleneck": {
+    "measurement_kind": "deterministic_fixture_backend_operation_count",
+    "candidate_count": 40,
+    "baseline_backend_reads": 80,
+    "bulk_backend_reads": 6,
+    "real_latency_claim": false
+  },
+  "ci": {
+    "run_id": 36134108297,
+    "job_id": 108067939377,
+    "python": "3.13.15",
+    "cumulative_unittests_passed": 203,
+    "cumulative_seconds": 31.308,
+    "phase_tests_passed": 6,
+    "phase_seconds": 0.041,
+    "legacy_regressions_passed": 8
+  },
+  "acceptance": {
+    "profile_before_change": "passed",
+    "bounded_bulk_hydration": "passed",
+    "exact_fast_path": "passed",
+    "requested_sweep_axes": "passed",
+    "tuning_holdout_separation": "passed",
+    "ann_vs_exhaustive_gate": "passed",
+    "text_vs_graph_gate": "passed",
+    "bad_candidate_rejection": "passed",
+    "per_slice_fixture_intervals": "passed",
+    "versioned_rollback_config": "passed",
+    "real_runtime_before_after_latency": "blocked",
+    "real_runtime_resource_cost": "blocked",
+    "production_optimization_promotion": "blocked"
+  },
+  "fingerprints": {
+    "hydration": "f23144fc2eda9e1bd62039e22f65e84a8738a941",
+    "optimization_models": "d81a1fe1c67fe1c4730f4c654642ead2ef74f01d",
+    "selector": "2210890c2250689a19f161a5d91293064f6c46fa",
+    "grid": "8d1e6382b89f3954ed4d092bf1f8e13b774a91ce",
+    "observations": "eaeea0dc2280c1fd97ca7c4dccdebdc0082d4e93",
+    "bottleneck_profile": "7107a643b2b04dc895b9e67f1051c5fce46b1e61",
+    "selected_config": "bccf68ed5325445160100b30ee84f8219e3ab1af"
+  },
+  "blocked_by": [
+    "phase23-real-runtime-performance",
+    "phase14-required-prerequisite",
+    "phase21-real-embedding-quality",
+    "phase21-real-reranker-quality",
+    "phase21-real-generator-grounding-quality",
+    "phase21-human-reviewed-judgments"
+  ],
+  "new_retrieval_enabled": false
+}

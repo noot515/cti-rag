@@ -1,0 +1,3 @@
+# Optional integration dependencies. Not included by requirements.txt or the minimal API/worker images.
+respectful-runtime @ git+https://github.com/noot515/existential.git@a8d809c07c808dd0519e0cef4dd923d11b996799#subdirectory=packages/respectful-runtime
+pycti==7.260921.0

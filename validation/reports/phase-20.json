@@ -1,0 +1,70 @@
+{
+  "schema_version": "phase-report/1",
+  "phase": 20,
+  "status": "blocked",
+  "own_gate": "passed",
+  "baseline_commit": "15f4050a387bf41b8d77daf05e271ccfe9e522da",
+  "code_checkpoint": "10f59b356be07d85d88f605472a4a6e2e9399c9f",
+  "parent_report_ids": [
+    "phase-19"
+  ],
+  "missing_prerequisite": "phase-14",
+  "fingerprints": {
+    "opencti_connector_blob": "cdee14e8390c76cb90dbd1252e196ecd7266d747",
+    "opencti_normalizer_blob": "b4ecfccb1dfbc4eb31fa85be37de0f389678ac9d",
+    "opencti_fixture_blob": "862e28fb77fc3d948278413883bef598d0571fd3",
+    "phase_test_blob": "a6cc884c8a3b212e894b172c8d3330c2e5bf42cb",
+    "integration_requirements_blob": "f4b399408493cd01e9c60a346298c95868d3763a",
+    "validation_registry_blob": "c8157295a03f58815bbe92ad25f72b608b5ca7ca",
+    "workflow_blob": "cae5cb4202ade462eb1c60273933328fe2a311ef",
+    "opencti_upstream_commit": "d100109622b67bb28d4e413d051a118d68ea89a4",
+    "pycti_version": "7.260921.0"
+  },
+  "ci": {
+    "run_id": 36112418435,
+    "job_id": 107998666984,
+    "python": "3.13.15",
+    "cumulative_unittests_passed": 174,
+    "phase_gate_tests_passed": 9,
+    "legacy_regression_tests_passed": 8,
+    "cumulative_seconds": 10.242,
+    "phase_seconds": 0.084
+  },
+  "acceptance": {
+    "read_only_object_relationship_pagination": "passed",
+    "zero_write_calls": "passed",
+    "exported_stix_and_opencti_metadata_preserved": "passed",
+    "most_restrictive_tlp_mapping": "passed",
+    "unknown_explicit_marking_rejected": "passed",
+    "relationship_restrictions_preserved": "passed",
+    "replay_idempotency_and_update_revision": "passed",
+    "revocation_and_full_sync_tombstones": "passed",
+    "resumed_sync_no_false_deletion": "passed",
+    "source_failure_preserves_published_snapshot": "passed",
+    "direct_source_provenance_not_collapsed": "passed",
+    "minimal_startup_without_pycti": "passed",
+    "live_opencti_read_lifecycle": "blocked"
+  },
+  "blocked_by": [
+    "phase0-legacy-fast-suite",
+    "phase0-b0-offline-benchmark",
+    "phase5-mysql-fulltext-real-service",
+    "phase6-actual-embedding-model",
+    "phase6-milvus-real-lifecycle",
+    "phase8-actual-reranker-model",
+    "phase8-actual-generator-tokenizer",
+    "phase10-real-neo4j-restart-lifecycle",
+    "phase11-live-core-source-lifecycle",
+    "phase12-live-network-source-lifecycle",
+    "phase13-live-sec-fred-lifecycle",
+    "phase13-licensed-market-data-entitlement",
+    "phase14-required-prerequisite",
+    "phase15-live-humanities-source-lifecycle",
+    "phase17-evaluated-semantic-judge",
+    "phase18-live-provider-egress",
+    "phase19-canonical-runtime-client-package",
+    "phase19-live-runtimepolicy-broker",
+    "phase20-live-opencti-read-lifecycle"
+  ],
+  "new_retrieval_enabled": false
+}

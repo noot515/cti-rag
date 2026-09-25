@@ -1,0 +1,52 @@
+{
+  "name": "fixture",
+  "components": [
+    "api",
+    "sqlite-metadata",
+    "file-object-store",
+    "sqlite-lexical",
+    "fixture-dense"
+  ],
+  "exposed_ports": [
+    "api:8000"
+  ],
+  "secret_names": [],
+  "internal_network": true,
+  "egress_policy": "deny_all",
+  "egress_allowlist": [],
+  "data_root_env": "CTI_RAG_DATA_ROOT",
+  "resource_limits": [
+    {
+      "service": "api",
+      "cpu": "1",
+      "memory": "1GiB"
+    }
+  ],
+  "optional_components": [],
+  "service_egress": {
+    "api": "deny_all",
+    "sqlite-metadata": "deny_all",
+    "file-object-store": "deny_all",
+    "sqlite-lexical": "deny_all",
+    "fixture-dense": "deny_all"
+  },
+  "read_only_mounts": [
+    {
+      "service": "api",
+      "source_env": "CTI_RAG_CONFIG_FILE",
+      "target": "/etc/cti-rag/config.yaml",
+      "read_only": true
+    }
+  ],
+  "capability_drop": {
+    "api": [
+      "ALL"
+    ]
+  },
+  "compose_services": [],
+  "scheduler": {
+    "interactive_capacity": 8,
+    "ingestion_capacity": 8,
+    "interactive_burst": 2
+  }
+}

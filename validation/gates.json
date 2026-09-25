@@ -1,0 +1,390 @@
+{
+  "schema_version": "validation-registry/1",
+  "gates": [
+    {
+      "id": "phase0-runner-invariants",
+      "phase": 0,
+      "required": true,
+      "command": "python -m unittest tests.validation_runner_test -v"
+    },
+    {
+      "id": "phase0-legacy-fast-suite",
+      "phase": 0,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "Not executed in the connector/CI environment: the service-complete legacy runtime dependency stack is not available. This is not a pass."
+    },
+    {
+      "id": "phase0-b0-offline-benchmark",
+      "phase": 0,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "The legacy B0 benchmark requires the running pinned API/model/corpus stack. No remote search, model call, or substitute service was used to manufacture a pass."
+    },
+    {
+      "id": "phase1-contract-invariants",
+      "phase": 1,
+      "required": true,
+      "command": "python -m unittest tests.contracts_phase1_test -v"
+    },
+    {
+      "id": "phase2-ports-domain-policy-invariants",
+      "phase": 2,
+      "required": true,
+      "command": "python -m unittest tests.ports_policy_phase2_test -v"
+    },
+    {
+      "id": "phase3-canonical-ingestion-outbox-invariants",
+      "phase": 3,
+      "required": true,
+      "command": "python -m unittest tests.canonical_ingestion_phase3_test -v"
+    },
+    {
+      "id": "phase4-snapshot-publication-invariants",
+      "phase": 4,
+      "required": true,
+      "command": "python -m unittest tests.snapshot_publication_phase4_test -v"
+    },
+    {
+      "id": "phase5-exact-independent-lexical-invariants",
+      "phase": 5,
+      "required": true,
+      "command": "python -m unittest tests.exact_lexical_phase5_test -v"
+    },
+    {
+      "id": "phase5-mysql-fulltext-real-service",
+      "phase": 5,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "MySQL 8 FULLTEXT is the production-candidate lexical adapter, but no service-complete MySQL environment was available for real analyzer/filter/publication/restart/delete/rollback/performance validation."
+    },
+    {
+      "id": "phase6-dense-representation-invariants",
+      "phase": 6,
+      "required": true,
+      "command": "python -m unittest tests.dense_phase6_test -v"
+    },
+    {
+      "id": "phase6-actual-embedding-model",
+      "phase": 6,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "No pinned actual embedding model/runtime was available in offline CI. Deterministic fake embeddings validate mechanics only and are not semantic retrieval-quality evidence."
+    },
+    {
+      "id": "phase6-milvus-real-lifecycle",
+      "phase": 6,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "No reachable compatible Milvus service was available to execute real publication, filtered ANN, deletion, restart persistence, and ANN-vs-exhaustive recall validation."
+    },
+    {
+      "id": "phase7-query-dag-fusion-invariants",
+      "phase": 7,
+      "required": true,
+      "command": "python -m unittest tests.query_dag_fusion_phase7_test -v"
+    },
+    {
+      "id": "phase8-rerank-context-api-invariants",
+      "phase": 8,
+      "required": true,
+      "command": "python -m unittest tests.rerank_context_api_phase8_test -v"
+    },
+    {
+      "id": "phase8-legacy-api-regression",
+      "phase": 8,
+      "required": true,
+      "command": "python -m pytest -q tests/chat_api_router_task5_test.py tests/dockerfile_api_requirements_split_test.py"
+    },
+    {
+      "id": "phase8-actual-reranker-model",
+      "phase": 8,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "No pinned actual reranker model/runtime was available in offline CI. Spy/fake rerankers validate authorization, degradation, ordering, and packing mechanics only."
+    },
+    {
+      "id": "phase8-actual-generator-tokenizer",
+      "phase": 8,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "The actual configured answer-generator tokenizer/model was not loaded in offline CI. TokenizerAdapter and deterministic tokenizer fixtures validate exact token-budget accounting mechanics only."
+    },
+    {
+      "id": "phase9-structured-temporal-duckdb-invariants",
+      "phase": 9,
+      "required": true,
+      "command": "python -m unittest tests.structured_temporal_phase9_test -v"
+    },
+    {
+      "id": "phase10-graph-assertion-invariants",
+      "phase": 10,
+      "required": true,
+      "command": "python -m unittest tests.graph_assertion_phase10_test -v"
+    },
+    {
+      "id": "phase10-real-neo4j-restart-lifecycle",
+      "phase": 10,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "The fixed-query Neo4j projection adapter and uniqueness/idempotency mechanics are fixture-tested, and an opt-in real-driver integration exists, but no reachable Neo4j service with restart control was available in CI to execute create/upsert/restart/reconnect/traverse persistence validation."
+    },
+    {
+      "id": "phase11-core-cyber-source-fixtures",
+      "phase": 11,
+      "required": true,
+      "command": "python -m unittest tests.cyber_sources_phase11_test -v"
+    },
+    {
+      "id": "phase11-live-core-source-lifecycle",
+      "phase": 11,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "ATT&CK STIX, CVE JSON 5.x, and CISA KEV are validated against small pinned real-format offline fixtures. Live upstream fetch/update/delete/rebuild/reconciliation was not executed in CI, so fixture validation is not reported as live validation."
+    },
+    {
+      "id": "phase12-networking-domain-invariants",
+      "phase": 12,
+      "required": true,
+      "command": "python -m unittest tests.networking_domain_phase12_test -v"
+    },
+    {
+      "id": "phase12-live-network-source-lifecycle",
+      "phase": 12,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "RFC/RIS/RPKI/DNS/RDAP domain semantics are validated with small pinned offline fixtures. CI did not execute live RFC Editor reconciliation, RIPE RIS collection, live RPKI repository/validator state, or production DNS/RDAP source lifecycle, so fixture validation is not reported as live validation."
+    },
+    {
+      "id": "phase13-quant-domain-invariants",
+      "phase": 13,
+      "required": true,
+      "command": "python -m unittest tests.quant_domain_phase13_test -v"
+    },
+    {
+      "id": "phase13-live-sec-fred-lifecycle",
+      "phase": 13,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "SEC filing/XBRL and FRED/ALFRED semantics are validated with offline source-shaped fixtures. CI did not execute live EDGAR or FRED/ALFRED network/API update and amendment/vintage reconciliation."
+    },
+    {
+      "id": "phase13-licensed-market-data-entitlement",
+      "phase": 13,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "Price and corporate-action file-import mechanics use synthetic licensed-file fixtures only. No production market-data credentials, provider entitlement, or licensed feed were supplied, so live market-data readiness is not a pass."
+    },
+    {
+      "id": "phase14-required-prerequisite",
+      "phase": 14,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "Prompt/Phase 14 is not present in the current branch history. Phases 15 and 16 can validate independent core mechanics, but cumulative promotion through them cannot pass until the missing Phase 14 work and its acceptance evidence are supplied."
+    },
+    {
+      "id": "phase15-humanities-domain-invariants",
+      "phase": 15,
+      "required": true,
+      "command": "python -m unittest tests.humanities_domain_phase15_test -v"
+    },
+    {
+      "id": "phase15-live-humanities-source-lifecycle",
+      "phase": 15,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "Gutenberg, TEI/Perseus-style, and newspaper/IIIF semantics are validated with a small public-domain/synthetic fixture set only. CI did not execute live archive catalog/update harvesting, item-level rights reconciliation, multilingual production analyzers, or a production OCR lifecycle."
+    },
+    {
+      "id": "phase16-cross-domain-dag-invariants",
+      "phase": 16,
+      "required": true,
+      "command": "python -m unittest tests.cross_domain_phase16_test -v"
+    },
+    {
+      "id": "phase17-claim-grounding-abstention-invariants",
+      "phase": 17,
+      "required": true,
+      "command": "python -m unittest tests.claim_grounding_phase17_test -v"
+    },
+    {
+      "id": "phase17-evaluated-semantic-judge",
+      "phase": 17,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "Deterministic fixtures validate exact grounding, abstention, optional judge plumbing, and judge-error separation. No pinned semantic judge with an evaluated error profile was supplied, so model-based entailment quality is not reported as passed."
+    },
+    {
+      "id": "phase18-hardened-web-overlay-invariants",
+      "phase": 18,
+      "required": true,
+      "command": "python -m unittest tests.hardened_web_overlay_phase18_test -v"
+    },
+    {
+      "id": "phase18-live-provider-egress",
+      "phase": 18,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "SearXNG/Tavily adapter contracts and hardened fetch mechanics are validated with deterministic spies/transports. No approved live provider endpoint, credentials, or separately attested production proxy egress was supplied, so live external-search readiness is not reported as passed."
+    },
+    {
+      "id": "phase19-runtimepolicy-adapter-conformance",
+      "phase": 19,
+      "required": true,
+      "command": "python -m unittest tests.runtimepolicy_adapter_phase19_test -v"
+    },
+    {
+      "id": "phase19-canonical-runtime-client-package",
+      "phase": 19,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "CI cannot anonymously clone the pinned private noot515/existential source commit for respectful-runtime. The adapter boundary and recorded wire/local-server conformance run without vendoring the enforcement kernel. To clear this gate, provide an authenticated package/artifact or CI read credential for the exact pinned respectful-runtime 1.4.0 bytes."
+    },
+    {
+      "id": "phase19-live-runtimepolicy-broker",
+      "phase": 19,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "The adapter is pinned to respectful-runtime 1.4.0 / wire contract 1.0.0 / broker protocol 3 and passes local Unix-broker conformance fixtures. No deployment broker socket, peer identity, operator-reviewed live grants, or current production-readiness attestation was supplied to CI, so live authorization is not reported as passed."
+    },
+    {
+      "id": "phase20-opencti-read-adapter-invariants",
+      "phase": 20,
+      "required": true,
+      "command": "python -m unittest tests.opencti_phase20_test -v"
+    },
+    {
+      "id": "phase20-live-opencti-read-lifecycle",
+      "phase": 20,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "The optional OpenCTI connector is validated with real-format OpenCTI/STIX-shaped fixtures and a read-only client spy. No OPENCTI_URL/read-only token or approved live instance was supplied, so live pagination/update/deletion reconciliation is not reported as passed."
+    },
+    {
+      "id": "phase21-evaluation-harness-invariants",
+      "phase": 21,
+      "required": true,
+      "command": "python -m unittest tests.evaluation_phase21_test -v"
+    },
+    {
+      "id": "phase21-frozen-fixture-report",
+      "phase": 21,
+      "required": true,
+      "command": "python scripts/run_phase21_evaluation.py --config evaluation/phase21/dev-v1/experiment-config.json --corpus evaluation/phase21/dev-v1/corpus.jsonl --queries evaluation/phase21/dev-v1/queries.jsonl --judgments evaluation/phase21/dev-v1/judgments.jsonl --runs evaluation/phase21/dev-v1/fixture-runs.json --report /tmp/phase21-fixture-report.json --require-hard-gates --require-budgets"
+    },
+    {
+      "id": "phase21-real-embedding-quality",
+      "phase": 21,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "No approved pinned real embedding runtime/model is available in CI. Deterministic fixture rankings are mechanics-only and semantic retrieval quality is not reported from fake providers."
+    },
+    {
+      "id": "phase21-real-reranker-quality",
+      "phase": 21,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "No approved pinned real reranker runtime/model is available in CI. Phase 21 records the evaluation contract but does not manufacture reranking quality from deterministic fixtures."
+    },
+    {
+      "id": "phase21-real-generator-grounding-quality",
+      "phase": 21,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "No approved pinned real generator/judge runtime is available in CI. Generation and grounding model-quality metrics remain blocked rather than inferred from fake providers."
+    },
+    {
+      "id": "phase21-gpu-concurrent-resource-profile",
+      "phase": 21,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "The deterministic CI runner has no approved configured GPU retrieval/generation runtime for concurrent generation/reranking VRAM measurement; CPU fixture resource accounting is not promoted to GPU evidence."
+    },
+    {
+      "id": "phase21-human-reviewed-judgments",
+      "phase": 21,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "The committed development set contains 260 machine_generated_unreviewed judgments and 20 synthetic_contract cases, with zero human-reviewed pooled judgments. Human-reviewed coverage remains a separate required gate."
+    },
+    {
+      "id": "phase22-operations-recovery-invariants",
+      "phase": 22,
+      "required": true,
+      "command": "python -m unittest tests.operations_recovery_phase22_test -v"
+    },
+    {
+      "id": "phase22-text-mvp-live-profile",
+      "phase": 22,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "The text-MVP profile contract is implemented, but CI did not start the full MySQL/Redis/RabbitMQ/dense service stack under isolated staging storage, so live deployment smoke is not reported as passed."
+    },
+    {
+      "id": "phase22-analytical-live-profile",
+      "phase": 22,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "The analytical profile contract is implemented, but CI did not start and recovery-test the real Neo4j/Milvus/analytical service stack."
+    },
+    {
+      "id": "phase22-full-research-live-profile",
+      "phase": 22,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "The full-research profile depends on still-blocked approved web/OpenCTI/RuntimePolicy and real-model services. No external host was modified or published by this phase."
+    },
+    {
+      "id": "phase22-live-concurrent-model-memory",
+      "phase": 22,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "The memory probe supports concurrent generation/reranking measurements when a GPU/runtime sampler exists, but no approved live concurrent model runtime was present in CI."
+    },
+    {
+      "id": "phase23-measured-optimization-invariants",
+      "phase": 23,
+      "required": true,
+      "command": "python -m unittest tests.measured_optimization_phase23_test -v"
+    },
+    {
+      "id": "phase23-frozen-optimization-report",
+      "phase": 23,
+      "required": true,
+      "command": "python scripts/run_phase23_optimization.py --grid evaluation/phase23/optimization-grid.json --observations evaluation/phase23/fixture-observations.json --report /tmp/phase23-optimization.json"
+    },
+    {
+      "id": "phase23-real-runtime-performance",
+      "phase": 23,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "The frozen tuning/holdout observations are deterministic fixture mechanics. No approved comparable real backend/model runtime was available, so the production configuration remains baseline-v1 and no speedup is claimed."
+    },
+    {
+      "id": "phase24-release-conformance-invariants",
+      "phase": 24,
+      "required": true,
+      "command": "python -m unittest tests.release_conformance_phase24_test -v"
+    },
+    {
+      "id": "phase24-conformance-report",
+      "phase": 24,
+      "required": true,
+      "command": "python scripts/run_phase24_conformance.py --report /tmp/phase24-conformance.json"
+    },
+    {
+      "id": "phase24-privacy-source-lifecycle",
+      "phase": 24,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "The privacy domain has a specification but no source registry/manifest, adapter, or fixture lifecycle comparable to the other four domains. The five-domain release milestone remains blocked."
+    },
+    {
+      "id": "phase24-release-readiness",
+      "phase": 24,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "Full release readiness is blocked by inherited mandatory real-service/model/human-review gates, the missing Phase 14 prerequisite, real-runtime Phase 23 performance evidence, and the privacy source lifecycle gap."
+    }
+  ]
+}

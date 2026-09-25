@@ -1,0 +1,22 @@
+{
+  "schema_version":"phase-report/1",
+  "phase":10,
+  "status":"blocked",
+  "own_gate":"passed",
+  "baseline_commit":"15f4050a387bf41b8d77daf05e271ccfe9e522da",
+  "code_checkpoint":"d3395d26d9df72c60cea57e9d593b2b4901e68bc",
+  "parent_report_ids":["phase-09"],
+  "fingerprints":{
+    "graph_models_blob":"59019cfd3e05ef615702625387f37d62420ecae8",
+    "resolution_blob":"a5c1eaf2a6dbde2fb2f52df068bf0849fd18dc97",
+    "reference_graph_blob":"b66bab8b9d25bd81a3270dc1653085d533d4e37e",
+    "neo4j_adapter_blob":"79ecf00a20db8697508242922ead3aa162c521f5",
+    "assertion_contract_blob":"a12289a33dabccc3d1cb5178b804313ff7f97d87",
+    "candidate_contract_blob":"c2eb3a1cd4efbd79611fa83b8bef4485d223b9b6",
+    "phase_test_blob":"6676ffb363414b0e3b97423372b84af4032a73c4",
+    "actual_integration_test_blob":"a7f74fc2868747d687e052b73d3ebd038517cf7f"
+  },
+  "ci":{"run_id":35843384373,"job_id":107123568293,"python":"3.13.15","cumulative_unittests_passed":114,"phase_gate_tests_passed":9,"legacy_regression_tests_passed":8,"cumulative_seconds":4.884,"phase_seconds":0.097},
+  "blocked_by":["phase0-legacy-fast-suite","phase0-b0-offline-benchmark","phase5-mysql-fulltext-real-service","phase6-actual-embedding-model","phase6-milvus-real-lifecycle","phase8-actual-reranker-model","phase8-actual-generator-tokenizer","phase10-real-neo4j-restart-lifecycle"],
+  "new_retrieval_enabled":false
+}
