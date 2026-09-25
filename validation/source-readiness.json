@@ -1,0 +1,194 @@
+{
+  "schema_version": "source-readiness/1",
+  "sources": [
+    {
+      "source_id": "mitre-attack-stix",
+      "domain": "cybersecurity",
+      "manifest_status": "passed",
+      "adapter_status": "passed",
+      "fixture_lifecycle": "passed",
+      "live_lifecycle": "blocked",
+      "notes": "fixture validated; live lifecycle not run"
+    },
+    {
+      "source_id": "cve-list-v5",
+      "domain": "cybersecurity",
+      "manifest_status": "passed",
+      "adapter_status": "passed",
+      "fixture_lifecycle": "passed",
+      "live_lifecycle": "blocked",
+      "notes": "fixture validated; live lifecycle not run"
+    },
+    {
+      "source_id": "cisa-kev",
+      "domain": "cybersecurity",
+      "manifest_status": "passed",
+      "adapter_status": "passed",
+      "fixture_lifecycle": "passed",
+      "live_lifecycle": "blocked",
+      "notes": "fixture validated; live lifecycle not run"
+    },
+    {
+      "source_id": "opencti-read",
+      "domain": "cybersecurity",
+      "manifest_status": "passed",
+      "adapter_status": "passed",
+      "fixture_lifecycle": "passed",
+      "live_lifecycle": "blocked",
+      "notes": "optional read-only adapter fixture validated; live credentials/service unavailable"
+    },
+    {
+      "source_id": "nvd",
+      "domain": "cybersecurity",
+      "manifest_status": "passed",
+      "adapter_status": "blocked",
+      "fixture_lifecycle": "not_run",
+      "live_lifecycle": "not_run",
+      "notes": "registered/deferred source; no adapter fixture"
+    },
+    {
+      "source_id": "ghsa",
+      "domain": "cybersecurity",
+      "manifest_status": "passed",
+      "adapter_status": "blocked",
+      "fixture_lifecycle": "not_run",
+      "live_lifecycle": "not_run",
+      "notes": "registered/deferred source; no adapter fixture"
+    },
+    {
+      "source_id": "rfc-editor",
+      "domain": "networking",
+      "manifest_status": "passed",
+      "adapter_status": "passed",
+      "fixture_lifecycle": "passed",
+      "live_lifecycle": "blocked",
+      "notes": "fixture validated; live download reconciliation not run"
+    },
+    {
+      "source_id": "ripe-ris-fixture",
+      "domain": "networking",
+      "manifest_status": "passed",
+      "adapter_status": "passed",
+      "fixture_lifecycle": "passed",
+      "live_lifecycle": "blocked",
+      "notes": "fixture validated; live stream not run"
+    },
+    {
+      "source_id": "rpki-roa-fixture",
+      "domain": "networking",
+      "manifest_status": "passed",
+      "adapter_status": "passed",
+      "fixture_lifecycle": "passed",
+      "live_lifecycle": "blocked",
+      "notes": "fixture validated; live validator lifecycle not run"
+    },
+    {
+      "source_id": "dns-observation-fixture",
+      "domain": "networking",
+      "manifest_status": "passed",
+      "adapter_status": "passed",
+      "fixture_lifecycle": "passed",
+      "live_lifecycle": "not_run",
+      "notes": "synthetic fixture only"
+    },
+    {
+      "source_id": "rdap-registration-fixture",
+      "domain": "networking",
+      "manifest_status": "passed",
+      "adapter_status": "passed",
+      "fixture_lifecycle": "passed",
+      "live_lifecycle": "not_run",
+      "notes": "synthetic fixture only"
+    },
+    {
+      "source_id": "sec-edgar-fixture",
+      "domain": "quant",
+      "manifest_status": "passed",
+      "adapter_status": "passed",
+      "fixture_lifecycle": "passed",
+      "live_lifecycle": "blocked",
+      "notes": "offline SEC-shaped fixture; live EDGAR lifecycle not run"
+    },
+    {
+      "source_id": "fred-alfred-fixture",
+      "domain": "quant",
+      "manifest_status": "passed",
+      "adapter_status": "passed",
+      "fixture_lifecycle": "passed",
+      "live_lifecycle": "blocked",
+      "notes": "offline vintage fixture; live API lifecycle not run"
+    },
+    {
+      "source_id": "licensed-price-file-fixture",
+      "domain": "quant",
+      "manifest_status": "passed",
+      "adapter_status": "passed",
+      "fixture_lifecycle": "passed",
+      "live_lifecycle": "blocked",
+      "notes": "file mechanics validated; production entitlement unavailable"
+    },
+    {
+      "source_id": "security-master-fixture",
+      "domain": "quant",
+      "manifest_status": "passed",
+      "adapter_status": "passed",
+      "fixture_lifecycle": "passed",
+      "live_lifecycle": "not_run",
+      "notes": "fixture-only security master"
+    },
+    {
+      "source_id": "gutenberg-public-domain-fixture",
+      "domain": "humanities",
+      "manifest_status": "passed",
+      "adapter_status": "passed",
+      "fixture_lifecycle": "passed",
+      "live_lifecycle": "blocked",
+      "notes": "redistributable fixture; live catalog/update lifecycle not run"
+    },
+    {
+      "source_id": "tei-perseus-style-fixture",
+      "domain": "humanities",
+      "manifest_status": "passed",
+      "adapter_status": "passed",
+      "fixture_lifecycle": "passed",
+      "live_lifecycle": "not_run",
+      "notes": "synthetic TEI fixture"
+    },
+    {
+      "source_id": "chronicling-america-iiif-fixture",
+      "domain": "humanities",
+      "manifest_status": "passed",
+      "adapter_status": "passed",
+      "fixture_lifecycle": "passed",
+      "live_lifecycle": "blocked",
+      "notes": "fixture validated; live harvest not run"
+    },
+    {
+      "source_id": "dpla",
+      "domain": "humanities",
+      "manifest_status": "passed",
+      "adapter_status": "blocked",
+      "fixture_lifecycle": "not_run",
+      "live_lifecycle": "not_run",
+      "notes": "registered/deferred source; no adapter fixture"
+    },
+    {
+      "source_id": "europeana",
+      "domain": "humanities",
+      "manifest_status": "passed",
+      "adapter_status": "blocked",
+      "fixture_lifecycle": "not_run",
+      "live_lifecycle": "not_run",
+      "notes": "registered/deferred source; no adapter fixture"
+    },
+    {
+      "source_id": "privacy-core",
+      "domain": "privacy",
+      "manifest_status": "passed",
+      "adapter_status": "blocked",
+      "fixture_lifecycle": "not_run",
+      "live_lifecycle": "not_run",
+      "notes": "domain specification exists but no source adapter/lifecycle has been implemented"
+    }
+  ]
+}
