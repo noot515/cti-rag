@@ -72,7 +72,8 @@ class OpenCTIImportedStixNormalizer:
         if created is None or modified is None or available is None:raise ValueError("imported OpenCTI object lacks temporal metadata")
         valid_from=_dt(stix.get("valid_from") or stix.get("first_seen")) or created
         valid_to=_dt(stix.get("valid_until") or stix.get("last_seen"))
-        external=stix.get("external_references") or ()
+        external=stix.get("external_references")
+        if external is None:external=[]
         if type(external) is not list:raise ValueError("invalid STIX external_references")
         normalized={
             "kind":"opencti-imported-stix","id":stable,"stix_type":typ,
