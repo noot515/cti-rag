@@ -42,6 +42,7 @@ class Phase22OperationsRecoveryTest(unittest.TestCase):
             self.assertTrue(profile.service_egress)
             self.assertTrue(all(target.startswith("/") for _service,_source,target in profile.read_only_mounts))
             self.assertIn(("api",("ALL",)),profile.capability_drop)
+            limits=dict(profile.scheduler_limits);self.assertGreater(limits["interactive_capacity"],0);self.assertGreater(limits["ingestion_capacity"],0);self.assertGreater(limits["interactive_burst"],0)
         self.assertEqual("deny_all",loaded["fixture"].egress_policy)
         self.assertEqual("allowlist",loaded["full-research"].egress_policy)
         self.assertIn("opencti",loaded["full-research"].egress_allowlist)
