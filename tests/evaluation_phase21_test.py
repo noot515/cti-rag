@@ -4,8 +4,8 @@ import json,subprocess,sys,tempfile,unittest
 from pathlib import Path
 
 from cti_rag.evaluation import (
-    BASELINE_DEFINITIONS,EvaluationQuery,EvaluationRun,ExperimentConfig,JudgmentStatus,
-    ModelExecutionKind,QueryOutcome,RelevanceJudgment,RunMetadata,
+    BASELINE_DEFINITIONS,EvaluationQuery,EvaluationRun,ExperimentConfig,ExternalDiagnosticRequest,JudgmentStatus,
+    ModelExecutionKind,QueryOutcome,RAGCheckerAdapter,RelevanceJudgment,RunMetadata,
     hard_failure_counts,load_judgments,load_queries,load_runs,paired_bootstrap,run_experiment,
 )
 
@@ -84,6 +84,15 @@ class Phase21EvaluationTests(unittest.TestCase):
     def test_real_model_run_requires_fingerprint(self):
         with self.assertRaises(ValueError):
             RunMetadata("B4","scope","snap",100,"gpu",ModelExecutionKind.REAL_MODEL)
+
+    def test_external_diagnostic_requires_reviewed_exposure_and_real_model(self):
+        adapter=RAGCheckerAdapter(lambda payload:{"score":1.0})
+        with self.assertRaises(PermissionError):
+            adapter.evaluate({"claims":[]},ExternalDiagnosticRequest("data","judge",False,ModelExecutionKind.REAL_MODEL))
+        with self.assertRaises(ValueError):
+            adapter.evaluate({"claims":[]},ExternalDiagnosticRequest("data","judge",True,ModelExecutionKind.DETERMINISTIC_FAKE))
+        result=adapter.evaluate({"claims":[]},ExternalDiagnosticRequest("data","judge",True,ModelExecutionKind.REAL_MODEL))
+        self.assertEqual("ragchecker",result["adapter"]);self.assertEqual("judge",result["judge_fingerprint"])
 
     def test_cli_writes_same_report_digest(self):
         expected=run_experiment(config(),self.queries,self.judgments,self.runs)["report_digest"]
