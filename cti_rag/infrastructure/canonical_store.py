@@ -19,6 +19,23 @@ def _iso(v):
     return v
 def _json(v): return canonical_json_bytes(v).decode("utf-8")
 
+BACKUP_TABLE_COLUMNS={
+"source_manifests":("source_id","manifest_json","manifest_digest","created_at"),
+"raw_snapshots":("snapshot_uid","source_id","record_key","object_digest","size_bytes","retention_class","upstream_cursor","created_at"),
+"source_objects":("object_uid","source_id","stable_upstream_id","object_type"),
+"revisions":("revision_uid","object_uid","raw_digest","snapshot_uid","upstream_version","temporal_json","policy_json","revoked"),
+"artifacts":("artifact_uid","revision_uid","normalized_digest","object_digest","retention_class","schema_version"),
+"retrieval_observations":("observation_id","revision_uid","retrieved_at","connector_fingerprint"),
+"ingestion_runs":("run_id","source_id","status","started_at","finished_at"),
+"ingestion_checkpoints":("source_id","cursor","committed_run_id","updated_at"),
+"quarantines":("quarantine_id","run_id","source_id","record_key","reason","raw_digest","object_digest","created_at"),
+"outbox":("event_id","kind","aggregate_id","idempotency_key","payload_json","status","attempts","available_at","last_error","created_at"),
+"processed_events":("idempotency_key","processed_at"),
+"dead_letters":("event_id","payload_json","reason","attempts","created_at"),
+"dependencies":("parent_uid","child_uid","kind"),
+"revocations":("event_id","target_uid","reason","created_at"),
+}
+
 SCHEMA=(
 "CREATE TABLE IF NOT EXISTS source_manifests (source_id VARCHAR(160) PRIMARY KEY, manifest_json TEXT NOT NULL, manifest_digest VARCHAR(64) NOT NULL, created_at VARCHAR(40) NOT NULL)",
 "CREATE TABLE IF NOT EXISTS raw_snapshots (snapshot_uid VARCHAR(160) PRIMARY KEY, source_id VARCHAR(160) NOT NULL, record_key VARCHAR(255) NOT NULL, object_digest VARCHAR(64) NOT NULL, size_bytes BIGINT NOT NULL, retention_class VARCHAR(64) NOT NULL, upstream_cursor TEXT NULL, created_at VARCHAR(40) NOT NULL)",
@@ -168,6 +185,29 @@ class CanonicalMetadataStore:
             self._insert_if_absent(cur,"outbox","event_id",cleanup_id,("event_id","kind","aggregate_id","idempotency_key","payload_json","status","attempts","available_at","last_error","created_at"),(cleanup_id,"projection_cleanup",target_uid,cleanup_id,payload,"pending",0,_iso(now),None,_iso(now)))
             self.execute(cur,"UPDATE revisions SET revoked=1 WHERE revision_uid=?",(target_uid,))
         return event_id
+    def backup_json(self):
+        conn=self._connection_factory();cur=conn.cursor()
+        try:
+            tables={}
+            for table,columns in BACKUP_TABLE_COLUMNS.items():
+                cur.execute(f"SELECT {','.join(columns)} FROM {table} ORDER BY {','.join(columns[:1])}")
+                tables[table]={"columns":list(columns),"rows":[list(row) for row in cur.fetchall()]}
+            return json.dumps({"schema_version":"canonical-metadata-backup/1","tables":tables},sort_keys=True,separators=(",",":"))
+        finally:cur.close();conn.close()
+    def restore_json(self,backup):
+        data=json.loads(backup)
+        if data.get("schema_version")!="canonical-metadata-backup/1":raise ValueError("unsupported canonical metadata backup schema")
+        tables=data.get("tables")
+        if type(tables) is not dict or set(tables)!=set(BACKUP_TABLE_COLUMNS):raise ValueError("canonical metadata backup table set mismatch")
+        with self.transaction() as cur:
+            for table in reversed(tuple(BACKUP_TABLE_COLUMNS)):cur.execute(f"DELETE FROM {table}")
+            for table,columns in BACKUP_TABLE_COLUMNS.items():
+                payload=tables[table]
+                if tuple(payload.get("columns",()))!=columns:raise ValueError("canonical metadata backup column mismatch")
+                placeholders=",".join("?" for _ in columns)
+                for row in payload.get("rows",()):
+                    if len(row)!=len(columns):raise ValueError("canonical metadata backup row width mismatch")
+                    self.execute(cur,f"INSERT INTO {table} ({','.join(columns)}) VALUES ({placeholders})",tuple(row))
     def dependents(self,parent_uid):
         conn=self._connection_factory(); cur=conn.cursor(); seen=set(); frontier=[parent_uid]
         try:
