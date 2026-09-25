@@ -33,7 +33,8 @@ def _dt(value):
     except ValueError as exc:raise ValueError("invalid OpenCTI/STIX timestamp") from exc
 
 def _markings(metadata,tenant_id):
-    rows=metadata.get("objectMarking") or ()
+    rows=metadata.get("objectMarking")
+    if rows is None:rows=[]
     if type(rows) is not list:raise ValueError("invalid OpenCTI objectMarking shape")
     labels=[];preserved=[]
     for row in rows:
