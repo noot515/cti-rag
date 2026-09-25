@@ -1,0 +1,67 @@
+{
+  "schema_version": "phase-report/1",
+  "phase": 18,
+  "status": "blocked",
+  "own_gate": "passed",
+  "baseline_commit": "15f4050a387bf41b8d77daf05e271ccfe9e522da",
+  "code_checkpoint": "9d916727eeec3e284fb49182965bca96b82538c6",
+  "parent_report_ids": [
+    "phase-17"
+  ],
+  "missing_prerequisite": "phase-14",
+  "fingerprints": {
+    "fetch_port_blob": "9900062f8b4c08e6c5df89d75b016affd4968f0a",
+    "search_adapter_blob": "9b33a862d3777cbf35dfeb55c2b5abd2c1d1c4d9",
+    "policy_port_blob": "bf6273b2d9efc85cfce2bc91a8f00f6d326c60e3",
+    "phase_test_blob": "fa57117aeaa5791b74711c172cfa0339bae53d9c",
+    "validation_registry_blob": "24a2f95d4bff306711d5b8196888e3a797271160",
+    "workflow_blob": "c2e6cc9484a7dab8220d89ed4c130c907a1f28fe",
+    "config_blob": "f2abb95358e7fb2d86d6969d1d01b242e964404c",
+    "corpus": "unchanged; request-local captures are not published",
+    "model": "none"
+  },
+  "ci": {
+    "run_id": 36108375446,
+    "job_id": 107986009014,
+    "python": "3.13.15",
+    "cumulative_unittests_passed": 157,
+    "phase_gate_tests_passed": 9,
+    "legacy_regression_tests_passed": 8,
+    "cumulative_seconds": 11.253,
+    "phase_seconds": 0.016
+  },
+  "acceptance": {
+    "private_query_denied_before_provider": "passed",
+    "discovery_snippet_not_citable": "passed",
+    "redirect_to_internal_blocked": "passed",
+    "ipv6_loopback_blocked": "passed",
+    "peer_rebinding_mismatch_blocked": "passed",
+    "wire_decompression_and_type_limits": "passed",
+    "hostile_instructions_captured_as_untrusted": "passed",
+    "offline_path_network_independent": "passed",
+    "provider_failure_preserves_local_base": "passed",
+    "overlay_distinct_from_pinned_snapshot": "passed",
+    "persistence_only_via_ingestion_bridge": "passed",
+    "live_provider_and_production_egress": "blocked"
+  },
+  "blocked_by": [
+    "phase0-legacy-fast-suite",
+    "phase0-b0-offline-benchmark",
+    "phase5-mysql-fulltext-real-service",
+    "phase6-actual-embedding-model",
+    "phase6-milvus-real-lifecycle",
+    "phase8-actual-reranker-model",
+    "phase8-actual-generator-tokenizer",
+    "phase10-real-neo4j-restart-lifecycle",
+    "phase11-live-core-source-lifecycle",
+    "phase12-live-network-source-lifecycle",
+    "phase13-live-sec-fred-lifecycle",
+    "phase13-licensed-market-data-entitlement",
+    "phase14-required-prerequisite",
+    "phase15-live-humanities-source-lifecycle",
+    "phase17-evaluated-semantic-judge",
+    "phase18-live-provider-egress"
+  ],
+  "new_retrieval_enabled": false,
+  "web_overlay_enabled_by_default": false
+}
