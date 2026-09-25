@@ -4,11 +4,8 @@ from datetime import datetime,timezone
 from pathlib import Path
 
 from cti_rag.contracts import AccessLabel,ProcessingClass,canonical_json_bytes
-from cti_rag.domains.cybersecurity import (
-    ATTACK_STIX_FIXTURE,AttackStixConnector,AttackStixNormalizer,
-    OPENCTI_MANIFEST,OPENCTI_OBJECT_METADATA,OPENCTI_OBJECT_STIX,
-    OPENCTI_RELATION_METADATA,OPENCTI_RELATION_STIX,OpenCTIImportedStixNormalizer,
-)
+from cti_rag.domains.cybersecurity import ATTACK_STIX_FIXTURE,AttackStixConnector,AttackStixNormalizer,OPENCTI_OBJECT_METADATA,OPENCTI_OBJECT_STIX,OPENCTI_RELATION_METADATA,OPENCTI_RELATION_STIX
+from cti_rag.domains.cybersecurity.opencti import OPENCTI_MANIFEST,OpenCTIImportedStixNormalizer
 from cti_rag.infrastructure import CanonicalMetadataStore,FileObjectStore
 from cti_rag.infrastructure.opencti import OpenCTIReadConnector,OpenCTIUnavailable
 from cti_rag.ingestion import IngestionPipeline
