@@ -15,6 +15,23 @@ class ModelExecutionKind(str,Enum):
     REAL_MODEL="real_model"
 
 @dataclass(frozen=True)
+class EvaluationCorpusRecord:
+    record_uid:str
+    domain:str
+    source_family:str
+    duplicate_group:str
+    origin_group:str
+    temporal_bucket:str
+    available_at:str
+    access_label:str
+    indexable:bool
+    text:str
+    def __post_init__(self):
+        required=(self.record_uid,self.domain,self.source_family,self.duplicate_group,self.origin_group,self.temporal_bucket,self.available_at,self.access_label,self.text)
+        if any(not str(v).strip() for v in required):raise ValueError("evaluation corpus identity/content fields required")
+        if not self.indexable:raise ValueError("evaluation corpus records must explicitly opt into indexing")
+
+@dataclass(frozen=True)
 class EvaluationQuery:
     query_id:str
     domain:str
