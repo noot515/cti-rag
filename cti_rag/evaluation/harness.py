@@ -79,7 +79,7 @@ def _paired(config,base,candidate,queries):
         comparisons[metric]["inconclusive_slices"]=sorted(key for key,value in slices.items() if not value["conclusive"])
     return comparisons
 
-def run_experiment(config:ExperimentConfig,queries,judgments,runs):
+def run_experiment(config:ExperimentConfig,queries,judgments,runs,*,corpus_count=None,input_fingerprints=None):
     queries=tuple(queries);judgments=tuple(judgments);runs=tuple(runs)
     qids=[q.query_id for q in queries];jids=[j.query_id for j in judgments]
     if len(qids)!=len(set(qids)) or len(jids)!=len(set(jids)) or set(qids)!=set(jids):raise ValueError("query/judgment identities must be unique and complete")
@@ -96,5 +96,7 @@ def run_experiment(config:ExperimentConfig,queries,judgments,runs):
         "dataset":{"query_count":len(queries),"judgment_count":len(judgments),"human_reviewed":sum(j.status==JudgmentStatus.HUMAN_REVIEWED for j in judgments),"machine_generated_unreviewed":sum(j.status==JudgmentStatus.MACHINE_GENERATED_UNREVIEWED for j in judgments),"synthetic_contract":sum(j.status==JudgmentStatus.SYNTHETIC_CONTRACT for j in judgments)},
         "runs":run_reports,"paired_comparisons":comparisons,
     }
+    if corpus_count is not None:report["dataset"]["corpus_count"]=int(corpus_count)
+    if input_fingerprints is not None:report["input_fingerprints"]={str(k):str(v) for k,v in sorted(dict(input_fingerprints).items())}
     report["report_digest"]=fingerprint(report)
     return report
