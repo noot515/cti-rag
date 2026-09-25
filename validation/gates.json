@@ -234,6 +234,13 @@
       "command": "python -m unittest tests.runtimepolicy_adapter_phase19_test -v"
     },
     {
+      "id": "phase19-canonical-runtime-client-package",
+      "phase": 19,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "CI cannot anonymously clone the pinned private noot515/existential source commit for respectful-runtime. The adapter boundary and recorded wire/local-server conformance run without vendoring the enforcement kernel. To clear this gate, provide an authenticated package/artifact or CI read credential for the exact pinned respectful-runtime 1.4.0 bytes."
+    },
+    {
       "id": "phase19-live-runtimepolicy-broker",
       "phase": 19,
       "required": true,
