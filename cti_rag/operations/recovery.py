@@ -32,8 +32,8 @@ class RecoveryManager:
         destination.mkdir(parents=True,exist_ok=True);(destination/"objects").mkdir()
         object_rows=[]
         for ref in self.objects.iter_refs():
-            data=self.objects.get(ref);target=destination/"objects"/ref.relative_key;target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(data)
-            object_rows.append({"digest":ref.digest,"size_bytes":ref.size_bytes,"retention_class":ref.retention_class,"relative_key":ref.relative_key})
+            data=self.objects.get(ref);target=destination/"objects"/ref.relative_path;target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(data)
+            object_rows.append({"digest":ref.digest,"size_bytes":ref.size_bytes,"retention_class":ref.retention_class,"relative_path":ref.relative_path})
         metadata=self.metadata.backup_json();catalog=self.catalog.backup_json()
         (destination/"canonical-metadata.json").write_text(metadata,encoding="utf-8");(destination/"snapshot-catalog.json").write_text(catalog,encoding="utf-8")
         current=self.catalog.current_manifest()
@@ -45,13 +45,13 @@ class RecoveryManager:
         metadata=(source/"canonical-metadata.json").read_bytes();catalog=(source/"snapshot-catalog.json").read_bytes()
         if _sha(metadata)!=manifest["canonical_metadata_sha256"] or _sha(catalog)!=manifest["snapshot_catalog_sha256"]:raise RecoveryError("backup metadata checksum mismatch")
         for row in manifest["objects"]:
-            data=(source/"objects"/row["relative_key"]).read_bytes()
+            data=(source/"objects"/row["relative_path"]).read_bytes()
             if len(data)!=row["size_bytes"] or _sha(data)!=row["digest"]:raise RecoveryError("backup object checksum mismatch")
         return manifest
     def restore_backup(self,source):
         source=Path(source).resolve();manifest=self.verify_backup(source)
         for row in manifest["objects"]:
-            data=(source/"objects"/row["relative_key"]).read_bytes();ref=self.objects.put(data,row["retention_class"])
+            data=(source/"objects"/row["relative_path"]).read_bytes();ref=self.objects.put(data,row["retention_class"])
             if ref.digest!=row["digest"]:raise RecoveryError("restored object identity mismatch")
         self.metadata.restore_json((source/"canonical-metadata.json").read_text(encoding="utf-8"))
         self.catalog.restore_json((source/"snapshot-catalog.json").read_text(encoding="utf-8"))
