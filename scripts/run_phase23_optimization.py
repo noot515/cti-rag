@@ -11,7 +11,7 @@ REQUIRED_AXES=("passage_tokens","overlap_tokens","context_prefix_mode","analyzer
 
 def main(argv=None):
     p=argparse.ArgumentParser();p.add_argument("--grid",required=True);p.add_argument("--observations",required=True);p.add_argument("--report",required=True);args=p.parse_args(argv)
-    plan,configs,raw=load_grid(args.grid);observations=load_observations(args.observations)
+    plan,configs,raw=load_grid(args.grid);observation_raw=json.loads(Path(args.observations).read_text(encoding="utf-8"));observations=load_observations(args.observations)
     baseline=next(c for c in configs if c.config_id==plan.baseline_config_id)
     swept={axis:sorted({getattr(c,axis) for c in configs},key=str) for axis in REQUIRED_AXES}
     missing=[axis for axis,values in swept.items() if len(values)<2]
@@ -23,6 +23,8 @@ def main(argv=None):
         "schema_version":"phase23-optimization-report/1","plan":asdict(plan),"swept_axes":swept,
         "decision":asdict(decision),"tuning_choice_config":asdict(selected),"production_choice_config":asdict(config_map[decision.production_choice]),
         "tradeoffs":{"dependencies":selected.dependencies,"semantic_risks":selected.semantic_risks},
+        "partitions":{"tuning_query_splits":raw.get("tuning_query_splits",[]),"holdout_query_splits":raw.get("holdout_query_splits",[]),"counts":raw.get("partition_counts",{})},
+        "slice_evidence":[row.get("slice_evidence") for row in observation_raw.get("observations",[]) if row.get("config_id")==decision.tuning_choice and row.get("slice_evidence")],
         "input_fingerprints":{
             "grid":hashlib.sha256(Path(args.grid).read_bytes()).hexdigest(),
             "observations":hashlib.sha256(Path(args.observations).read_bytes()).hexdigest(),
