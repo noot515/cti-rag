@@ -1,0 +1,26 @@
+{
+  "name": "fixture",
+  "components": [
+    "api",
+    "sqlite-metadata",
+    "file-object-store",
+    "sqlite-lexical",
+    "fixture-dense"
+  ],
+  "exposed_ports": [
+    "api:8000"
+  ],
+  "secret_names": [],
+  "internal_network": true,
+  "egress_policy": "deny_all",
+  "egress_allowlist": [],
+  "data_root_env": "CTI_RAG_DATA_ROOT",
+  "resource_limits": [
+    {
+      "service": "api",
+      "cpu": "1",
+      "memory": "1GiB"
+    }
+  ],
+  "optional_components": []
+}
