@@ -20,6 +20,7 @@ class DeploymentProfile:
     read_only_mounts:Tuple[Tuple[str,str,str],...]=()
     capability_drop:Tuple[Tuple[str,Tuple[str,...]],...]=()
     optional_components:Tuple[str,...]=()
+    compose_services:Tuple[str,...]=()
     def __post_init__(self):
         if self.name not in ("fixture","text-mvp","analytical","full-research"):raise ValueError("unknown deployment profile")
         if self.data_root_env!="CTI_RAG_DATA_ROOT":raise ValueError("deployment data root must be configurable through CTI_RAG_DATA_ROOT")
@@ -43,5 +44,5 @@ def load_profile(path):
         tuple((str(service),str(policy)) for service,policy in sorted(row.get("service_egress",{}).items())),
         tuple((str(v["service"]),str(v["source_env"]),str(v["target"])) for v in row.get("read_only_mounts",()) if bool(v.get("read_only",False))),
         tuple((str(service),tuple(str(x) for x in caps)) for service,caps in sorted(row.get("capability_drop",{}).items())),
-        tuple(row.get("optional_components",()))
+        tuple(row.get("optional_components",())),tuple(row.get("compose_services",()))
     )
