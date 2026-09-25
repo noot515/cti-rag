@@ -88,7 +88,7 @@ class RetrievalTrace:
     plan_id:str
     plan_configuration_hash:str
     snapshot_manifest_id:str
-    policy_epoch:int
+    policy_epoch:int|str
     reranker_fingerprint:Optional[str]
     tokenizer_fingerprint:str
     channel_statuses:Tuple[Tuple[str,str],...]
