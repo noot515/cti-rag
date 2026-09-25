@@ -9,6 +9,8 @@ def _eligible(plan,baseline,row):
     if not row.critical_slice_noninferior:reasons.append("critical_slice")
     if row.ndcg_at_10<baseline.ndcg_at_10-plan.ndcg_noninferiority_margin:reasons.append("ndcg_noninferiority")
     if row.recall_at_50<baseline.recall_at_50-plan.recall50_noninferiority_margin:reasons.append("recall50_noninferiority")
+    if row.ann_recall<baseline.ann_recall-plan.ann_recall_noninferiority_margin:reasons.append("ann_recall_noninferiority")
+    if row.graph_required_edge_recall<baseline.graph_required_edge_recall-plan.graph_recall_noninferiority_margin:reasons.append("graph_recall_noninferiority")
     if row.p95_latency_ms>plan.max_p95_latency_ms:reasons.append("p95_latency_budget")
     if plan.max_ram_mb is not None and row.ram_peak_mb>plan.max_ram_mb:reasons.append("ram_budget")
     return not reasons,tuple(reasons)
@@ -26,7 +28,7 @@ def select_optimization(plan,configs,observations):
         seen.add(row.config_id)
         if row.config_id not in configs:raise ValueError("observation references unknown config")
         ok,reasons=_eligible(plan,baseline,row)
-        decisions.append(CandidateDecision(row.config_id,ok,reasons,row.p95_latency_ms-baseline.p95_latency_ms,row.backend_read_ops-baseline.backend_read_ops))
+        decisions.append(CandidateDecision(row.config_id,ok,reasons,row.p95_latency_ms-baseline.p95_latency_ms,row.backend_read_ops-baseline.backend_read_ops,row.index_bytes-baseline.index_bytes,row.ingestion_cost_units-baseline.ingestion_cost_units))
         if ok:eligible.append(row)
     if not eligible:choice=plan.baseline_config_id
     else:choice=min(eligible,key=lambda r:(r.p95_latency_ms,r.backend_read_ops,r.ram_peak_mb,r.config_id)).config_id
