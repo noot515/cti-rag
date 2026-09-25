@@ -9,7 +9,7 @@ from cti_rag.ingestion import IngestionPipeline
 from cti_rag.operations import (
     BoundedScheduler,CacheBundle,CacheIdentity,CacheState,CancellationToken,ConcurrentMemoryWindow,
     MemoryProbe,OperationalPaths,ProtectedDebugTraceStore,QueueFull,RecoveryManager,TelemetryRecorder,
-    WorkItem,WorkLane,load_profile,
+    WorkItem,WorkLane,freshness_status,load_profile,scheduler_from_profile,
 )
 from cti_rag.snapshots import ProjectionGeneration,ProjectionPayload,SnapshotCatalogStore,SnapshotPublisher
 
@@ -59,7 +59,10 @@ class Phase22OperationsRecoveryTest(unittest.TestCase):
             proc=subprocess.run([sys.executable,str(ROOT/"scripts"/"phase22_profile_smoke.py"),"--profile",str(PROFILES/"fixture.json"),"--root",str(Path(td)/"isolated")],cwd=ROOT,text=True,capture_output=True)
             self.assertEqual(0,proc.returncode,proc.stderr);report=json.loads(proc.stdout)
             self.assertEqual("fixture",report["profile"]);self.assertEqual(["api:8000"],report["exposed_ports"])
-            self.assertEqual(4,len(report["cache_files"]))
+            self.assertEqual(4,len(report["cache_files"]));self.assertEqual({"interactive":0,"ingestion":0},report["scheduler_sizes"])
+            text_proc=subprocess.run([sys.executable,str(ROOT/"scripts"/"phase22_profile_smoke.py"),"--profile",str(PROFILES/"text-mvp.json"),"--root",str(Path(td)/"text-mvp-staging")],cwd=ROOT,text=True,capture_output=True)
+            self.assertEqual(0,text_proc.returncode,text_proc.stderr);text_report=json.loads(text_proc.stdout);self.assertEqual("text-mvp",text_report["profile"])
+            self.assertEqual(32,text_report["scheduler_limits"]["interactive_capacity"]);self.assertEqual(64,text_report["scheduler_limits"]["ingestion_capacity"])
 
     def test_cache_identity_epoch_private_separation_negative_states_and_revocation(self):
         with tempfile.TemporaryDirectory() as td:
@@ -99,6 +102,19 @@ class Phase22OperationsRecoveryTest(unittest.TestCase):
         self.assertEqual(1,traces.put({"query":secret},authorized=True))
         memory=ConcurrentMemoryWindow(MemoryProbe(gpu_sampler=lambda:321.0));self.assertIsNone(memory.record(("generation",)))
         memory.record(("generation","reranking"));self.assertEqual(321.0,memory.report()["peak_vram_mb"])
+        manifest=type("M",(),{"manifest_id":"m1","created_at":datetime(2026,1,1,tzinfo=timezone.utc)})()
+        generation=type("G",(),{"kind":"lexical","ready":True,"visible":True,"referential_integrity":True})()
+        fresh=freshness_status(manifest,(generation,),datetime(2026,1,1,0,1,tzinfo=timezone.utc));self.assertEqual(60.0,fresh["freshness_lag_seconds"]);self.assertEqual((("lexical",True,True,True),),fresh["projections"])
+
+
+    def test_recovery_cli_commands_are_executable_on_isolated_storage(self):
+        with tempfile.TemporaryDirectory() as td:
+            td=Path(td);root=td/"runtime";backup=td/"backup";restored=td/"restored"
+            init=subprocess.run([sys.executable,str(ROOT/"scripts"/"phase22_profile_smoke.py"),"--profile",str(PROFILES/"fixture.json"),"--root",str(root)],cwd=ROOT,text=True,capture_output=True);self.assertEqual(0,init.returncode,init.stderr)
+            health=subprocess.run([sys.executable,str(ROOT/"scripts"/"phase22_recovery.py"),"health","--root",str(root)],cwd=ROOT,text=True,capture_output=True);self.assertEqual(0,health.returncode,health.stderr);self.assertIn("canonical_counts",json.loads(health.stdout))
+            save=subprocess.run([sys.executable,str(ROOT/"scripts"/"phase22_recovery.py"),"backup","--root",str(root),"--backup",str(backup)],cwd=ROOT,text=True,capture_output=True);self.assertEqual(0,save.returncode,save.stderr)
+            load=subprocess.run([sys.executable,str(ROOT/"scripts"/"phase22_recovery.py"),"restore","--root",str(restored),"--backup",str(backup)],cwd=ROOT,text=True,capture_output=True);self.assertEqual(0,load.returncode,load.stderr)
+            verify=subprocess.run([sys.executable,str(ROOT/"scripts"/"phase22_recovery.py"),"health","--root",str(restored)],cwd=ROOT,text=True,capture_output=True);self.assertEqual(0,verify.returncode,verify.stderr)
 
     def test_restart_backup_restore_rebuild_and_rollback_preserve_identity(self):
         with tempfile.TemporaryDirectory() as td:
@@ -121,6 +137,7 @@ class Phase22OperationsRecoveryTest(unittest.TestCase):
             rebuilt=restored.rebuild_fixture_index(td/"restored"/"rebuilt.json")
             self.assertEqual(m2.manifest_id,rebuilt["manifest_id"]);self.assertEqual(revs,tuple(rebuilt["projections"][0]["revision_uids"]))
             self.assertEqual("payload-fixture",rebuilt["projections"][0]["payloads"][0]["payload_uid"])
+            rebuilt_payload=rebuilt["projections"][0]["payloads"][0];self.assertEqual(json.dumps({"kind":"fixture","start":0,"end":1},sort_keys=True),rebuilt_payload["locator_json"]);self.assertEqual("text-digest",rebuilt_payload["text_digest"])
             rolled=restored.rollback(m1.manifest_id);self.assertEqual(m1.manifest_id,rolled.manifest_id);self.assertEqual(m1.manifest_id,catalog3.current_manifest().manifest_id)
 
 def replace_cache(identity,**changes):
