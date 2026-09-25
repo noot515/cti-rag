@@ -19,8 +19,7 @@
     "MYSQL_PASSWORD",
     "NEO4J_PASSWORD",
     "RABBITMQ_PASSWORD",
-    "OPENCTI_TOKEN",
-    "RUNTIMEPOLICY_BROKER_CREDENTIAL"
+    "OPENCTI_TOKEN"
   ],
   "internal_network": true,
   "egress_policy": "allowlist",
