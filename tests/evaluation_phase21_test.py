@@ -6,7 +6,7 @@ from pathlib import Path
 from cti_rag.evaluation import (
     BASELINE_DEFINITIONS,EvaluationQuery,EvaluationRun,ExperimentConfig,ExternalDiagnosticRequest,JudgmentStatus,
     ModelExecutionKind,QueryOutcome,RAGCheckerAdapter,RelevanceJudgment,RunMetadata,
-    hard_failure_counts,load_judgments,load_queries,load_runs,paired_bootstrap,run_experiment,
+    hard_failure_counts,load_corpus,load_judgments,load_queries,load_runs,paired_bootstrap,run_experiment,validate_dataset,
 )
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -23,7 +23,7 @@ def config():
 class Phase21EvaluationTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.queries=load_queries(DATA/"queries.jsonl");cls.judgments=load_judgments(DATA/"judgments.jsonl");cls.runs=load_runs(DATA/"fixture-runs.json")
+        cls.corpus=load_corpus(DATA/"corpus.jsonl");cls.queries=load_queries(DATA/"queries.jsonl");cls.judgments=load_judgments(DATA/"judgments.jsonl");cls.runs=load_runs(DATA/"fixture-runs.json")
 
     def test_dataset_counts_labels_and_duplicate_split_integrity(self):
         self.assertEqual(280,len(self.queries));self.assertEqual(280,len(self.judgments))
@@ -39,10 +39,23 @@ class Phase21EvaluationTests(unittest.TestCase):
             groups.setdefault(q.duplicate_group,set()).add(q.split)
         self.assertTrue(all(len(v)==1 for v in groups.values()))
 
+    def test_corpus_is_versioned_separate_and_all_judged_uids_exist(self):
+        counts=validate_dataset(self.corpus,self.queries,self.judgments)
+        self.assertEqual(len(self.corpus),counts["corpus_count"]);self.assertGreater(len(self.corpus),len(self.queries))
+        self.assertTrue(all(row.indexable for row in self.corpus))
+        split=json.loads((DATA/"splits.json").read_text())
+        self.assertEqual("multidomain-evaluation-splits/1",split["schema_version"])
+        for q in self.queries:
+            if q.split=="adversarial":continue
+            self.assertIn(f"{q.domain}|{q.source_family}",split["source_family_partitions"])
+            self.assertIn(q.duplicate_group,split["duplicate_group_partitions"])
+            self.assertIn(q.temporal_bucket,split["temporal_partitions"])
+
     def test_b0_through_b8_are_explicit_and_conditions_are_equal(self):
         self.assertEqual(tuple(f"B{i}" for i in range(9)),tuple(BASELINE_DEFINITIONS))
         report=run_experiment(config(),self.queries,self.judgments,self.runs)
-        self.assertEqual({"B0","B8"},set(report["runs"]))
+        self.assertEqual({f"B{i}" for i in range(9)},set(report["runs"]))
+        for pair in ("B1->B3","B2->B3","B3->B4","B4->B5","B4->B6","B4->B7","B7->B8"):self.assertIn(pair,report["paired_comparisons"])
         self.assertEqual(config().scope_hash,report["runs"]["B0"]["metadata"]["scope_hash"])
         self.assertEqual(1.0,report["runs"]["B0"]["metrics"]["relevant_source_recall"])
         self.assertEqual(1.0,report["runs"]["B0"]["metrics"]["citation_support_precision"])
