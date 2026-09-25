@@ -58,7 +58,7 @@ class Phase21EvaluationTests(unittest.TestCase):
         self.assertEqual({f"B{i}" for i in range(9)},set(report["runs"]))
         for pair in ("B1->B3","B2->B3","B3->B4","B4->B5","B4->B6","B4->B7","B7->B8"):self.assertIn(pair,report["paired_comparisons"])
         conditions={(run["metadata"]["scope_hash"],run["metadata"]["snapshot_id"],run["metadata"]["candidate_budget"],run["metadata"]["resource_condition"]) for run in report["runs"].values()};self.assertEqual(1,len(conditions))
-        self.assertEqual(280,report["runs"]["B0"]["n"]);self.assertTrue(report["runs"]["B0"]["budget_status"]["passed"])
+        self.assertEqual(280,report["runs"]["B0"]["n"]);self.assertTrue(all(run["hard_gate_pass"] for run in report["runs"].values()));self.assertTrue(all(run["budget_status"]["passed"] for run in report["runs"].values()))
         self.assertEqual(config().scope_hash,report["runs"]["B0"]["metadata"]["scope_hash"])
         self.assertEqual(1.0,report["runs"]["B0"]["metrics"]["relevant_source_recall"])
         self.assertEqual(1.0,report["runs"]["B0"]["metrics"]["citation_support_precision"])
@@ -121,7 +121,7 @@ class Phase21EvaluationTests(unittest.TestCase):
         expected_normalized=json.loads(json.dumps(expected_report,sort_keys=True))
         with tempfile.TemporaryDirectory() as td:
             out=Path(td)/"report.json"
-            proc=subprocess.run([sys.executable,str(ROOT/"scripts"/"run_phase21_evaluation.py"),"--config",str(DATA/"experiment-config.json"),"--corpus",str(DATA/"corpus.jsonl"),"--queries",str(DATA/"queries.jsonl"),"--judgments",str(DATA/"judgments.jsonl"),"--runs",str(DATA/"fixture-runs.json"),"--report",str(out)],cwd=ROOT,text=True,capture_output=True)
+            proc=subprocess.run([sys.executable,str(ROOT/"scripts"/"run_phase21_evaluation.py"),"--config",str(DATA/"experiment-config.json"),"--corpus",str(DATA/"corpus.jsonl"),"--queries",str(DATA/"queries.jsonl"),"--judgments",str(DATA/"judgments.jsonl"),"--runs",str(DATA/"fixture-runs.json"),"--report",str(out),"--require-hard-gates","--require-budgets"],cwd=ROOT,text=True,capture_output=True)
             self.assertEqual(0,proc.returncode,proc.stderr)
             actual_report=json.loads(out.read_text())
             if expected_normalized!=actual_report:
