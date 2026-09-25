@@ -8,7 +8,9 @@ Profiles:
 - `analytical`: text-MVP plus DuckDB and Neo4j; external egress denied by default.
 - `full-research`: analytical profile plus optional reranker/generator/web/OpenCTI/RuntimePolicy integrations. External egress is an explicit allowlist and optional integrations remain disabled until configured/authorized.
 
-Profile files contain secret **names**, never secret values. Only the API port is externally exposed by the profile contract. Each non-fixture profile names the exact existing `docker-compose.yml` services it depends on (for example `threatrag`, `threatrag-worker`, `mysql`, `redis`, `rabbitmq`, Milvus dependencies, and `neo4j` where applicable). The contract also records per-service egress mode, read-only configuration mounts, capability drops, and resource limits. Stateful backend storage remains writable inside its data root; read-only/restricted mounts are reserved for configuration/source inputs that do not need mutation.
+Profile files contain secret **names**, never secret values. Hardened profile processes resolve secrets from mounted files only: set `<SECRET_NAME>_FILE=/run/secrets/<name>`; a literal `<SECRET_NAME>` value is rejected by `resolve_profile_secrets`. Secret contents are never written into the profile JSON or backup bundle.
+
+ Only the API port is externally exposed by the profile contract. Each non-fixture profile names the exact existing `docker-compose.yml` services it depends on (for example `threatrag`, `threatrag-worker`, `mysql`, `redis`, `rabbitmq`, Milvus dependencies, and `neo4j` where applicable). The contract also records per-service egress mode, read-only configuration mounts, capability drops, and resource limits. Stateful backend storage remains writable inside its data root; read-only/restricted mounts are reserved for configuration/source inputs that do not need mutation.
 
 ## Local fixture smoke
 
@@ -18,6 +20,14 @@ python scripts/phase22_profile_smoke.py --profile deploy/profiles/fixture.json -
 ```
 
 This creates isolated local fixture storage and does not start or alter the user's running services.
+
+A text-MVP **profile-contract** staging smoke (also non-service-starting) is:
+
+```bash
+python scripts/phase22_profile_smoke.py --profile deploy/profiles/text-mvp.json --root "$CTI_RAG_DATA_ROOT/text-mvp-staging"
+```
+
+Live text-MVP/analytical/full-research service startup remains a separate blocked validation gate until an isolated staging stack is supplied. Do not run the legacy compose file and interpret its historical backend port/default-credential settings as the hardened profile.
 
 ## Backup and health
 

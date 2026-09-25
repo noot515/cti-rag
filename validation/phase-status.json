@@ -1,7 +1,7 @@
 {
   "schema_version": "phase-status/1",
   "baseline_commit": "15f4050a387bf41b8d77daf05e271ccfe9e522da",
-  "latest_code_checkpoint": "10f59b356be07d85d88f605472a4a6e2e9399c9f",
+  "latest_code_checkpoint": "7ce8fe6f3a6d5948725eea9750e035a68069770f",
   "phases": {
     "0": {
       "implementation": "implemented",
@@ -160,6 +160,36 @@
       "replay_update_tombstone_semantics": "passed",
       "minimal_startup_without_pycti": "passed",
       "live_opencti_read_lifecycle": "blocked",
+      "acceptance": "blocked_by_phase14_and_external_required_gates"
+    },
+    "21": {
+      "implementation": "implemented",
+      "own_gate": "passed",
+      "frozen_fixture_report": "passed",
+      "frozen_report_digest": "0792ec472861f1e8a9ad343c0ffa6e351b46c198f6eaee0236dfe24a25a5d14e",
+      "corpus_records": 779,
+      "queries": 280,
+      "human_reviewed_judgments": 0,
+      "real_embedding_quality": "blocked",
+      "real_reranker_quality": "blocked",
+      "real_generator_grounding_quality": "blocked",
+      "gpu_concurrent_resource_profile": "blocked",
+      "acceptance": "blocked_by_phase14_and_external_required_gates"
+    },
+    "22": {
+      "implementation": "implemented",
+      "own_gate": "passed",
+      "fixture_profile_smoke": "passed",
+      "text_mvp_profile_contract_smoke": "passed",
+      "safe_cache_and_revocation": "passed",
+      "bounded_scheduler_and_cancellation": "passed",
+      "sanitized_telemetry": "passed",
+      "backup_restore_rebuild_rollback": "passed",
+      "mounted_file_secrets": "passed",
+      "text_mvp_live_profile": "blocked",
+      "analytical_live_profile": "blocked",
+      "full_research_live_profile": "blocked",
+      "live_concurrent_model_memory": "blocked",
       "acceptance": "blocked_by_phase14_and_external_required_gates"
     }
   },
