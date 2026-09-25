@@ -112,11 +112,11 @@ class Phase21EvaluationTests(unittest.TestCase):
         self.assertEqual("ragchecker",result["adapter"]);self.assertEqual("judge",result["judge_fingerprint"])
 
     def test_cli_writes_same_report_digest(self):
-        expected_report=run_experiment(config(),self.queries,self.judgments,self.runs)
+        expected_report=run_experiment(config(),self.queries,self.judgments,self.runs);expected_report["dataset"]["corpus_count"]=len(self.corpus)
         expected_normalized=json.loads(json.dumps(expected_report,sort_keys=True))
         with tempfile.TemporaryDirectory() as td:
             out=Path(td)/"report.json"
-            proc=subprocess.run([sys.executable,str(ROOT/"scripts"/"run_phase21_evaluation.py"),"--config",str(DATA/"experiment-config.json"),"--queries",str(DATA/"queries.jsonl"),"--judgments",str(DATA/"judgments.jsonl"),"--runs",str(DATA/"fixture-runs.json"),"--report",str(out)],cwd=ROOT,text=True,capture_output=True)
+            proc=subprocess.run([sys.executable,str(ROOT/"scripts"/"run_phase21_evaluation.py"),"--config",str(DATA/"experiment-config.json"),"--corpus",str(DATA/"corpus.jsonl"),"--queries",str(DATA/"queries.jsonl"),"--judgments",str(DATA/"judgments.jsonl"),"--runs",str(DATA/"fixture-runs.json"),"--report",str(out)],cwd=ROOT,text=True,capture_output=True)
             self.assertEqual(0,proc.returncode,proc.stderr)
             actual_report=json.loads(out.read_text())
             if expected_normalized!=actual_report:
