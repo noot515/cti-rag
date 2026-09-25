@@ -226,6 +226,32 @@
       "required": true,
       "status_override": "blocked",
       "reason": "SearXNG/Tavily adapter contracts and hardened fetch mechanics are validated with deterministic spies/transports. No approved live provider endpoint, credentials, or separately attested production proxy egress was supplied, so live external-search readiness is not reported as passed."
+    },
+    {
+      "id": "phase19-runtimepolicy-adapter-conformance",
+      "phase": 19,
+      "required": true,
+      "command": "python -m unittest tests.runtimepolicy_adapter_phase19_test -v"
+    },
+    {
+      "id": "phase19-live-runtimepolicy-broker",
+      "phase": 19,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "The adapter is pinned to respectful-runtime 1.4.0 / wire contract 1.0.0 / broker protocol 3 and passes local Unix-broker conformance fixtures. No deployment broker socket, peer identity, operator-reviewed live grants, or current production-readiness attestation was supplied to CI, so live authorization is not reported as passed."
+    },
+    {
+      "id": "phase20-opencti-read-adapter-invariants",
+      "phase": 20,
+      "required": true,
+      "command": "python -m unittest tests.opencti_phase20_test -v"
+    },
+    {
+      "id": "phase20-live-opencti-read-lifecycle",
+      "phase": 20,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "The optional OpenCTI connector is validated with real-format OpenCTI/STIX-shaped fixtures and a read-only client spy. No OPENCTI_URL/read-only token or approved live instance was supplied, so live pagination/update/deletion reconciliation is not reported as passed."
     }
   ]
 }
