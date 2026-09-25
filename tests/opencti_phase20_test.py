@@ -143,7 +143,7 @@ class OpenCTIPhase20Test(unittest.TestCase):
         direct_body=json.loads(direct.normalized_bytes);imported_body=json.loads(imported.normalized_bytes)
         self.assertEqual(direct_body["name"],imported_body["name"])
         self.assertNotEqual(direct.stable_upstream_id,imported.stable_upstream_id)
-        self.assertEqual(OPENCTI_OBJECT_STIX["id"],dict((x.namespace,x.value) for x in imported.identity_attributes)["stix_id"])
+        self.assertEqual(OPENCTI_OBJECT_STIX["id"],dict((x.name,x.value) for x in imported.identity_attributes)["stix_id"])
         self.assertEqual("imported_source",imported_body["assertion_origin"])
 
 if __name__=="__main__":unittest.main()
