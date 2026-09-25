@@ -1,0 +1,54 @@
+{
+  "name": "text-mvp",
+  "components": [
+    "api",
+    "worker",
+    "mysql-metadata",
+    "file-object-store",
+    "lexical",
+    "dense",
+    "redis",
+    "rabbitmq"
+  ],
+  "exposed_ports": [
+    "api:8000"
+  ],
+  "secret_names": [
+    "MYSQL_PASSWORD",
+    "RABBITMQ_PASSWORD"
+  ],
+  "internal_network": true,
+  "egress_policy": "deny_by_default",
+  "egress_allowlist": [],
+  "data_root_env": "CTI_RAG_DATA_ROOT",
+  "resource_limits": [
+    {
+      "service": "api",
+      "cpu": "2",
+      "memory": "4GiB"
+    },
+    {
+      "service": "worker",
+      "cpu": "4",
+      "memory": "8GiB"
+    },
+    {
+      "service": "mysql",
+      "cpu": "2",
+      "memory": "4GiB"
+    },
+    {
+      "service": "redis",
+      "cpu": "1",
+      "memory": "1GiB"
+    },
+    {
+      "service": "rabbitmq",
+      "cpu": "1",
+      "memory": "1GiB"
+    }
+  ],
+  "optional_components": [
+    "reranker"
+  ]
+}
