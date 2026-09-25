@@ -7,6 +7,7 @@ from .bootstrap import paired_bootstrap
 from .metrics import aggregate,hard_failure_counts,query_metrics
 from .models import EvaluationRun,ExperimentConfig,JudgmentStatus,ModelExecutionKind
 
+PAIRWISE_ABLATIONS=(("B1","B3"),("B2","B3"),("B3","B4"),("B4","B5"),("B4","B6"),("B4","B7"),("B7","B8"))
 BASELINE_DEFINITIONS={
     "B0":"captured_legacy_public_fixture",
     "B1":"independent_lexical",
