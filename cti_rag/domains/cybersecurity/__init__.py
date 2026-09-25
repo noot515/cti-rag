@@ -7,3 +7,4 @@ from .projections import *
 from .structured import *
 from .benchmark import *
 from .opencti_fixtures import *
+from .opencti_import import *
