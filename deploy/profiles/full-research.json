@@ -1,0 +1,62 @@
+{
+  "name": "full-research",
+  "components": [
+    "api",
+    "worker",
+    "mysql-metadata",
+    "file-object-store",
+    "lexical",
+    "dense",
+    "redis",
+    "rabbitmq",
+    "duckdb",
+    "neo4j"
+  ],
+  "exposed_ports": [
+    "api:8000"
+  ],
+  "secret_names": [
+    "MYSQL_PASSWORD",
+    "NEO4J_PASSWORD",
+    "RABBITMQ_PASSWORD",
+    "OPENCTI_TOKEN",
+    "RUNTIMEPOLICY_BROKER_CREDENTIAL"
+  ],
+  "internal_network": true,
+  "egress_policy": "allowlist",
+  "egress_allowlist": [
+    "opencti",
+    "searxng",
+    "tavily"
+  ],
+  "data_root_env": "CTI_RAG_DATA_ROOT",
+  "resource_limits": [
+    {
+      "service": "api",
+      "cpu": "2",
+      "memory": "4GiB"
+    },
+    {
+      "service": "worker",
+      "cpu": "8",
+      "memory": "16GiB"
+    },
+    {
+      "service": "neo4j",
+      "cpu": "4",
+      "memory": "8GiB"
+    },
+    {
+      "service": "dense",
+      "cpu": "4",
+      "memory": "8GiB"
+    }
+  ],
+  "optional_components": [
+    "reranker",
+    "generator",
+    "web-overlay",
+    "opencti-read",
+    "runtimepolicy"
+  ]
+}
