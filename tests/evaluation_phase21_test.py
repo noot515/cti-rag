@@ -42,7 +42,8 @@ class Phase21EvaluationTests(unittest.TestCase):
     def test_corpus_is_versioned_separate_and_all_judged_uids_exist(self):
         counts=validate_dataset(self.corpus,self.queries,self.judgments)
         self.assertEqual(len(self.corpus),counts["corpus_count"]);self.assertGreater(len(self.corpus),len(self.queries))
-        self.assertTrue(all(row.indexable for row in self.corpus))
+        self.assertTrue(all(row.indexable for row in self.corpus));self.assertTrue(all("relevance grade" not in row.text.lower() for row in self.corpus))
+        manifest=json.loads((DATA/"manifest.json").read_text());self.assertEqual(["corpus.jsonl"],manifest["index_inputs"]);self.assertIn("judgments.jsonl",manifest["index_exclusions"])
         split=json.loads((DATA/"splits.json").read_text())
         self.assertEqual("multidomain-evaluation-splits/1",split["schema_version"])
         for q in self.queries:
@@ -56,6 +57,8 @@ class Phase21EvaluationTests(unittest.TestCase):
         report=run_experiment(config(),self.queries,self.judgments,self.runs)
         self.assertEqual({f"B{i}" for i in range(9)},set(report["runs"]))
         for pair in ("B1->B3","B2->B3","B3->B4","B4->B5","B4->B6","B4->B7","B7->B8"):self.assertIn(pair,report["paired_comparisons"])
+        conditions={(run["metadata"]["scope_hash"],run["metadata"]["snapshot_id"],run["metadata"]["candidate_budget"],run["metadata"]["resource_condition"]) for run in report["runs"].values()};self.assertEqual(1,len(conditions))
+        self.assertEqual(280,report["runs"]["B0"]["n"]);self.assertTrue(report["runs"]["B0"]["budget_status"]["passed"])
         self.assertEqual(config().scope_hash,report["runs"]["B0"]["metadata"]["scope_hash"])
         self.assertEqual(1.0,report["runs"]["B0"]["metrics"]["relevant_source_recall"])
         self.assertEqual(1.0,report["runs"]["B0"]["metrics"]["citation_support_precision"])
