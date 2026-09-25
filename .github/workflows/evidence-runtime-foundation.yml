@@ -58,6 +58,7 @@ jobs:
               "phase19-runtimepolicy-adapter-conformance",
               "phase20-opencti-read-adapter-invariants",
               "phase21-evaluation-harness-invariants",
+              "phase21-frozen-fixture-report",
               "phase22-operations-recovery-invariants",
           ):
               assert states[gate] == "pass", (gate, states[gate])
