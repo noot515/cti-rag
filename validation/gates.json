@@ -259,6 +259,81 @@
       "required": true,
       "status_override": "blocked",
       "reason": "The optional OpenCTI connector is validated with real-format OpenCTI/STIX-shaped fixtures and a read-only client spy. No OPENCTI_URL/read-only token or approved live instance was supplied, so live pagination/update/deletion reconciliation is not reported as passed."
+    },
+    {
+      "id": "phase21-evaluation-harness-invariants",
+      "phase": 21,
+      "required": true,
+      "command": "python -m unittest tests.evaluation_phase21_test -v"
+    },
+    {
+      "id": "phase21-real-embedding-quality",
+      "phase": 21,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "No approved pinned real embedding runtime/model is available in CI. Deterministic fixture rankings are mechanics-only and semantic retrieval quality is not reported from fake providers."
+    },
+    {
+      "id": "phase21-real-reranker-quality",
+      "phase": 21,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "No approved pinned real reranker runtime/model is available in CI. Phase 21 records the evaluation contract but does not manufacture reranking quality from deterministic fixtures."
+    },
+    {
+      "id": "phase21-real-generator-grounding-quality",
+      "phase": 21,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "No approved pinned real generator/judge runtime is available in CI. Generation and grounding model-quality metrics remain blocked rather than inferred from fake providers."
+    },
+    {
+      "id": "phase21-gpu-concurrent-resource-profile",
+      "phase": 21,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "The deterministic CI runner has no approved configured GPU retrieval/generation runtime for concurrent generation/reranking VRAM measurement; CPU fixture resource accounting is not promoted to GPU evidence."
+    },
+    {
+      "id": "phase21-human-reviewed-judgments",
+      "phase": 21,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "The committed development set contains 250 machine_generated_unreviewed judgments and 20 synthetic_contract cases, with zero human-reviewed pooled judgments. Human-reviewed coverage remains a separate required gate."
+    },
+    {
+      "id": "phase22-operations-recovery-invariants",
+      "phase": 22,
+      "required": true,
+      "command": "python -m unittest tests.operations_recovery_phase22_test -v"
+    },
+    {
+      "id": "phase22-text-mvp-live-profile",
+      "phase": 22,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "The text-MVP profile contract is implemented, but CI did not start the full MySQL/Redis/RabbitMQ/dense service stack under isolated staging storage, so live deployment smoke is not reported as passed."
+    },
+    {
+      "id": "phase22-analytical-live-profile",
+      "phase": 22,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "The analytical profile contract is implemented, but CI did not start and recovery-test the real Neo4j/Milvus/analytical service stack."
+    },
+    {
+      "id": "phase22-full-research-live-profile",
+      "phase": 22,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "The full-research profile depends on still-blocked approved web/OpenCTI/RuntimePolicy and real-model services. No external host was modified or published by this phase."
+    },
+    {
+      "id": "phase22-live-concurrent-model-memory",
+      "phase": 22,
+      "required": true,
+      "status_override": "blocked",
+      "reason": "The memory probe supports concurrent generation/reranking measurements when a GPU/runtime sampler exists, but no approved live concurrent model runtime was present in CI."
     }
   ]
 }
