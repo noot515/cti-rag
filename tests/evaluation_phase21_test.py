@@ -96,12 +96,13 @@ class Phase21EvaluationTests(unittest.TestCase):
 
     def test_cli_writes_same_report_digest(self):
         expected_report=run_experiment(config(),self.queries,self.judgments,self.runs)
+        expected_normalized=json.loads(json.dumps(expected_report,sort_keys=True))
         with tempfile.TemporaryDirectory() as td:
             out=Path(td)/"report.json"
             proc=subprocess.run([sys.executable,str(ROOT/"scripts"/"run_phase21_evaluation.py"),"--config",str(DATA/"experiment-config.json"),"--queries",str(DATA/"queries.jsonl"),"--judgments",str(DATA/"judgments.jsonl"),"--runs",str(DATA/"fixture-runs.json"),"--report",str(out)],cwd=ROOT,text=True,capture_output=True)
             self.assertEqual(0,proc.returncode,proc.stderr)
             actual_report=json.loads(out.read_text())
-            if expected_report!=actual_report:
+            if expected_normalized!=actual_report:
                 def first_diff(a,b,path="$"):
                     if type(a)!=type(b):return f"{path}: type {type(a).__name__} != {type(b).__name__}"
                     if isinstance(a,dict):
@@ -118,7 +119,7 @@ class Phase21EvaluationTests(unittest.TestCase):
                         return None
                     if a!=b:return f"{path}: {a!r} != {b!r}"
                     return None
-                self.fail(first_diff(expected_report,actual_report) or "reports differ without structural diff")
+                self.fail(first_diff(expected_normalized,actual_report) or "reports differ without structural diff")
             self.assertEqual(expected_report["report_digest"],actual_report["report_digest"])
 
 if __name__=="__main__":unittest.main()
