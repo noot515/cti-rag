@@ -22,5 +22,25 @@
       "memory": "1GiB"
     }
   ],
-  "optional_components": []
+  "optional_components": [],
+  "service_egress": {
+    "api": "deny_all",
+    "sqlite-metadata": "deny_all",
+    "file-object-store": "deny_all",
+    "sqlite-lexical": "deny_all",
+    "fixture-dense": "deny_all"
+  },
+  "read_only_mounts": [
+    {
+      "service": "api",
+      "source_env": "CTI_RAG_CONFIG_FILE",
+      "target": "/etc/cti-rag/config.yaml",
+      "read_only": true
+    }
+  ],
+  "capability_drop": {
+    "api": [
+      "ALL"
+    ]
+  }
 }
