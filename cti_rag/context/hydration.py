@@ -16,6 +16,10 @@ class PassageMetadata:
     epistemic_label:str="source_claim"
     unit:Optional[str]=None
     parent_uid:Optional[str]=None
+    conflict_group:Optional[str]=None
+    entity_key:Optional[str]=None
+    valid_time:Optional[str]=None
+    edition_key:Optional[str]=None
 
 class EvidenceHydrator:
     def __init__(self,evidence_store,metadata_provider):
@@ -34,5 +38,5 @@ class EvidenceHydrator:
                 denied+=1;continue
             canonical_hit=PassageHit(hit.hit_id,hit.passage_uid,hit.revision_uid,provenance,text,hit.scores)
             canonical_fused=type(fused)(canonical_hit,fused.score,fused.channel_ranks,fused.subquestion_id)
-            out.append(EvidencePassage(canonical_fused,metadata.labels,metadata.source_id,metadata.origin_group,metadata.snapshot_manifest_id,metadata.available_at,metadata.epistemic_label,metadata.unit,metadata.parent_uid))
+            out.append(EvidencePassage(canonical_fused,metadata.labels,metadata.source_id,metadata.origin_group,metadata.snapshot_manifest_id,metadata.available_at,metadata.epistemic_label,metadata.unit,metadata.parent_uid,metadata.conflict_group,metadata.entity_key,metadata.valid_time,metadata.edition_key))
         return tuple(out),denied,invalid

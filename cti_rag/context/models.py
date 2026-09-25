@@ -24,6 +24,10 @@ class EvidencePassage:
     epistemic_label:str="source_claim"
     unit:Optional[str]=None
     parent_uid:Optional[str]=None
+    conflict_group:Optional[str]=None
+    entity_key:Optional[str]=None
+    valid_time:Optional[str]=None
+    edition_key:Optional[str]=None
     def __post_init__(self):
         if not self.source_id.strip() or not self.origin_group.strip() or not self.snapshot_manifest_id.strip():
             raise ValueError("evidence passage metadata fields required")

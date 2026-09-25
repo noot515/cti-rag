@@ -52,6 +52,24 @@ class ContextPacker:
             if row is not None:
                 packed,used=self._fit(row.evidence,used,available,plan)
                 if packed is not None:selected.append(packed);selected_uids.add(row.evidence.passage.passage_uid);origins.add(row.evidence.origin_group)
+        # Conflict-preservation pass: when upstream/domain logic declares a
+        # conflict group, reserve evidence from distinct source origins before
+        # redundancy pruning. Syndicated copies from one origin do not simulate
+        # independent corroboration.
+        conflict_groups={}
+        for row in ranked:
+            group=getattr(row.evidence,"conflict_group",None)
+            if group:conflict_groups.setdefault(group,[]).append(row)
+        for group in sorted(conflict_groups):
+            rows=sorted(conflict_groups[group],key=lambda r:(-r.score,r.evidence.passage.passage_uid))
+            group_origins={p.evidence.origin_group for p in selected if getattr(p.evidence,"conflict_group",None)==group}
+            for row in rows:
+                ev=row.evidence
+                if ev.passage.passage_uid in selected_uids or ev.origin_group in group_origins:continue
+                packed,used=self._fit(ev,used,available,plan)
+                if packed is None:continue
+                selected.append(packed);selected_uids.add(ev.passage.passage_uid);origins.add(ev.origin_group);group_origins.add(ev.origin_group)
+                if len(group_origins)>=2:break
         # Relevance/nonredundancy pass.
         candidates=[]
         for row in ranked:
