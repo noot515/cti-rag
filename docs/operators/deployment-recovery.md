@@ -8,7 +8,7 @@ Profiles:
 - `analytical`: text-MVP plus DuckDB and Neo4j; external egress denied by default.
 - `full-research`: analytical profile plus optional reranker/generator/web/OpenCTI/RuntimePolicy integrations. External egress is an explicit allowlist and optional integrations remain disabled until configured/authorized.
 
-Profile files contain secret **names**, never secret values. Only the API port is externally exposed by the profile contract. Stateful backend storage remains writable inside its data root; read-only/restricted mounts should be used only for configuration/source inputs that do not need mutation.
+Profile files contain secret **names**, never secret values. Only the API port is externally exposed by the profile contract. Each non-fixture profile names the exact existing `docker-compose.yml` services it depends on (for example `threatrag`, `threatrag-worker`, `mysql`, `redis`, `rabbitmq`, Milvus dependencies, and `neo4j` where applicable). The contract also records per-service egress mode, read-only configuration mounts, capability drops, and resource limits. Stateful backend storage remains writable inside its data root; read-only/restricted mounts are reserved for configuration/source inputs that do not need mutation.
 
 ## Local fixture smoke
 
