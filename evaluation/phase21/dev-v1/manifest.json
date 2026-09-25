@@ -1,0 +1,22 @@
+{
+  "schema_version": "multidomain-evaluation-manifest/1",
+  "dataset_id": "phase21-dev-v1",
+  "query_count": 270,
+  "domain_counts": {
+    "cybersecurity": 50,
+    "networking": 50,
+    "quant": 50,
+    "humanities": 50,
+    "privacy": 50
+  },
+  "adversarial_count": 20,
+  "judgment_counts": {
+    "machine_generated_unreviewed": 250,
+    "synthetic_contract": 20,
+    "human_reviewed": 0
+  },
+  "split_policy": "Source-family, duplicate-group, and temporal holdout labels are explicit per query. Duplicate publications sharing duplicate_group must stay in one split.",
+  "index_exclusion": "judgments.jsonl and answer keys are evaluation-only and must never be indexed.",
+  "human_review_gate": "blocked_until_reviewers_are_recorded",
+  "notes": "This is a development/evaluation seed set, not gold. Machine-generated judgments remain explicitly unreviewed."
+}
