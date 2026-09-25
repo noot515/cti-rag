@@ -71,6 +71,7 @@ class QueryOutcome:
     backend_failure:bool=False
     policy_failure:bool=False
     temporal_failure:bool=False
+    returned_source_families:Tuple[str,...]=()
     def __post_init__(self):
         if not self.query_id.strip() or self.latency_ms<0:raise ValueError("invalid query outcome")
         if self.returned_origin_groups and len(self.returned_origin_groups)!=len(self.returned_uids):
